@@ -1,13 +1,16 @@
 package orgs.tuasl_clint.utils;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class DatabaseConnectionSQLite {
     private static DatabaseConnectionSQLite instance;
     private Connection connection;
-    private static final String DB_URL = "jdbc:sqlite:SqliteToasolDB.db";
+    private static final String DB_URL = "jdbc:sqlite:SQLiteDatabase.db";
 
     private DatabaseConnectionSQLite() {
         try {
@@ -15,6 +18,7 @@ public class DatabaseConnectionSQLite {
             System.out.println("Connection to SQLite has been established.");
             initializeDatabase();
         } catch (SQLException e) {
+            System.out.println("Error Cannot Create Connection In DatabaseConnectionSqlite file......!!!");
             System.out.println(e.getMessage());
         }
     }
@@ -43,21 +47,32 @@ public class DatabaseConnectionSQLite {
 
     private void initializeDatabase() {
         // Example: Create tables if they don't exist
-        String createTableSQL = "" +
-                "CREATE TABLE IF NOT EXISTS users (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "name TEXT NOT NULL," +
-                    "email TEXT NOT NULL UNIQUE" +
-                ")";
-
-        try (var stmt = connection.createStatement()) {
-            stmt.execute(createTableSQL);
-            System.out.println("Tables checked/created successfully");
+        System.out.println("init the database tables:");
+        try {
+            if(tableExists("users")){
+                System.out.println("Database Has Been Created Before..!!");
+                return;
+            }
         } catch (SQLException e) {
+            System.out.println("Error cannot test database last creation...!!!");
+            e.printStackTrace();
+        }
+        try (var stmt = connection.createStatement()) {
+            List<String> queries = FilesHelperReader.readUntilChar("src\\main\\resources\\orgs\\tuasl_clint\\file\\SQLiteDatabase.txt",';');
+            for(String query : queries){
+                stmt.executeUpdate(query);
+                System.out.println("EXECUTED QUERY: "+ query + " IS DONE ...!!!");
+            }
+        } catch (SQLException | IOException e) {
+            System.out.println("an Error occurred while truing create database tables ");
             System.out.println(e.getMessage());
         }
     }
-
+    private boolean tableExists(String tableName) throws SQLException {
+        try (ResultSet rs = connection.getMetaData().getTables(null, null, tableName, null)) {
+            return rs.next();
+        }
+    }
     public void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {

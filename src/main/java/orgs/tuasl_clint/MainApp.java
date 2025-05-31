@@ -3,17 +3,21 @@ package orgs.tuasl_clint;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import orgs.tuasl_clint.utils.Navigation;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 
 public class MainApp extends Application {
 
     private Stage primaryStage;
-
     @Override
     public void start(Stage stage) throws IOException {
+
         this.primaryStage = stage;
         this.primaryStage.setTitle("Chat Application");
 
