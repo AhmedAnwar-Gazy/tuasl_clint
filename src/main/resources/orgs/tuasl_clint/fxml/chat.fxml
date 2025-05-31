@@ -5,7 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane style="-fx-max-height: 800px;" styleClass="root-pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.ChatController">
+<BorderPane fx:id="rootBorderPane" style="-fx-max-height: 800px;" styleClass="root-pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.ChatController">
     <left>
         <VBox maxWidth="300" minWidth="200" spacing="5.0" styleClass="sidebar" BorderPane.alignment="CENTER">
             <padding>
@@ -71,7 +71,7 @@
             <center>
                 <ScrollPane fx:id="messageScrollPane" fitToWidth="true" styleClass="message-area" BorderPane.alignment="CENTER">
                     <content>
-                        <VBox fx:id="messageDisplayArea" spacing="10.0">
+                        <VBox fx:id="messageDisplayArea" spacing="10.0"  style="-fx-background-image: url('images/img.png'); -fx-background-size: cover;">
                             <padding><Insets bottom="10.0" left="15.0" right="15.0" top="10.0" /></padding>
                             <Label text="Welcome to the chat!" wrapText="true" />
                         </VBox>
@@ -132,6 +132,11 @@
         </BorderPane>
     </center>
     <right>
-        <VBox fx:id="areaOfEmojis" minWidth="250.0" prefHeight="300.0" prefWidth="100.0" style="-fx-background-color: #ffffff; visibility: false;" BorderPane.alignment="CENTER" />
+        <ScrollPane fx:id="emojiScrollPane" prefWidth="250.0" prefHeight="400.0" fitToWidth="true" hbarPolicy="NEVER">
+            <content>
+                <FlowPane fx:id="areaOfEmojis" hgap="5.0" vgap="5.0" style="-fx-background-color: #f0f0f0; -fx-padding: 10;" />
+            </content>
+        </ScrollPane>
     </right>
+
 </BorderPane>
