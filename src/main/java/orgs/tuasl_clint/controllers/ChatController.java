@@ -17,6 +17,7 @@ import javafx.animation.ScaleTransition;
 import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -418,6 +419,30 @@ public class ChatController {
 
     @FXML
     public void handleVideoCallButtonAction(ActionEvent event) {
+            String selectedUser = chatListView.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
+            return;
+        }
+
+        try {
+            Socket videoSocket = new Socket("localhost", 6000);
+            Socket audioSocket = new Socket("localhost", 6001); // منفذ الصوت
+
+            VideoCallWindow callWindow = new VideoCallWindow("📹 مكالمة فيديو مع " + selectedUser);
+            callWindow.startSending(videoSocket);
+            callWindow.startReceiving(videoSocket);
+
+            AudioSender audioSender = new AudioSender();
+            audioSender.start(audioSocket);
+
+            AudioReceiver audioReceiver = new AudioReceiver();
+            audioReceiver.start(audioSocket);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("❌ فشل الاتصال بمكالمة الفيديو والصوت");
+        }
 
     }
 
