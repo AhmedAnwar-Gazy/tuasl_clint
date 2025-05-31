@@ -4,6 +4,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import orgs.tuasl_clint.models2.*;
 import orgs.tuasl_clint.utils.DatabaseConnection;
 import orgs.tuasl_clint.utils.Navigation;
@@ -15,6 +17,11 @@ import javafx.animation.ScaleTransition;
 import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
+import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,6 +59,12 @@ public class ChatController {
     private Button shareButton; //Added FXML annotation
     @FXML
     private VBox areaOfEmojis; //Added FXML annotation
+    @FXML
+    private Button audioCallButton;
+    @FXML
+    private Button menuButton;
+    @FXML
+    private Button videoCallButton;
 
     @FXML
     private HBox chatListItem;
@@ -104,7 +117,7 @@ public class ChatController {
                 // --- NEW CODE: Populate messageDisplayArea directly after loading messages ---
                 for (Message message : messageItemsMessage) {
 
-                    loadMessages(message.getContent());
+                    loadMessages(message);
                     //messageDisplayArea.getChildren().add(new Label(message.getContent()));
                 }
                 // --- END NEW CODE ---
@@ -140,7 +153,7 @@ public class ChatController {
             System.out.println("Sending message: " + messageText);
 
 
-            loadMessages(messageText);
+            loadMessages(new Message(messageText));
 
 
             // Clear the input field
@@ -153,7 +166,8 @@ public class ChatController {
     }
 
     @FXML
-    private void loadMessages(String messageText) {
+    private void loadMessages(Message messageText) {
+        //private void loadMessages(String messageText) {
         try {
             // Create an FXMLLoader instance
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/sendMessageItem.fxml"));
@@ -166,7 +180,7 @@ public class ChatController {
 
             // Pass some data to the loaded controller
             userCardCount++;
-            sendMessageItemController.setUserData(messageText, "user" + userCardCount + "@example.com");
+            sendMessageItemController.setUserData(messageText);
             messageScrollPane.setVvalue(1.0);
             // Add the loaded FXML's root node to the VBox
             messageDisplayArea.getChildren().add(userCardNode);
@@ -182,11 +196,12 @@ public class ChatController {
     @FXML
     private void handleSendVoiceButtonAction1(ActionEvent event) {
         System.out.println("Send Voice Button Clicked!");
-        // You can add additional logic if needed
+
     }
 
     @FXML
     public void handleSendVoiceButtonAction() {
+        System.out.println("Send Voice Button Clicked!");
         sendVoiceButton.setOnAction(this::handleSendVoiceButtonAction1);
         sendVoiceButton.setOnMousePressed(event -> {
             animateButton(true); // Start animation
@@ -268,13 +283,73 @@ public class ChatController {
 
     }
 
-    @FXML
-    private void handleShareButtonAction(ActionEvent event) {
 
-    }
+
+
+        private final String SHARE_FOLDER = "src/main/resources/orgs/tuasl_clint/file/";
+
+
+        @FXML
+        private void handleShareButtonAction(ActionEvent event) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select File to Share");
+
+            // Optional: Set initial directory
+            // You might want to save the last used directory or default to user's home
+            // File initialDirectory = new File(System.getProperty("user.home"));
+            // if (initialDirectory.exists()) {
+            //     fileChooser.setInitialDirectory(initialDirectory);
+            // }
+
+            // Get the stage from the event source (the button)
+            Stage stage = (Stage) shareButton.getScene().getWindow();
+
+            // Show the open file dialog
+            File selectedFile = fileChooser.showOpenDialog(stage);
+
+            if (selectedFile != null) {
+                try {
+                    // Ensure the destination directory exists
+                    Path destinationDirectory = Paths.get(SHARE_FOLDER);
+                    if (!Files.exists(destinationDirectory)) {
+                        Files.createDirectories(destinationDirectory);
+                        System.out.println("Created directory: " + destinationDirectory.toAbsolutePath());
+                    }
+
+                    // Define the destination path for the selected file
+                    Path destinationPath = destinationDirectory.resolve(selectedFile.getName());
+
+                    // Copy the selected file to the destination directory
+                    // StandardCopyOption.REPLACE_EXISTING will overwrite if a file with the same name already exists
+                    Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+
+                    System.out.println("File copied successfully: " + selectedFile.getAbsolutePath() +
+                            " to " + destinationPath.toAbsolutePath());
+
+                    // Optional: You might want to send a message here indicating file shared,
+                    // or update your UI to show the shared file.
+                    // Example:
+                    // Message sharedMessage = new Message("Shared file: " + selectedFile.getName(), "file", destinationPath.toString());
+                    // loadMessages(sharedMessage); // Assuming you have a loadMessages method that handles file types
+
+                } catch (IOException e) {
+                    System.err.println("Error copying file: " + e.getMessage());
+                    e.printStackTrace();
+                    // Optionally show an error dialog to the user
+                    // Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to share file: " + e.getMessage());
+                    // alert.showAndWait();
+                }
+            } else {
+                System.out.println("File selection cancelled.");
+            }
+        }
+
+
+
 
     @FXML
     private void handleEmojiButtonAction() {
+        System.out.println("boooo");
         // Toggle visibility: if visible, hide it; if hidden, show it
         boolean isVisible = areaOfEmojis.isVisible();
         areaOfEmojis.setVisible(!isVisible);
@@ -333,6 +408,65 @@ public class ChatController {
             System.err.println("An error occurred during database operations: " + e.getMessage());
         }
     }
+
+
+    @FXML
+    public void handleAudioCallButtonAction(ActionEvent event) {
+        String selectedUser = chatListView.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
+            return;
+        }
+
+        try {
+
+            Socket audioSocket = new Socket("localhost", 6001); // منفذ الصوت
+            AudioCallWindow audioCallWindow = new AudioCallWindow("📞 مع " + selectedUser);
+            AudioSender audioSender = new AudioSender();
+            audioSender.start(audioSocket);
+
+            AudioReceiver audioReceiver = new AudioReceiver();
+            audioReceiver.start(audioSocket);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("❌ فشل الاتصال بمكالمة الصوت");
+        }
+
+    }
+
+
+
+    @FXML
+    public void handleVideoCallButtonAction(ActionEvent event) {
+            String selectedUser = chatListView.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
+            return;
+        }
+
+        try {
+            Socket videoSocket = new Socket("localhost", 6000);
+            Socket audioSocket = new Socket("localhost", 6001); // منفذ الصوت
+
+            VideoCallWindow callWindow = new VideoCallWindow("📹 مكالمة فيديو مع " + selectedUser);
+            callWindow.startSending(videoSocket);
+            callWindow.startReceiving(videoSocket);
+
+            AudioSender audioSender = new AudioSender();
+            audioSender.start(audioSocket);
+
+            AudioReceiver audioReceiver = new AudioReceiver();
+            audioReceiver.start(audioSocket);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("❌ فشل الاتصال بمكالمة الفيديو والصوت");
+        }
+
+    }
+
+
 }
 
 

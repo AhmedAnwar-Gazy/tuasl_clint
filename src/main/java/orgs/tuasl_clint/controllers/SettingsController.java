@@ -39,5 +39,9 @@ public class SettingsController {
         Navigation.loadPage("chat.fxml");
     }
 
+    public void handleRegisterButtonAction(ActionEvent event) {
+
+    }
+
     // Add handlers for other buttons (Change Password, Log Out) as needed
 }
