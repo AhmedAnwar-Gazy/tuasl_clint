@@ -1,11 +1,12 @@
 package orgs.tuasl_clint.models2;
 
+import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
+import java.sql.*;
 import java.math.BigInteger;
-import java.sql.Timestamp;
 
 public class Chat {
     private BigInteger chatId;
-    private ChatType chatType;  // Using an Enum (see below)
+    private ChatType chatType;
     private String chatName;
     private String chatDescription;
     private String chatPictureUrl;
@@ -14,7 +15,6 @@ public class Chat {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    // Enum for chat_type
     public enum ChatType {
         PRIVATE, GROUP, CHANNEL;
 
@@ -28,7 +28,6 @@ public class Chat {
         }
     }
 
-    // Constructors
     public Chat() {}
 
     public Chat(ChatType chatType, Timestamp createdAt) {
@@ -48,46 +47,70 @@ public class Chat {
         this.updatedAt = updatedAt;
     }
 
-    // Getters and Setters
     public BigInteger getChatId() { return chatId; }
     public void setChatId(BigInteger chatId) { this.chatId = chatId; }
-
     public ChatType getChatType() { return chatType; }
     public void setChatType(ChatType chatType) { this.chatType = chatType; }
-
     public String getChatName() { return chatName; }
     public void setChatName(String chatName) { this.chatName = chatName; }
-
     public String getChatDescription() { return chatDescription; }
     public void setChatDescription(String chatDescription) { this.chatDescription = chatDescription; }
-
     public String getChatPictureUrl() { return chatPictureUrl; }
     public void setChatPictureUrl(String chatPictureUrl) { this.chatPictureUrl = chatPictureUrl; }
-
     public BigInteger getCreatorUserId() { return creatorUserId; }
     public void setCreatorUserId(BigInteger creatorUserId) { this.creatorUserId = creatorUserId; }
-
     public String getPublicLink() { return publicLink; }
     public void setPublicLink(String publicLink) { this.publicLink = publicLink; }
-
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
-
     public Timestamp getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
 
-    @Override
-    public String toString() {
-        return "Chat{" +
-                "chatId=" + chatId +
-                ", chatType=" + chatType +
-                ", chatName='" + chatName + '\'' +
-                ", chatDescription='" + chatDescription + '\'' +
-                ", chatPictureUrl='" + chatPictureUrl + '\'' +
-                ", creatorUserId=" + creatorUserId +
-                ", publicLink='" + publicLink + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
+    public boolean save() throws SQLException {
+        String sql = "INSERT INTO chats (chat_type, chat_name, chat_description, chat_picture_url, creator_user_id, public_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, chatType.name().toLowerCase());
+            statement.setString(2, chatName);
+            statement.setString(3, chatDescription);
+            statement.setString(4, chatPictureUrl);
+            statement.setLong(5, creatorUserId.longValue());
+            statement.setString(6, publicLink);
+            statement.setTimestamp(7, createdAt);
+            statement.setTimestamp(8, updatedAt);
+
+            boolean isInserted = statement.executeUpdate() > 0;
+            if (isInserted) {
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        this.chatId = BigInteger.valueOf(generatedKeys.getLong(1));
+                    }
+                }
+            }
+            return isInserted;
+        }
+    }
+
+    public boolean update() throws SQLException {
+        String sql = "UPDATE chats SET chat_type = ?, chat_name = ?, chat_description = ?, chat_picture_url = ?, creator_user_id = ?, public_link = ?, updated_at = ? WHERE chat_id = ?";
+        try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
+            statement.setString(1, chatType.name().toLowerCase());
+            statement.setString(2, chatName);
+            statement.setString(3, chatDescription);
+            statement.setString(4, chatPictureUrl);
+            statement.setLong(5, creatorUserId.longValue());
+            statement.setString(6, publicLink);
+            statement.setTimestamp(7, updatedAt);
+            statement.setLong(8, chatId.longValue());
+
+            return statement.executeUpdate() > 0;
+        }
+    }
+
+    public boolean delete() throws SQLException {
+        String sql = "DELETE FROM chats WHERE chat_id = ?";
+        try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
+            statement.setLong(1, chatId.longValue());
+            return statement.executeUpdate() > 0;
+        }
     }
 }

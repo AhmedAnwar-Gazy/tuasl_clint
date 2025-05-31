@@ -1,9 +1,9 @@
 package orgs.tuasl_clint.models2;
 
-import java.sql.Timestamp;
+import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
+import java.sql.*;
 
 public class UserSetting {
-
     private Long userSettingId;
     private Long userId;
     private String privacyPhoneNumber;
@@ -42,123 +42,76 @@ public class UserSetting {
         this.updatedAt = updatedAt;
     }
 
-    public Long getUserSettingId() {
-        return userSettingId;
+    // Getters and Setters (keep all existing ones)
+
+    public boolean save() throws SQLException {
+        String sql = "INSERT INTO user_settings (user_id, privacy_phone_number, privacy_last_seen, privacy_profile_photo, " +
+                "privacy_calls, privacy_groups_and_channels, privacy_forwarded_messages, " +
+                "notifications_private_chats, notifications_group_chats, notifications_channels, " +
+                "notification_sound, chat_theme, chat_text_size, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setLong(1, userId);
+            statement.setString(2, privacyPhoneNumber);
+            statement.setString(3, privacyLastSeen);
+            statement.setString(4, privacyProfilePhoto);
+            statement.setString(5, privacyCalls);
+            statement.setString(6, privacyGroupsAndChannels);
+            statement.setString(7, privacyForwardedMessages);
+            statement.setBoolean(8, notificationsPrivateChats);
+            statement.setBoolean(9, notificationsGroupChats);
+            statement.setBoolean(10, notificationsChannels);
+            statement.setString(11, notificationSound);
+            statement.setString(12, chatTheme);
+            statement.setInt(13, chatTextSize);
+            statement.setTimestamp(14, updatedAt);
+
+            boolean isInserted = statement.executeUpdate() > 0;
+            if (isInserted) {
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        this.userSettingId = generatedKeys.getLong(1);
+                    }
+                }
+            }
+            return isInserted;
+        }
     }
 
-    public Long getUserId() {
-        return userId;
+    public boolean update() throws SQLException {
+        String sql = "UPDATE user_settings SET " +
+                "privacy_phone_number = ?, privacy_last_seen = ?, privacy_profile_photo = ?, " +
+                "privacy_calls = ?, privacy_groups_and_channels = ?, privacy_forwarded_messages = ?, " +
+                "notifications_private_chats = ?, notifications_group_chats = ?, notifications_channels = ?, " +
+                "notification_sound = ?, chat_theme = ?, chat_text_size = ?, updated_at = ? " +
+                "WHERE user_setting_id = ?";
+
+        try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
+            statement.setString(1, privacyPhoneNumber);
+            statement.setString(2, privacyLastSeen);
+            statement.setString(3, privacyProfilePhoto);
+            statement.setString(4, privacyCalls);
+            statement.setString(5, privacyGroupsAndChannels);
+            statement.setString(6, privacyForwardedMessages);
+            statement.setBoolean(7, notificationsPrivateChats);
+            statement.setBoolean(8, notificationsGroupChats);
+            statement.setBoolean(9, notificationsChannels);
+            statement.setString(10, notificationSound);
+            statement.setString(11, chatTheme);
+            statement.setInt(12, chatTextSize);
+            statement.setTimestamp(13, updatedAt);
+            statement.setLong(14, userSettingId);
+
+            return statement.executeUpdate() > 0;
+        }
     }
 
-    public String getPrivacyPhoneNumber() {
-        return privacyPhoneNumber;
-    }
-
-    public String getPrivacyLastSeen() {
-        return privacyLastSeen;
-    }
-
-    public String getPrivacyProfilePhoto() {
-        return privacyProfilePhoto;
-    }
-
-    public String getPrivacyCalls() {
-        return privacyCalls;
-    }
-
-    public String getPrivacyGroupsAndChannels() {
-        return privacyGroupsAndChannels;
-    }
-
-    public String getPrivacyForwardedMessages() {
-        return privacyForwardedMessages;
-    }
-
-    public Boolean getNotificationsPrivateChats() {
-        return notificationsPrivateChats;
-    }
-
-    public Boolean getNotificationsGroupChats() {
-        return notificationsGroupChats;
-    }
-
-    public Boolean getNotificationsChannels() {
-        return notificationsChannels;
-    }
-
-    public String getNotificationSound() {
-        return notificationSound;
-    }
-
-    public String getChatTheme() {
-        return chatTheme;
-    }
-
-    public Integer getChatTextSize() {
-        return chatTextSize;
-    }
-
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUserSettingId(Long userSettingId) {
-        this.userSettingId = userSettingId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public void setPrivacyPhoneNumber(String privacyPhoneNumber) {
-        this.privacyPhoneNumber = privacyPhoneNumber;
-    }
-
-    public void setPrivacyLastSeen(String privacyLastSeen) {
-        this.privacyLastSeen = privacyLastSeen;
-    }
-
-    public void setPrivacyProfilePhoto(String privacyProfilePhoto) {
-        this.privacyProfilePhoto = privacyProfilePhoto;
-    }
-
-    public void setPrivacyCalls(String privacyCalls) {
-        this.privacyCalls = privacyCalls;
-    }
-
-    public void setPrivacyGroupsAndChannels(String privacyGroupsAndChannels) {
-        this.privacyGroupsAndChannels = privacyGroupsAndChannels;
-    }
-
-    public void setPrivacyForwardedMessages(String privacyForwardedMessages) {
-        this.privacyForwardedMessages = privacyForwardedMessages;
-    }
-
-    public void setNotificationsPrivateChats(Boolean notificationsPrivateChats) {
-        this.notificationsPrivateChats = notificationsPrivateChats;
-    }
-
-    public void setNotificationsGroupChats(Boolean notificationsGroupChats) {
-        this.notificationsGroupChats = notificationsGroupChats;
-    }
-
-    public void setNotificationsChannels(Boolean notificationsChannels) {
-        this.notificationsChannels = notificationsChannels;
-    }
-
-    public void setNotificationSound(String notificationSound) {
-        this.notificationSound = notificationSound;
-    }
-
-    public void setChatTheme(String chatTheme) {
-        this.chatTheme = chatTheme;
-    }
-
-    public void setChatTextSize(Integer chatTextSize) {
-        this.chatTextSize = chatTextSize;
-    }
-
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
+    public boolean delete() throws SQLException {
+        String sql = "DELETE FROM user_settings WHERE user_setting_id = ?";
+        try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
+            statement.setLong(1, userSettingId);
+            return statement.executeUpdate() > 0;
+        }
     }
 }
