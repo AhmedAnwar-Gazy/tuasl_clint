@@ -22,7 +22,7 @@ public class MainApp extends Application {
         Navigation.setPrimaryStage(primaryStage); // Pass the stage
 
         // Load the initial login screen
-        Navigation.loadPage("chat.fxml");
+        Navigation.loadPage("login.fxml");
 
         primaryStage.setMinWidth(800); // Minimum responsive width
         primaryStage.setMaxHeight(1200);
