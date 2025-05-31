@@ -8,7 +8,7 @@ public class DatabaseConnection {
 
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/tuasil_messaging?useSSL=false&serverTimezone=UTC";
     private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "730673145";
+    private static final String DB_PASSWORD = "12345678";
 
     // The single instance of the Connection
     private static Connection connection = null;

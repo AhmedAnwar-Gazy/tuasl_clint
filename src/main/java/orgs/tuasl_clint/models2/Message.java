@@ -21,6 +21,9 @@ public class Message {
     public Message(Long messageId) {
         this.messageId = messageId;
     }
+    public Message(String content) {
+        this.content = content;
+    }
 
     public Message(Long messageId, Long chatId, Long senderUserId, String messageType, String content, Long mediaId, Long repliedToMessageId, Long forwardedFromUserId, Long forwardedFromChatId, Timestamp sentAt, Timestamp editedAt, Boolean isDeleted, Integer viewCount) {
         this.messageId = messageId;

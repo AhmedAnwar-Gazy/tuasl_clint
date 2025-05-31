@@ -41,6 +41,31 @@
                                 </image>
                             </ImageView>
                         </graphic></Button>
+               <HBox alignment="CENTER_RIGHT" prefHeight="46.0" prefWidth="266.0" spacing="10.0">
+                  <padding>
+                     <Insets top="2.0" />
+                  </padding>
+                  <children>
+                     <Button fx:id="videoCallButton" onAction="#handleVideoCallButtonAction" style="-fx-background-color: #FF000000;" styleClass="icon-button">
+                        <graphic>
+                           <ImageView fitHeight="38.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../icons/video_call.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </Button>
+                     <Button fx:id="audioCallButton" onAction="#handleAudioCallButtonAction" style="-fx-background-color: #FF000000;" styleClass="icon-button">
+                        <graphic>
+                           <ImageView fitHeight="38.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../icons/vois_call.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </Button>
+                  </children>
+               </HBox>
                 </HBox>
             </top>
             <center>

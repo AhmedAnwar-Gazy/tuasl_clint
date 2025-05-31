@@ -1,0 +1,165 @@
+DROP DATABASE tuasil_messaging ;
+CREATE DATABASE IF NOT EXISTS tuasil_messaging;
+USE tuasil_messaging;
+
+-- 1. Class: User
+-- Represents individual registered users of the platform
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    phone_number VARCHAR(20) NOT NULL UNIQUE, -- Used for registration and login
+    username VARCHAR(50) UNIQUE,              -- Optional, but must be unique if set (FR-UM-4)
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    bio TEXT,
+    profile_picture_url VARCHAR(255),
+    is_online BOOLEAN DEFAULT FALSE,          -- FR-UM-7
+    last_seen_at DATETIME,                    -- FR-UM-8
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 1.a. Related to User: Class UserSettings (Implicit from FR-SEC-x and references)
+-- Stores user-specific privacy and notification preferences
+CREATE TABLE user_settings (
+    user_id INT PRIMARY KEY,
+    privacy_phone_number ENUM('everyone', 'my_contacts', 'nobody') DEFAULT 'everyone', -- FR-SEC-3
+    privacy_last_seen ENUM('everyone', 'my_contacts', 'nobody') DEFAULT 'everyone',     -- FR-SEC-4
+    privacy_profile_photo ENUM('everyone', 'my_contacts', 'nobody') DEFAULT 'everyone', -- FR-SEC-5
+    privacy_groups_and_channels ENUM('everyone', 'my_contacts','nobody') DEFAULT 'everyone',   -- FR-SEC-6
+    notifications_private_chats BOOLEAN DEFAULT TRUE, -- FR-NOTIF-1
+    notifications_group_chats BOOLEAN DEFAULT TRUE,   -- FR-NOTIF-2 (example settings)
+    notifications_channels BOOLEAN DEFAULT TRUE,      -- FR-NOTIF-2 (example settings)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 1.b. Related to User: Sessions (Implicit from NFR-NOTIF-1 and sessions table reference)
+-- Stores active user sessions for push notifications
+CREATE TABLE sessions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    device_token VARCHAR(255) NOT NULL, -- Device-specific token for push notifications (FCM, APNS)
+    is_active BOOLEAN DEFAULT TRUE,
+    last_active_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (user_id, device_token) -- A user can only have one session per device token
+);
+
+
+-- 2. Class: Chat
+-- Represents conversation threads: private, group, or channel
+CREATE TABLE chats (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    chat_type ENUM('private', 'group', 'channel') NOT NULL,
+    chat_name VARCHAR(255),                      -- FR-CH-3, FR-CH-8 (for groups/channels)
+    chat_picture_url VARCHAR(255),               -- FR-CH-3, FR-CH-8
+    chat_description TEXT,                       -- FR-CH-3, FR-CH-8
+    public_link VARCHAR(255) UNIQUE,             -- FR-CH-8 (for public channels)
+    creator_id INT NOT NULL,                     -- Who created the chat/group/channel
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE RESTRICT -- Creator cannot be deleted if chat exists
+);
+
+-- 5. Class: ChatParticipant
+-- Represents a user's involvement in a specific chat
+CREATE TABLE chat_participants (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    chat_id INT NOT NULL,
+    user_id INT NOT NULL,
+    role ENUM('member', 'admin', 'creator', 'subscriber') DEFAULT 'member', -- FR-CH-3, FR-CH-5, FR-CH-8
+    unread_count INT DEFAULT 0,                                          -- FR-MSG-13
+    last_read_message_id INT,                                            -- FR-MSG-13 (Can be NULL)
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (chat_id, user_id), -- A user can only be a participant once per chat
+    FOREIGN KEY (chat_id) REFERENCES chats(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 4. Class: Media
+-- Stores information about media files (images, videos, files)
+CREATE TABLE media (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    file_path_or_url VARCHAR(255) NOT NULL,    -- FR-MEDIA-2, FR-MEDIA-3
+    thumbnail_url VARCHAR(255),                -- FR-MEDIA-4
+    file_size BIGINT,                          -- NFR-SCAL-3 implicitly
+    media_type VARCHAR(50),                    -- E.g., 'image/jpeg', 'video/mp4'
+    uploaded_by_user_id INT NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (uploaded_by_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 3. Class: Message
+-- Represents a unit of communication within a chat
+CREATE TABLE messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    chat_id INT NOT NULL,
+    sender_id INT NOT NULL,
+    content TEXT,                                   -- FR-MSG-1, FR-MSG-3 (for caption)
+    message_type ENUM('text', 'image', 'video', 'file', 'system') NOT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,    -- NFR-PERF-1, FR-MSG-12
+    media_id INT,                                   -- FR-MSG-3 (Nullable for text messages)
+    replied_to_message_id INT,                      -- FR-MSG-7 (Nullable)
+    forwarded_from_user_id INT,                     -- FR-MSG-8 (Nullable)
+    forwarded_from_chat_id INT,                     -- FR-MSG-8 (Nullable)
+    edited_at DATETIME,                             -- FR-MSG-9 (Nullable)
+    is_deleted BOOLEAN DEFAULT FALSE,               -- FR-MSG-10 (Soft delete)
+    view_count INT DEFAULT 0,                       -- FR-MSG-14 (For channels)
+    FOREIGN KEY (chat_id) REFERENCES chats(id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE SET NULL, -- Media can exist without a message or be deleted separately
+    FOREIGN KEY (replied_to_message_id) REFERENCES messages(id) ON DELETE SET NULL, -- Self-referencing
+    FOREIGN KEY (forwarded_from_user_id) REFERENCES users(id) ON DELETE SET NULL, -- If forwarded, link to original sender
+    FOREIGN KEY (forwarded_from_chat_id) REFERENCES chats(id) ON DELETE SET NULL , -- If forwarded, link to original chat
+
+    -- Expert Engineer's Perspective: Index for efficient message retrieval by chat and time
+    INDEX idx_messages_chat_id_sent_at (chat_id, sent_at DESC)
+);
+
+-- 6. Class: Contact
+-- Represents a user's contact list
+CREATE TABLE contacts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,          -- The user who owns this contact entry
+    contact_user_id INT NOT NULL,  -- The user who is added as a contact
+    alias_name VARCHAR(100),       -- FR-CM-2 (Optional)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, contact_user_id), -- A user can only add another user as a contact once
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (contact_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Related to Contact: BlockedUser (Implicit from FR-CM-4, FR-CM-5 and blocked_users table reference)
+-- Stores pairs of users where one has blocked the other
+CREATE TABLE blocked_users (
+    blocker_id INT NOT NULL,       -- The user who initiated the block
+    blocked_id INT NOT NULL,       -- The user who is blocked
+    blocked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (blocker_id, blocked_id), -- A user can only block another user once
+    FOREIGN KEY (blocker_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (blocked_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 7. Class: Notification (This refers to general in-app notifications, not necessarily push tokens)
+-- Stores records of notifications sent within the system
+CREATE TABLE notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    recipient_user_id INT NOT NULL, -- FR-NOTIF-1
+    message TEXT NOT NULL,           -- FR-NOTIF-1
+    event_type VARCHAR(100),         -- E.g., 'new_message', 'group_add', 'admin_change'
+    related_chat_id INT,             -- Optional: Link to the chat if notification is chat-related
+    is_read BOOLEAN DEFAULT FALSE,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (recipient_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (related_chat_id) REFERENCES chats(id) ON DELETE SET NULL
+);
+
+-- Add indexes for common lookup fields to improve performance
+CREATE INDEX idx_users_phone_number ON users(phone_number);
+CREATE INDEX idx_users_username ON users(username);
+CREATE INDEX idx_chats_chat_type ON chats(chat_type);
+CREATE INDEX idx_chat_participants_user_id ON chat_participants(user_id);
+CREATE INDEX idx_messages_sender_id ON messages(sender_id);
+CREATE INDEX idx_messages_media_id ON messages(media_id);
+CREATE INDEX idx_contacts_user_id ON contacts(user_id);
+CREATE INDEX idx_notifications_recipient_user_id ON notifications(recipient_user_id);

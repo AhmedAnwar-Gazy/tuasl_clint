@@ -1,0 +1,237 @@
+-- Disable foreign key checks temporarily to avoid issues if you run parts out of order,
+-- though the order provided here is correct. Re-enable after all inserts.
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Ensure you are using the correct database
+USE tuasil_messaging;
+
+-- --- SECTION 1: Insert into USERS (15 records) ---
+INSERT INTO users (phone_number, username, first_name, last_name, bio, profile_picture_url, is_online, last_seen_at) VALUES
+("+10000000001", "alpha_user", "Alpha", "One", "The first user. Explorer.", "http://example.com/p/alpha.jpg", TRUE, NOW() - INTERVAL 5 MINUTE),
+("+10000000002", "beta_dev", "Beta", "Dev", "Loves coding and debugging.", "http://example.com/p/beta.jpg", TRUE, NOW() - INTERVAL 10 MINUTE),
+("+10000000003", "gamma_gamer", "Gamma", "Gamer", "Pro gamer, casual streamer.", "http://example.com/p/gamma.jpg", FALSE, NOW() - INTERVAL 1 HOUR),
+("+10000000004", "delta_artist", "Delta", "Artist", "Creating digital art.", "http://example.com/p/delta.jpg", TRUE, NOW() - INTERVAL 15 MINUTE),
+("+10000000005", "epsilon_foodie", "Epsilon", "Chef", "Food blogger and chef.", "http://example.com/p/epsilon.jpg", TRUE, NOW() - INTERVAL 20 MINUTE),
+("+10000000006", "zeta_reader", "Zeta", "Book", "Lost in books.", "http://example.com/p/zeta.jpg", FALSE, NOW() - INTERVAL 2 HOUR),
+("+10000000007", "eta_hiker", "Eta", "Wanderer", "Hiking mountains, exploring trails.", "http://example.com/p/eta.jpg", TRUE, NOW() - INTERVAL 25 MINUTE),
+("+10000000008", "theta_music", "Theta", "Melody", "Music producer and DJ.", "http://example.com/p/theta.jpg", TRUE, NOW() - INTERVAL 30 MINUTE),
+("+10000000009", "iota_traveler", "Iota", "Journey", "Always on the move.", "http://example.com/p/iota.jpg", FALSE, NOW() - INTERVAL 3 HOUR),
+("+10000000010", "kappa_writer", "Kappa", "Story", "Writing compelling stories.", "http://example.com/p/kappa.jpg", TRUE, NOW() - INTERVAL 35 MINUTE),
+("+10000000011", "lambda_builder", "Lambda", "Craft", "Building things, physical and digital.", "http://example.com/p/lambda.jpg", TRUE, NOW() - INTERVAL 40 MINUTE),
+("+10000000012", "mu_innovator", "Mu", "Idea", "Innovating for a better future.", "http://example.com/p/mu.jpg", FALSE, NOW() - INTERVAL 4 HOUR),
+("+10000000013", "nu_learner", "Nu", "Knowledge", "Lifelong learner.", "http://example.com/p/nu.jpg", TRUE, NOW() - INTERVAL 45 MINUTE),
+("+10000000014", "xi_mentor", "Xi", "Guide", "Helping others grow.", "http://example.com/p/xi.jpg", TRUE, NOW() - INTERVAL 50 MINUTE),
+("+10000000015", "omicron_explorer", "Omicron", "Quest", "Exploring new horizons.", "http://example.com/p/omicron.jpg", FALSE, NOW() - INTERVAL 5 HOUR);
+
+
+-- --- SECTION 2: Insert into USER_SETTINGS (15 records) and SESSIONS (35 records) ---
+INSERT INTO user_settings (user_id, privacy_phone_number, privacy_last_seen, privacy_profile_photo, privacy_groups_and_channels, notifications_private_chats, notifications_group_chats, notifications_channels) VALUES
+(1, "my_contacts", "nobody", "my_contacts", "my_contacts", TRUE, TRUE, TRUE),
+(2, "everyone", "everyone", "everyone", "everyone", TRUE, TRUE, TRUE),
+(3, "nobody", "nobody", "nobody", "my_contacts", FALSE, FALSE, FALSE),
+(4, "everyone", "my_contacts", "everyone", "everyone", TRUE, TRUE, TRUE),
+(5, "my_contacts", "everyone", "my_contacts", "my_contacts", TRUE, TRUE, TRUE),
+(6, "nobody", "nobody", "nobody", "nobody", FALSE, FALSE, FALSE),
+(7, "everyone", "everyone", "my_contacts", "everyone", TRUE, TRUE, TRUE),
+(8, "my_contacts", "my_contacts", "everyone", "my_contacts", TRUE, TRUE, TRUE),
+(9, "everyone", "nobody", "nobody", "everyone", TRUE, FALSE, TRUE),
+(10, "nobody", "everyone", "my_contacts", "my_contacts", FALSE, TRUE, FALSE),
+(11, "my_contacts", "nobody", "everyone", "everyone", TRUE, FALSE, TRUE),
+(12, "everyone", "my_contacts", "nobody", "my_contacts", TRUE, TRUE, FALSE),
+(13, "nobody", "everyone", "everyone", "everyone", FALSE, TRUE, TRUE),
+(14, "my_contacts", "my_contacts", "my_contacts", "my_contacts", TRUE, TRUE, TRUE),
+(15, "everyone", "nobody", "everyone", "nobody", TRUE, FALSE, FALSE);
+
+INSERT INTO sessions (user_id, device_token, is_active, last_active_at) VALUES
+(1, "dev_token_user_1_mobile", TRUE, NOW()),
+(1, "dev_token_user_1_web", TRUE, NOW() - INTERVAL 1 MINUTE),
+(2, "dev_token_user_2_phone", TRUE, NOW() - INTERVAL 2 MINUTE),
+(2, "dev_token_user_2_tablet", TRUE, NOW() - INTERVAL 3 MINUTE),
+(3, "dev_token_user_3_main", FALSE, NOW() - INTERVAL 1 DAY),
+(4, "dev_token_user_4_deviceA", TRUE, NOW() - INTERVAL 5 MINUTE),
+(4, "dev_token_user_4_deviceB", TRUE, NOW() - INTERVAL 6 MINUTE),
+(5, "dev_token_user_5_primary", TRUE, NOW() - INTERVAL 7 MINUTE),
+(5, "dev_token_user_5_secondary", TRUE, NOW() - INTERVAL 8 MINUTE),
+(6, "dev_token_user_6_single", FALSE, NOW() - INTERVAL 2 DAY),
+(7, "dev_token_user_7_active", TRUE, NOW() - INTERVAL 10 MINUTE),
+(8, "dev_token_user_8_work", TRUE, NOW() - INTERVAL 11 MINUTE),
+(8, "dev_token_user_8_home", TRUE, NOW() - INTERVAL 12 MINUTE),
+(9, "dev_token_user_9_mobile", FALSE, NOW() - INTERVAL 3 DAY),
+(10, "dev_token_user_10_desktop", TRUE, NOW() - INTERVAL 14 MINUTE),
+(10, "dev_token_user_10_laptop", TRUE, NOW() - INTERVAL 15 MINUTE),
+(11, "dev_token_user_11_alpha", TRUE, NOW() - INTERVAL 16 MINUTE),
+(11, "dev_token_user_11_beta", TRUE, NOW() - INTERVAL 17 MINUTE),
+(12, "dev_token_user_12_deviceX", TRUE, NOW() - INTERVAL 18 MINUTE),
+(12, "dev_token_user_12_deviceY", TRUE, NOW() - INTERVAL 19 MINUTE),
+(13, "dev_token_user_13_tablet", TRUE, NOW() - INTERVAL 20 MINUTE),
+(14, "dev_token_user_14_phone", TRUE, NOW() - INTERVAL 21 MINUTE),
+(14, "dev_token_user_14_watch", TRUE, NOW() - INTERVAL 22 MINUTE),
+(15, "dev_token_user_15_main", TRUE, NOW() - INTERVAL 23 MINUTE),
+(15, "dev_token_user_15_secondary", TRUE, NOW() - INTERVAL 24 MINUTE),
+(1, "dev_token_user_1_extra", TRUE, NOW() - INTERVAL 25 MINUTE),
+(2, "dev_token_user_2_extra", TRUE, NOW() - INTERVAL 26 MINUTE),
+(3, "dev_token_user_3_extra", FALSE, NOW() - INTERVAL 4 DAY),
+(4, "dev_token_user_4_extra", TRUE, NOW() - INTERVAL 28 MINUTE),
+(5, "dev_token_user_5_extra", TRUE, NOW() - INTERVAL 29 MINUTE),
+(6, "dev_token_user_6_extra", FALSE, NOW() - INTERVAL 5 DAY),
+(7, "dev_token_user_7_extra", TRUE, NOW() - INTERVAL 31 MINUTE),
+(8, "dev_token_user_8_extra", TRUE, NOW() - INTERVAL 32 MINUTE),
+(9, "dev_token_user_9_extra", FALSE, NOW() - INTERVAL 6 DAY),
+(10, "dev_token_user_10_extra", TRUE, NOW() - INTERVAL 34 MINUTE);
+
+
+-- --- SECTION 3: Insert into CHATS (15 records) ---
+INSERT INTO chats (chat_type, chat_name, chat_picture_url, chat_description, public_link, creator_id) VALUES
+("private", "احمد", NULL, NULL, NULL, 1),
+("private", "زياد", NULL, NULL, NULL, 2),
+("private", "حفيظ", NULL, NULL, NULL, 3),
+("group", "Project Alpha", "http://example.com/c/project_alpha.jpg", "Team working on Project Alpha.", NULL, 1),
+("group", "Gaming Squad", "http://example.com/c/gaming_squad.jpg", "For all things gaming.", NULL, 3),
+("group", "Foodie Friends", "http://example.com/c/foodie_friends.jpg", "Sharing delicious recipes and restaurant finds.", NULL, 5),
+("channel", "Daily Tech News", "http://example.com/c/tech_news.jpg", "Latest updates in technology.", "daily_tech_news_channel", 2),
+("channel", "Art Inspiration", "http://example.com/c/art_insp.jpg", "Curated art inspiration.", "art_inspiration_channel", 4),
+("channel", "Travel Diaries", "http://example.com/c/travel_diaries.jpg", "Stories and photos from travels around the world.", "travel_diaries_channel", 9),
+("private", NULL, NULL, NULL, NULL, 4),
+("private", NULL, NULL, NULL, NULL, 5),
+("group", "Book Club Classics", "http://example.com/c/book_club.jpg", "Discussing classic literature.", NULL, 6),
+("channel", "Workout Tips", "http://example.com/c/workout.jpg", "Tips and routines for fitness.", "workout_tips_channel", 7),
+("group", "Music Production", "http://example.com/c/music_prod.jpg", "Discussing music production techniques.", NULL, 8),
+("channel", "Learning Hub", "http://example.com/c/learning_hub.jpg", "Resources for continuous learning.", "learning_hub_channel", 13);
+
+
+-- --- SECTION 4: Insert into MEDIA (15 records) ---
+INSERT INTO media (file_path_or_url, thumbnail_url, file_size, media_type, uploaded_by_user_id) VALUES
+("http://example.com/media/user1_pic1.jpg", "http://example.com/media/thumb/user1_pic1.jpg", 150000, "image/jpeg", 1),
+("http://example.com/media/user2_video1.mp4", "http://example.com/media/thumb/user2_video1.jpg", 5000000, "video/mp4", 2),
+("http://example.com/media/user3_meme.gif", "http://example.com/media/thumb/user3_meme.gif", 200000, "image/gif", 3),
+("http://example.com/media/user4_art.png", "http://example.com/media/thumb/user4_art.png", 300000, "image/png", 4),
+("http://example.com/media/user5_recipe.pdf", NULL, 80000, "application/pdf", 5),
+("http://example.com/media/user6_quote.txt", NULL, 5000, "text/plain", 6),
+("http://example.com/media/user7_mountain.jpeg", "http://example.com/media/thumb/user7_mountain.jpg", 250000, "image/jpeg", 7),
+("http://example.com/media/user8_track.mp3", NULL, 3000000, "audio/mpeg", 8),
+("http://example.com/media/user9_city.jpg", "http://example.com/media/thumb/user9_city.jpg", 180000, "image/jpeg", 9),
+("http://example.com/media/user10_story.docx", NULL, 120000, "application/document", 10),
+("http://example.com/media/user11_blueprint.svg", NULL, 60000, "image/svg+xml", 11),
+("http://example.com/media/user12_diagram.png", "http://example.com/media/thumb/user12_diagram.png", 90000, "image/png", 12),
+("http://example.com/media/user13_tutorial.mp4", "http://example.com/media/thumb/user13_tutorial.jpg", 7000000, "video/mp4", 13),
+("http://example.com/media/user14_advice.txt", NULL, 4000, "text/plain", 14),
+("http://example.com/media/user15_adventure.jpg", "http://example.com/media/thumb/user15_adventure.jpg", 220000, "image/jpeg", 15);
+
+
+-- --- SECTION 5: Insert into CHAT_PARTICIPANTS (35+ records) ---
+INSERT INTO chat_participants (chat_id, user_id, role, unread_count) VALUES
+(1, 1, "member", 0), (1, 2, "member", 0),
+(2, 2, "member", 0), (2, 3, "member", 0),
+(3, 3, "member", 0), (3, 4, "member", 0),
+(10, 4, "member", 0), (10, 5, "member", 0),
+(11, 5, "member", 0), (11, 6, "member", 0),
+(4, 1, "creator", 0), (4, 2, "member", 5), (4, 7, "admin", 0),
+(5, 3, "creator", 0), (5, 8, "member", 2), (5, 12, "member", 0),
+(6, 5, "creator", 0), (6, 10, "member", 0), (6, 11, "member", 1),
+(7, 2, "creator", 0), (7, 1, "subscriber", 0), (7, 3, "subscriber", 0), (7, 4, "subscriber", 0), (7, 5, "subscriber", 0), (7, 6, "subscriber", 0), (7, 7, "subscriber", 0), (7, 8, "subscriber", 0), (7, 9, "subscriber", 0), (7, 10, "subscriber", 0), (7, 11, "subscriber", 0), (7, 12, "subscriber", 0), (7, 13, "subscriber", 0), (7, 14, "subscriber", 0), (7, 15, "subscriber", 0),
+(8, 4, "creator", 0), (8, 1, "subscriber", 0), (8, 3, "subscriber", 0), (8, 5, "subscriber", 0),
+(9, 9, "creator", 0), (9, 10, "subscriber", 0), (9, 11, "subscriber", 0),
+(12, 6, "creator", 0), (12, 1, "member", 0), (12, 13, "member", 0),
+(13, 7, "creator", 0), (13, 2, "subscriber", 0), (13, 14, "subscriber", 0),
+(14, 8, "creator", 0), (14, 15, "member", 0), (14, 1, "member", 0),
+(15, 13, "creator", 0), (15, 4, "subscriber", 0), (15, 6, "subscriber", 0);
+
+
+-- --- SECTION 6: Insert into MESSAGES (35 records) ---
+INSERT INTO messages (chat_id, sender_id, content, message_type, media_id, sent_at) VALUES
+(1, 1, "Hey Beta, long time no see! How are you?", "text", NULL, NOW() - INTERVAL 30 MINUTE),
+(1, 2, "Alpha! Good to hear from you. All well here. How about you?", "text", NULL, NOW() - INTERVAL 29 MINUTE),
+(1, 1, "Just wanted to share this awesome pic.", "text", NULL, NOW() - INTERVAL 28 MINUTE),
+(1, 1, NULL, "image", 1, NOW() - INTERVAL 27 MINUTE),
+(4, 1, "Team, Project Alpha update meeting tomorrow at 10 AM.", "text", NULL, NOW() - INTERVAL 25 MINUTE),
+(4, 2, "Understood. I will prepare the dev report.", "text", NULL, NOW() - INTERVAL 24 MINUTE),
+(4, 7, "Great, I will bring the UI mockups.", "text", NULL, NOW() - INTERVAL 23 MINUTE),
+(4, 1, "Please review the attached document.", "text", NULL, NOW() - INTERVAL 22 MINUTE),
+(4, 1, NULL, "file", 5, NOW() - INTERVAL 21 MINUTE),
+(5, 3, "Who is up for some gaming tonight?", "text", NULL, NOW() - INTERVAL 20 MINUTE),
+(5, 8, "Me! What are we playing?", "text", NULL, NOW() - INTERVAL 19 MINUTE),
+(5, 12, "I'm in if it's not too late.", "text", NULL, NOW() - INTERVAL 18 MINUTE),
+(5, 3, "Check out this new game trailer!", "text", NULL, NOW() - INTERVAL 17 MINUTE),
+(5, 3, NULL, "video", 2, NOW() - INTERVAL 16 MINUTE),
+(7, 2, "Breaking: New AI breakthrough announced!", "text", NULL, NOW() - INTERVAL 15 MINUTE),
+(7, 2, "Link to the full article: [https://tech.news/ai-breakthrough](https://tech.news/ai-breakthrough)", "text", NULL, NOW() - INTERVAL 14 MINUTE),
+(7, 2, "Latest smartphone models review. 📱", "text", NULL, NOW() - INTERVAL 13 MINUTE),
+(7, 2, "Don''t miss our weekly tech podcast!", "text", NULL, NOW() - INTERVAL 12 MINUTE),
+(6, 5, "Just tried an amazing new recipe!", "text", NULL, NOW() - INTERVAL 11 MINUTE),
+(6, 10, "Oh, share it!", "text", NULL, NOW() - INTERVAL 10 MINUTE),
+(6, 11, "Me too, please!", "text", NULL, NOW() - INTERVAL 9 MINUTE),
+(6, 5, "Here is the recipe.", "text", NULL, NOW() - INTERVAL 8 MINUTE),
+(6, 5, NULL, "file", 5, NOW() - INTERVAL 7 MINUTE),
+(8, 4, "New daily art inspiration: Abstract landscapes.", "text", NULL, NOW() - INTERVAL 6 MINUTE),
+(8, 4, NULL, "image", 4, NOW() - INTERVAL 5 MINUTE),
+(1, 2, "Glad to hear that, Alpha! What are you up to?", "text", NULL, NOW() - INTERVAL 4 MINUTE),
+(4, 7, "I'll send out the meeting invite now.", "text", NULL, NOW() - INTERVAL 3 MINUTE),
+(5, 12, "Okay, I'll be online in 15 mins.", "text", NULL, NOW() - INTERVAL 2 MINUTE),
+(7, 2, "Don''t forget to subscribe to our newsletter!", "text", NULL, NOW() - INTERVAL 1 MINUTE),
+(1, 1, "Just finished a big project, chilling now.", "text", NULL, NOW()),
+(15, 13, "Welcome to the Learning Hub!", "text", NULL, NOW() - INTERVAL 10 MINUTE),
+(15, 13, "We''ll be sharing resources on various topics.", "text", NULL, NOW() - INTERVAL 9 MINUTE),
+(14, 8, "Anyone has tips for mixing vocals?", "text", NULL, NOW() - INTERVAL 8 MINUTE),
+(12, 6, "Our next book for the club is \"1984\".", "text", NULL, NOW() - INTERVAL 7 MINUTE);
+
+
+-- --- SECTION 7: Insert into CONTACTS (35 records) and BLOCKED_USERS (35 records) ---
+INSERT INTO contacts (user_id, contact_user_id, alias_name) VALUES
+(1, 2, "BobDev"), (1, 3, NULL), (1, 4, "Deltie"), (1, 5, NULL), (1, 6, "Zeta"),
+(2, 1, "AlphaUser"), (2, 3, NULL), (2, 4, NULL), (2, 5, "Epsilon"), (2, 7, NULL),
+(3, 1, NULL), (3, 2, NULL), (3, 5, NULL), (3, 6, NULL), (3, 8, NULL),
+(4, 1, NULL), (4, 2, NULL), (4, 7, "Hiker"), (4, 8, NULL), (4, 9, NULL),
+(5, 1, NULL), (5, 2, NULL), (5, 3, NULL), (5, 10, NULL), (5, 11, NULL),
+(6, 1, NULL), (6, 7, NULL), (6, 8, NULL), (6, 9, NULL), (6, 10, NULL),
+(7, 1, NULL), (7, 2, NULL), (7, 3, NULL), (7, 4, NULL), (7, 5, NULL);
+
+INSERT INTO blocked_users (blocker_id, blocked_id) VALUES
+(1, 15), (1, 14), (1, 13), (1, 12), (1, 11), (1, 10), (1, 9),
+(2, 15), (2, 14), (2, 13), (2, 12), (2, 11), (2, 10), (2, 9),
+(3, 1), (3, 2), (3, 4), (3, 5), (3, 6), (3, 7), (3, 8),
+(4, 3), (4, 5), (4, 6), (4, 7), (4, 8), (4, 9), (4, 10),
+(5, 1), (5, 2), (5, 3), (5, 4), (5, 6), (5, 7), (5, 8),
+(6, 1), (6, 2), (6, 3), (6, 4);
+
+
+-- --- SECTION 8: Insert into NOTIFICATIONS (35 records) ---
+INSERT INTO notifications (recipient_user_id, message, event_type, related_chat_id, is_read, timestamp) VALUES
+(1, "New message from Beta Dev in Project Alpha.", "new_message", 4, FALSE, NOW() - INTERVAL 10 MINUTE),
+(1, "You were added to Foodie Friends group.", "group_add", 6, FALSE, NOW() - INTERVAL 9 MINUTE),
+(2, "Alpha User just posted a new image.", "new_media_post", 1, FALSE, NOW() - INTERVAL 8 MINUTE),
+(2, "New tech update available in Daily Tech News.", "channel_update", 7, FALSE, NOW() - INTERVAL 7 MINUTE),
+(3, "New message from Delta Artist in Art Inspiration.", "new_message", 8, TRUE, NOW() - INTERVAL 6 MINUTE),
+(3, "Your friend Alpha User is now online.", "user_online", NULL, FALSE, NOW() - INTERVAL 5 MINUTE),
+(4, "New message from Charlie Brown in Private Chat.", "new_message", 3, FALSE, NOW() - INTERVAL 4 MINUTE),
+(5, "Epsilon Chef: Recipe for Veggie Pizza uploaded.", "new_media_post", 6, FALSE, NOW() - INTERVAL 3 MINUTE),
+(6, "Zeta Reader: New book added to Book Club Classics.", "chat_update", 12, TRUE, NOW() - INTERVAL 2 MINUTE),
+(7, "Eta Hiker: Shared a new trail photo.", "new_media_post", 13, FALSE, NOW() - INTERVAL 1 MINUTE),
+(8, "Theta Music: New track released!", "new_media_post", 14, FALSE, NOW()),
+(9, "Iota Traveler: Shared new travel story.", "new_media_post", 9, TRUE, NOW() - INTERVAL 15 MINUTE),
+(10, "Kappa Writer: Has new article for review.", "new_media_post", NULL, FALSE, NOW() - INTERVAL 14 MINUTE),
+(11, "Lambda Builder: Started a new discussion in Project Alpha.", "new_message", 4, FALSE, NOW() - INTERVAL 13 MINUTE),
+(12, "Mu Innovator: Invited you to a new private chat.", "private_chat_invite", 10, FALSE, NOW() - INTERVAL 12 MINUTE),
+(13, "Nu Learner: Posted a question in Learning Hub.", "new_message", 15, FALSE, NOW() - INTERVAL 11 MINUTE),
+(14, "Xi Mentor: Sent you a private message.", "new_message", NULL, FALSE, NOW() - INTERVAL 10 MINUTE),
+(15, "Omicron Explorer: Is now online.", "user_online", NULL, FALSE, NOW() - INTERVAL 9 MINUTE),
+(1, "Project Alpha: New file uploaded by Delta Artist.", "new_media_post", 4, FALSE, NOW() - INTERVAL 8 MINUTE),
+(2, "Gaming Squad: New game night poll is up.", "chat_update", 5, FALSE, NOW() - INTERVAL 7 MINUTE),
+(3, "Daily Tech News: Live stream starting soon!", "channel_update", 7, FALSE, NOW() - INTERVAL 6 MINUTE),
+(4, "New message from Gamma Gamer in Gaming Squad.", "new_message", 5, FALSE, NOW() - INTERVAL 5 MINUTE),
+(5, "Foodie Friends: New recipe shared by Alice Smith.", "new_media_post", 6, FALSE, NOW() - INTERVAL 4 MINUTE),
+(6, "Book Club Classics: Discussion on Chapter 3.", "new_message", 12, TRUE, NOW() - INTERVAL 3 MINUTE),
+(7, "Workout Tips: New video uploaded!", "channel_update", 13, FALSE, NOW() - INTERVAL 2 MINUTE),
+(8, "Music Production: New sample pack available.", "new_media_post", 14, FALSE, NOW() - INTERVAL 1 MINUTE),
+(9, "Travel Diaries: New photo album posted.", "new_media_post", 9, TRUE, NOW()),
+(10, "Learning Hub: Weekly digest is out.", "channel_update", 15, FALSE, NOW() - INTERVAL 30 MINUTE),
+(11, "You have a new contact request from Alpha User.", "contact_request", NULL, FALSE, NOW() - INTERVAL 29 MINUTE),
+(12, "Your message to Charlie Brown was delivered.", "message_delivered", 3, TRUE, NOW() - INTERVAL 28 MINUTE),
+(13, "New member joined Project Alpha.", "group_add", 4, FALSE, NOW() - INTERVAL 27 MINUTE),
+(14, "Your contact Beta Dev is now online.", "user_online", NULL, FALSE, NOW() - INTERVAL 26 MINUTE),
+(15, "New message from Alpha User.", "new_message", 1, FALSE, NOW() - INTERVAL 25 MINUTE),
+(1, "Music Production: Live session announced.", "channel_update", 14, FALSE, NOW() - INTERVAL 24 MINUTE),
+(2, "Art Inspiration: New exhibit featured.", "channel_update", 8, FALSE, NOW() - INTERVAL 23 MINUTE);
+
+
+-- Re-enable foreign key checks after all inserts are done
+SET FOREIGN_KEY_CHECKS = 1;
