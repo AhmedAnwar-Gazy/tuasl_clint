@@ -1,12 +1,12 @@
-package orgs.clint_pages.controllers;
+package orgs.tuasl_clint.controllers;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
-import orgs.clint_pages.models2.*;
-import orgs.clint_pages.utils.DatabaseConnection;
-import orgs.clint_pages.utils.Navigation;
+import orgs.tuasl_clint.models2.*;
+import orgs.tuasl_clint.utils.DatabaseConnection;
+import orgs.tuasl_clint.utils.Navigation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -63,7 +63,7 @@ public class ChatController {
     private TargetDataLine line;
 
     // Define the folder where recordings should be saved
-    private final String RECORDING_FOLDER = "E:\therdyear\\java2\\mywork\\clint_pages2\\src\\main\\resources\\orgs\\clint_pages\\voiceNote";
+    private final String RECORDING_FOLDER = "src/main/resources/orgs/tuasl_clint/voiceNote/";
 
 
     // Dummy data for chat list
@@ -156,7 +156,7 @@ public class ChatController {
     private void loadMessages(String messageText) {
         try {
             // Create an FXMLLoader instance
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/clint_pages/fxml/sendMessageItem.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/sendMessageItem.fxml"));
 
             // Load the FXML file. This returns the root node of UserCard.fxml.
             Parent userCardNode = loader.load();

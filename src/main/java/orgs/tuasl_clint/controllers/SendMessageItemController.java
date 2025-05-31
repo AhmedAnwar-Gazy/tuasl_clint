@@ -1,4 +1,4 @@
-package orgs.clint_pages.controllers;
+package orgs.tuasl_clint.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -46,7 +46,7 @@ public class SendMessageItemController {
     private void loadAudioMessages(String messageText) {
         try {
             // Create an FXMLLoader instance
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/clint_pages/fxml/audioItem.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/audioItem.fxml"));
 
             // Load the FXML file. This returns the root node of UserCard.fxml.
             Parent mesiaCard = loader.load();

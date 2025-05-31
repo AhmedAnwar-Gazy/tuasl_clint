@@ -1,6 +1,6 @@
-package orgs.clint_pages.controllers;
+package orgs.tuasl_clint.controllers;
 
-import orgs.clint_pages.utils.Navigation;
+import orgs.tuasl_clint.utils.Navigation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;

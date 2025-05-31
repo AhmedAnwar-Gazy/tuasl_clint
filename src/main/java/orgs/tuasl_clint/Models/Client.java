@@ -1,4 +1,4 @@
-package orgs.clint_pages.Models;
+package orgs.tuasl_clint.Models;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

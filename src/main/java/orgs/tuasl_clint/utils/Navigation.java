@@ -1,6 +1,6 @@
-package orgs.clint_pages.utils;
+package orgs.tuasl_clint.utils;
 
-import orgs.clint_pages.MainApp ;
+import orgs.tuasl_clint.MainApp ;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,7 +31,7 @@ public class Navigation {
         }
         try {
             // Construct the full path relative to the resources folder
-            String fxmlPath = "/orgs/clint_pages/fxml/" + fxmlFile;
+            String fxmlPath = "/orgs/tuasl_clint/fxml/" + fxmlFile;
             URL fxmlUrl = Navigation.class.getResource(fxmlPath);
             if (fxmlUrl == null) {
                 System.err.println("Cannot find FXML file: " + fxmlPath);
@@ -44,7 +44,7 @@ public class Navigation {
             if (scene == null) {
                 scene = new Scene(root);
                 // Apply stylesheet globally when the first scene is created
-                String cssPath = "/orgs/clint_pages/css/styles.css";
+                String cssPath = "/orgs/tuasl_clint/css/styles.css";
                 URL cssUrl = Navigation.class.getResource(cssPath);
                 if(cssUrl != null) {
                     scene.getStylesheets().add(cssUrl.toExternalForm());
@@ -54,7 +54,7 @@ public class Navigation {
                 primaryStage.setScene(scene);
             } else {
                 // Apply stylesheet if switching scenes (ensure it persists)
-                String cssPath = "/orgs/clint_pages/css/styles.css";
+                String cssPath = "/orgs/tuasl_clint/css/styles.css";
                 URL cssUrl = Navigation.class.getResource(cssPath);
                 if(cssUrl != null && scene.getStylesheets().isEmpty()) {
                     scene.getStylesheets().add(cssUrl.toExternalForm());

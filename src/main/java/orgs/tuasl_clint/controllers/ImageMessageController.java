@@ -1,4 +1,4 @@
-package orgs.clint_pages.controllers;
+package orgs.tuasl_clint.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,7 +20,7 @@ public class ImageMessageController implements Initializable {
     // Default image path for demonstration
     // IMPORTANT: Replace this with a valid path to an image file (e.g., in src/main/resources)
     // Example: "file:src/main/resources/default_image.jpg" or "https://example.com/image.png"
-    private String defaultImagePath = "file:src/main/resources/orgs/clint_pages/images/R.png";
+    private String defaultImagePath = "file:src/main/resources/orgs/tuasl_clint/images/R.png";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

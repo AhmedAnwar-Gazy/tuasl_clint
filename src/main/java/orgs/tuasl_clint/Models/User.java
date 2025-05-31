@@ -1,4 +1,4 @@
-package orgs.clint_pages.Models;
+package orgs.tuasl_clint.Models;
 
 import javax.net.ssl.SSLEngineResult;
 import java.util.ArrayList;

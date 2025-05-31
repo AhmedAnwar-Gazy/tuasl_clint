@@ -1,9 +1,9 @@
-package orgs.clint_pages;
+package orgs.tuasl_clint;
 
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import orgs.clint_pages.utils.Navigation;
+import orgs.tuasl_clint.utils.Navigation;
 
 import java.io.IOException;
 

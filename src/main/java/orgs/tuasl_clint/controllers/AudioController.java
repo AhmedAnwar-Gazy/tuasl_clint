@@ -1,4 +1,4 @@
-package orgs.clint_pages.controllers;
+package orgs.tuasl_clint.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,7 +37,7 @@ public class AudioController implements Initializable {
     // --- IMPORTANT: Set this to the actual path of your audio file ---
     // For testing, place an audio.mp3 file in your project's root or a known path.
     // Example: "C:/Users/YourUser/Music/audio.mp3" or "src/main/resources/audio.mp3"
-    private String defaultAudioFilePath = "src/main/resources/orgs/clint_pages/voiceNote/Clean_Code.mp3"; // Adjust this path!
+    private String defaultAudioFilePath = "src/main/resources/orgs/tuasl_clint/voiceNote/Clean_Code.mp3"; // Adjust this path!
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

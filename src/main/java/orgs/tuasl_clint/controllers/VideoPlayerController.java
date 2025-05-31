@@ -1,4 +1,4 @@
-package orgs.clint_pages.controllers;
+package orgs.tuasl_clint.controllers;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -65,7 +65,7 @@ public class VideoPlayerController implements Initializable {
 
     // --- IMPORTANT: Set this to the actual path of your video file ---
     // For testing, place a video file (e.g., sample.mp4) in your project's resources folder.
-    private String defaultVideoFilePath = "src/main/resources/orgs/clint_pages/videos/goBack.mp4"; // Adjust this path!
+    private String defaultVideoFilePath = "src/main/resources/orgs/tuasl_clint/videos/goBack.mp4"; // Adjust this path!
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

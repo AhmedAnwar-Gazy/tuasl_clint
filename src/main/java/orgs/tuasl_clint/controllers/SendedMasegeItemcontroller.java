@@ -1,4 +1,4 @@
-package orgs.clint_pages.controllers;
+package orgs.tuasl_clint.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

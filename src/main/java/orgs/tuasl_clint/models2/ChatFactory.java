@@ -1,4 +1,4 @@
-package orgs.clint_pages.models2;
+package orgs.tuasl_clint.models2;
 
 import java.math.BigInteger;
 import java.sql.ResultSet;

@@ -1,4 +1,4 @@
-package orgs.clint_pages.controllers;
+package orgs.tuasl_clint.controllers;
 
 
 import javafx.fxml.FXML;
@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import orgs.clint_pages.utils.Navigation;
+import orgs.tuasl_clint.utils.Navigation;
 
 import java.io.IOException;
 

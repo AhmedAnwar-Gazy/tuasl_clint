@@ -1,4 +1,4 @@
-package orgs.clint_pages.Models;
+package orgs.tuasl_clint.Models;
 
 class Message
 {
