@@ -52,6 +52,26 @@ public class ChatController {
     private Button shareButton; //Added FXML annotation
     @FXML
     private VBox areaOfEmojis; //Added FXML annotation
+    @FXML
+    private Button audioCallButton;
+    @FXML
+    private Button menuButton;
+    @FXML
+    private Button videoCallButton;
+
+
+
+    @FXML
+    void handleAudioCallButtonAction(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleEmojiButtonAction(ActionEvent event) {
+
+    }
+
+
 
     @FXML
     private HBox chatListItem;
@@ -333,6 +353,21 @@ public class ChatController {
             System.err.println("An error occurred during database operations: " + e.getMessage());
         }
     }
+
+
+    @FXML
+    public void handleSendVoiceButtonAction(ActionEvent event) {
+
+    }
+
+
+
+    @FXML
+    public void handleVideoCallButtonAction(ActionEvent event) {
+
+    }
+
+
 }
 
 
