@@ -412,6 +412,26 @@ public class ChatController {
 
     @FXML
     public void handleAudioCallButtonAction(ActionEvent event) {
+        String selectedUser = chatListView.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
+            return;
+        }
+
+        try {
+
+            Socket audioSocket = new Socket("localhost", 6001); // منفذ الصوت
+            AudioCallWindow audioCallWindow = new AudioCallWindow("📞 مع " + selectedUser);
+            AudioSender audioSender = new AudioSender();
+            audioSender.start(audioSocket);
+
+            AudioReceiver audioReceiver = new AudioReceiver();
+            audioReceiver.start(audioSocket);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("❌ فشل الاتصال بمكالمة الصوت");
+        }
 
     }
 
