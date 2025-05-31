@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToWidth="true" styleClass="root-pane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.SettingsController">
+    <content>
+        <VBox alignment="TOP_CENTER" spacing="20.0">
+            <padding>
+                <Insets bottom="30.0" left="50.0" right="50.0" top="30.0" />
+            </padding>
+
+            <Label styleClass="title-label" text="Settings">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+
+            <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="400">
+                <Label text="Notifications:" styleClass="section-label"/>
+                <CheckBox fx:id="enableNotificationsCheckbox" text="Enable Desktop Notifications" selected="true"/>
+                <CheckBox fx:id="playSoundCheckbox" text="Play notification sound"/>
+            </VBox>
+
+            <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="400">
+                <Label text="Appearance:" styleClass="section-label"/>
+                <Label text="(Theme options would go here)"/>
+            </VBox>
+
+            <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="400">
+                <Label text="Account:" styleClass="section-label"/>
+                <Button text="Change Password..." styleClass="secondary-button"/>
+                <Button text="Log Out" styleClass="danger-button"/>
+            </VBox>
+
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButtonAction" styleClass="action-button" text="Back to Chat" maxWidth="400"/>
+        </VBox>
+    </content>
+</ScrollPane>

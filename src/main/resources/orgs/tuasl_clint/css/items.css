@@ -1,0 +1,126 @@
+/* Base styles for the container that holds the message bubble */
+.message-bubble-container {
+    padding: 5px 10px; /* Padding around each message bubble */
+    max-width: 70%; /* Limit bubble width */
+    -fx-alignment: CENTER_LEFT; /* Default alignment for incoming messages */
+}
+
+/* Style for the message bubble itself (the background shape) */
+.message-bubble {
+    padding: 8px 10px;
+    -fx-background-radius: 15 15 15 5; /* Top-left, Top-right, Bottom-right, Bottom-left radii (for incoming) */
+    -fx-background-color: #E3E3E3; /* Light grey background for incoming */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 1); /* Subtle shadow */
+}
+
+/* Style for outgoing message bubbles (applied using a different style class in code) */
+.message-bubble-self {
+    -fx-background-radius: 15 15 5 15; /* Radii for outgoing */
+    -fx-background-color: #DCF8C6; /* Light green background for outgoing */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 1); /* Subtle shadow */
+}
+
+/* Style for the sender name label (in group chats) */
+.sender-name-label {
+    -fx-font-size: 0.9em;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2b5876; /* Telegram-like blue color */
+    -fx-padding: 0 0 2 0; /* Small padding at the bottom */
+}
+
+/* Style for the forwarded label */
+.forwarded-label {
+    -fx-font-size: 0.85em;
+    -fx-text-fill: #5a5a5a; /* Darker grey */
+    -fx-font-style: italic;
+    -fx-padding: 0 0 3 0; /* Small padding at the bottom */
+}
+
+/* Style for the message text */
+.message-text {
+    /* Basic text styling, wrapping is handled by TextFlow/Label properties */
+    -fx-fill: #1d1d1d; /* Dark text color */
+    -fx-font-size: 1.0em;
+}
+
+/* Container for timestamp and status */
+.time-status-container {
+    -fx-alignment: BOTTOM_RIGHT; /* Align content to bottom right */
+    -fx-padding: 2 0 0 10; /* Padding top and left for spacing from text/media */
+}
+
+/* Style for the timestamp label */
+.timestamp-label {
+    -fx-font-size: 0.75em; /* Smaller font size */
+    -fx-text-fill: #656565; /* Greyish text color */
+}
+
+/* Style for the read status icon (if using a Label with characters) */
+.read-status-label {
+     -fx-font-size: 0.75em; /* Match timestamp font size */
+     -fx-text-fill: #656565; /* Default grey for sent/delivered */
+     -fx-padding: 0 0 0 2; /* Small spacing from timestamp */
+}
+
+/* Style for read status when read (example color) */
+.read-status-label.read {
+     -fx-text-fill: #4CAF50; /* Green for read */
+}
+
+/* Style for the media container */
+.media-container {
+    -fx-padding: 5;
+    /* Add borders or background if needed for clarity */
+}
+
+/* Styles for Voice Message Controls */
+.voice-note-controls-container {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 8; /* Spacing between controls */
+}
+
+.play-pause-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-graphic-text-gap: 0; /* Remove space between graphic and text if any */
+}
+
+.play-pause-icon {
+     -fx-fill: #2b5876; /* Telegram blue for icons */
+}
+
+/* Placeholder style for the waveform */
+.waveform-placeholder {
+    -fx-background-color: #b0b0b0; /* Grey color for the silent part */
+    -fx-pref-height: 25; /* Fixed height for the waveform area */
+    -fx-min-width: 100; /* Minimum width */
+    -fx-max-width: 250; /* Maximum width */
+    -fx-background-radius: 5;
+}
+
+/* Style for the filled part of the waveform (requires Java code to apply) */
+.waveform-placeholder.played {
+    -fx-background-color: #2b5876; /* Telegram blue for played part */
+}
+
+
+.current-time-label {
+    -fx-font-size: 0.8em;
+    -fx-text-fill: #1d1d1d; /* Darker text */
+}
+
+/* Style for the circular button background */
+.circular-button-background {
+    -fx-fill: #2b5876; /* Telegram blue */
+}
+
+/* Style for the circular options button (invisible background) */
+.options-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Style for the icon inside the circular button */
+.options-icon {
+    -fx-fill: white; /* White icon on blue background */
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.scene.shape.*?>
+
+<StackPane fx:id="videoPlayerContainer" alignment="BOTTOM_CENTER" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.VideoPlayerController"> <MediaView fx:id="mediaView" fitHeight="400.0" fitWidth="600.0" StackPane.alignment="CENTER" />
+
+    <VBox fx:id="controlsOverlay" alignment="BOTTOM_CENTER" spacing="5" style="-fx-background-color: rgba(0, 0, 0, 0.4); -fx-padding: 10;">
+        <padding>
+            <Insets bottom="5" left="10" right="10" top="5" />
+        </padding>
+
+        <Slider fx:id="progressBar" max="100" min="0" HBox.hgrow="ALWAYS" />
+
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <StackPane fx:id="playPauseButtonContainer" maxHeight="30" maxWidth="30" minHeight="30" minWidth="30">
+                <Circle radius="15" style="-fx-fill: transparent;" /> <Button fx:id="playPauseButton" prefHeight="30" prefWidth="30" style="-fx-background-color: transparent;" />
+            </StackPane>
+
+            <Label fx:id="currentTimeLabel" style="-fx-text-fill: white; -fx-font-size: 12px;" text="00:00" />
+            <Label style="-fx-text-fill: white; -fx-font-size: 12px;" text="/" />
+            <Label fx:id="totalTimeLabel" style="-fx-text-fill: white; -fx-font-size: 12px;" text="00:00" />
+
+            <HBox alignment="CENTER_RIGHT" spacing="5" HBox.hgrow="ALWAYS">
+                <StackPane alignment="CENTER" maxHeight="30" maxWidth="30" minHeight="30" minWidth="30">
+                    <SVGPath fx:id="volumeIcon" content="M14.667 0v2.75l-4.417 4.417h-5.583v6.667h-4.417v-13.333h4.417l5.583-4.417v2.75zm0 16.583v2.75l-4.417-4.417h-5.583v-6.667h-4.417v13.333h4.417l5.583 4.417v-2.75z" fill="white" scaleX="0.5" scaleY="0.5" /> <Button fx:id="volumeButton" prefHeight="30" prefWidth="30" style="-fx-background-color: transparent;" />
+                </StackPane>
+                <Slider fx:id="volumeSlider" prefWidth="80" value="100" /> <StackPane alignment="CENTER" maxHeight="30" maxWidth="30" minHeight="30" minWidth="30">
+                <SVGPath fx:id="fullscreenIcon" content="M0 0h24v24H0zM10 4v2h4V4H10zm-4 4v2H4V8h2zm8 8v2h-4v-2h4zm-2-4v2h2v-2h-2zM4 14v2h2v-2H4zm14-2v2h2v-2h-2zM10 18v2h4v-2h-4zm8-6h2v-2h-2v2z" fill="white" scaleX="0.6" scaleY="0.6" /> <Button fx:id="fullscreenButton" prefHeight="30" prefWidth="30" style="-fx-background-color: transparent;" />
+            </StackPane>
+            </HBox>
+        </HBox>
+    </VBox>
+
+    <StackPane fx:id="centerPlayButtonContainer" alignment="CENTER" maxHeight="60" maxWidth="60" minHeight="60" minWidth="60">
+        <Circle radius="21.0" style="-fx-fill: rgba(30, 136, 229, 0.8);" /> <SVGPath fx:id="centerPlayIcon" content="M -10 -15 L 20 0 L -10 15 Z" fill="WHITE" /> <Button fx:id="centerPlayButton" prefHeight="39.0" prefWidth="48.0" style="-fx-background-color: transparent;" />
+    </StackPane>
+
+</StackPane>

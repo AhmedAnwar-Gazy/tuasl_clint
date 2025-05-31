@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="254.0" prefWidth="459.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #770000;">
+         <children>
+            <Label prefHeight="49.0" prefWidth="460.0" text="sender" />
+            <Label prefHeight="49.0" prefWidth="135.0" text="sender" />
+         </children>
+      </HBox>
+      <HBox prefHeight="168.0" prefWidth="459.0" style="-fx-background-color: #007700;" />
+      <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #000077;">
+         <children>
+            <TextFlow prefHeight="67.0" prefWidth="459.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="This is the message text content.">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Text>
+               </children>
+            </TextFlow>
+         </children>
+      </HBox>
+      <HBox prefHeight="44.0" prefWidth="459.0" style="-fx-background-color: #777700;">
+         <children>
+            <Label prefHeight="87.0" prefWidth="137.0" text="5:12 PM" />
+            <Label prefHeight="87.0" prefWidth="137.0" text="ddffd" />
+            <Label prefHeight="87.0" prefWidth="137.0" text="Label" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

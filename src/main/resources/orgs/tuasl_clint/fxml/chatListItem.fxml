@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<HBox fx:id="HboxAllProfile" alignment="CENTER_LEFT" onMouseClicked="#GoToChat" prefHeight="68.0" prefWidth="298.0" spacing="15.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.ChatListItemController">
+    <padding>
+        <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+    </padding>
+    <ImageView fx:id="profilePictureImageView" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+        <clip>
+            <Circle centerX="25.0" centerY="25.0" radius="25.0" />
+        </clip>
+    </ImageView>
+    <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+        <Label fx:id="nameLabel" text="Contact/Group Name">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label fx:id="lastMessageLabel" text="Last message snippet..." textFill="#616161">
+            <font>
+                <Font size="12.0" />
+            </font>
+            <wrapText>true</wrapText>
+            <textOverrun>ELLIPSIS</textOverrun>
+        </Label>
+        <Label fx:id="statusLabel" managed="false" prefHeight="4.0" prefWidth="17.0" text="online" textFill="#008000" visible="false" />
+    </VBox>
+    <VBox alignment="TOP_RIGHT" spacing="5.0">
+        <Label fx:id="timestampLabel" text="12:34 PM" textFill="#616161">
+            <font>
+                <Font size="11.0" />
+            </font>
+        </Label>
+        <StackPane fx:id="unreadCountPane" alignment="CENTER" managed="false" style="-fx-background-color: #f03d3d; -fx-background-radius: 10;" visible="false">
+            <padding>
+                <Insets left="5.0" right="5.0" />
+            </padding>
+            <Label fx:id="unreadCountLabel" text="3" textFill="white">
+                <font>
+                    <Font name="System Bold" size="11.0" />
+                </font>
+            </Label>
+        </StackPane>
+    </VBox>
+</HBox>

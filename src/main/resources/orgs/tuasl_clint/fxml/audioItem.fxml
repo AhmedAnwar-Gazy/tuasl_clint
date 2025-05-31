@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.SVGPath?> <HBox alignment="CENTER_LEFT" maxWidth="400" spacing="10" style="-fx-background-color: #e0f2f7; -fx-background-radius: 15;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.AudioController" >
+    <padding>
+        <Insets bottom="10" left="15" right="15" top="10" />
+    </padding>
+
+    <StackPane fx:id="playButtonContainer" maxHeight="40" maxWidth="40" minHeight="40" minWidth="40">
+        <Circle radius="20" style="-fx-fill: #1E88E5;" />
+        <Button fx:id="audioButon" prefHeight="40" prefWidth="40" style="-fx-background-color: transparent;" />
+    </StackPane>
+
+
+    <VBox HBox.hgrow="ALWAYS">
+        <Slider fx:id="audioBar" />
+        <HBox alignment="CENTER_LEFT" spacing="5">
+            <Label fx:id="audioTime" style="-fx-font-size: 11px; -fx-text-fill: #616161;" text="00:00 / 00:00" /> <Label fx:id="audioSize" style="-fx-font-size: 11px; -fx-text-fill: #616161;" text="0 KB" /> </HBox>
+    </VBox>
+
+    <Label text="12:48 AM" style="-fx-font-size: 10px; -fx-text-fill: #9E9E9E;"/>
+</HBox>

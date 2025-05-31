@@ -5,13 +5,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>orgs</groupId>
-  <artifactId>tuasl_clint</artifactId>
+  <artifactId>clint_pages</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>tuasl_clint</name>
+  <name>clint_pages</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<junit.version>5.10.2</junit.version>  </properties>
+    <junit.version>5.10.2</junit.version>  </properties>
 
   <dependencies>
     <dependency>
@@ -25,7 +25,7 @@
       <version>17.0.6</version>
     </dependency>
 
-<dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>${junit.version}</version>
@@ -36,7 +36,30 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
-    </dependency>  </dependencies>
+    </dependency>
+    <dependency>
+      <groupId>com.gluonhq</groupId>
+      <artifactId>rich-text-area</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vdurmont</groupId>
+      <artifactId>emoji-java</artifactId>
+      <version>5.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.madeorsk</groupId>
+      <artifactId>emojisfx</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-media</artifactId>
+      <version>22.0.1</version>
+    </dependency>
+
+
+  </dependencies>
 
   <build>
     <plugins>
@@ -58,7 +81,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>orgs.tuasl_clint/orgs.tuasl_clint.HelloApplication</mainClass>
+              <mainClass>orgs.clint_pages/orgs.clint_pages.HelloApplication</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
