@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane style="-fx-max-height: 800px;" styleClass="root-pane" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.ChatController">
+<BorderPane style="-fx-max-height: 800px;" styleClass="root-pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.ChatController">
     <left>
         <VBox maxWidth="300" minWidth="200" spacing="5.0" styleClass="sidebar" BorderPane.alignment="CENTER">
             <padding>
@@ -27,7 +20,7 @@
                                 <Image url="@../icons/menuButton.png" />
                             </image>
                         </ImageView>
-                    </graphic></Button> <TextField promptText="Search" HBox.hgrow="ALWAYS" />
+                    </graphic></Button> <TextField promptText="Search" style="-fx-background-radius: 20;-fx-border-radius: 15;" HBox.hgrow="ALWAYS" />
             </HBox>
             <ListView fx:id="chatListView" styleClass="chat-list" VBox.vgrow="ALWAYS" />
         </VBox>
@@ -42,7 +35,7 @@
                     <Label fx:id="chatTitleLabel" styleClass="chat-title" text="Chat Name" HBox.hgrow="ALWAYS" />
                     <Button fx:id="settingsButton" onAction="#handleSettingsButtonAction" style="-fx-background-color: #FF000000;" styleClass="icon-button">
                         <graphic>
-                            <ImageView fitHeight="38.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="30.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
                                     <Image url="@../icons/settingButton.png" />
                                 </image>
@@ -61,9 +54,9 @@
                 </ScrollPane>
             </center>
             <bottom>
-                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="input-area">
+                <HBox alignment="CENTER_LEFT" prefHeight="71.0" prefWidth="487.0" spacing="5.0" styleClass="input-area">
                     <padding>
-                        <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                        <Insets bottom="5.0" left="7.0" right="7.0" top="5.0" />
                     </padding>
                     <Button fx:id="shareButton" onAction="#handleShareButtonAction" style="-fx-background-color: #FF000000;" styleClass="icon-button">
                         <graphic>
@@ -72,7 +65,22 @@
                                     <Image url="@../icons/attachment.png" />
                                 </image>
                             </ImageView>
-                        </graphic></Button> <TextField fx:id="messageInputField" onAction="#handleSendButtonAction" promptText="Write a message..." HBox.hgrow="ALWAYS" />
+                        </graphic>
+                    </Button>
+                    <TextField fx:id="messageInputField" onAction="#handleSendButtonAction" prefHeight="39.0" promptText="Write a message..." style="-fx-background-radius: 20;" HBox.hgrow="ALWAYS" />
+
+                    <Button fx:id="emojiButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleEmojiButtonAction" prefHeight="15.0" prefWidth="30.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
+                        <graphic>
+                            <ImageView fitHeight="32.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../icons/emoji.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                    </Button>
                     <Button fx:id="sendVoiceButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleSendVoiceButtonAction" prefHeight="46.0" prefWidth="44.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
                         <graphic>
                             <ImageView fitHeight="31.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -85,23 +93,11 @@
                             <Insets />
                         </HBox.margin>
                     </Button>
-                    <Button fx:id="emojiButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleEmojiButtonAction" prefHeight="42.0" prefWidth="51.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
-                        <graphic>
-                            <ImageView fitHeight="42.0" fitWidth="49.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                    <Image url="@../icons/emoji.png" />
-                                </image>
-                            </ImageView>
-                        </graphic>
-                        <HBox.margin>
-                            <Insets />
-                        </HBox.margin>
-                    </Button>
                     <Button fx:id="sendButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleSendButtonAction" prefHeight="43.0" prefWidth="37.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
                         <graphic>
-                            <ImageView fitHeight="42.0" fitWidth="49.0" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fitHeight="35.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@../icons/sendButton.png" />
+                                    <Image url="@../icons/tel.png" />
                                 </image>
                             </ImageView>
                         </graphic>

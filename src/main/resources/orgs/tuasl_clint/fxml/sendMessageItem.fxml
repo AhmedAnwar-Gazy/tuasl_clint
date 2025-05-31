@@ -6,23 +6,24 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="VboxMessage" alignment="TOP_LEFT" spacing="5" style="-fx-background-color: #DCF8C6; -fx-background-radius: 8;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.SendMessageItemController">
+
+<VBox fx:id="VboxMessage" alignment="TOP_LEFT"  spacing="5" style="-fx-background-color: #FFFFFF; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.SendMessageItemController">
     <padding>
         <Insets bottom="8" left="12" right="12" top="8" />
     </padding>
 
     <!-- 1) اسم المرسل -->
-    <Label fx:id="senderLabel" styleClass="message-sender" text="Sender Name" />
+    <Label fx:id="senderLabel" styleClass="message-sender" style="-fx-text-fill: #333333;-fx-padding: 0 0 2 0;" text="Sender Name" />
    <VBox fx:id="mediaContainers" prefHeight="116.0" prefWidth="300.0" />
 
     <!-- 3) نص الرسالة -->
     <Text fx:id="contentText" styleClass="message-text" wrappingWidth="300" />
 
     <!-- 4) الوقت وعلامات الصح داخل HBox -->
-    <HBox alignment="CENTER_LEFT" spacing="5">
+    <HBox alignment="CENTER_LEFT" spacing="20">
         <Label fx:id="timeLabel" styleClass="message-time" text="12:34" />
         <!-- مرن يدفع الـ statusLabel لطرف الـ HBox -->
-        <Label text="" HBox.hgrow="ALWAYS" />
-        <Label fx:id="statusLabel" styleClass="message-status" text="✅" />
+
+        <Label fx:id="statusLabel" styleClass="message-status" text="✓✓"  style=" -fx-text-fill: #34B7F1"/>
     </HBox>
 </VBox>
