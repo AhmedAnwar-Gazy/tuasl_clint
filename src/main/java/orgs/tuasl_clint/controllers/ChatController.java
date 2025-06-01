@@ -6,7 +6,11 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+<<<<<<< HEAD
 import javafx.scene.input.MouseEvent;
+=======
+import javafx.scene.layout.FlowPane;
+>>>>>>> c6845a11b4cd526247a7f25cd146c527a535b34b
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
@@ -34,7 +38,7 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.sound.sampled.*;
-
+import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -42,9 +46,11 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button; // Import Button
 import javafx.scene.layout.VBox;
-
+import javafx.scene.layout.BorderPane;
+import javafx.scene.control.ScrollPane;
 public class ChatController {
-
+    @FXML
+    private BorderPane rootBorderPane;
     @FXML
     private ListView<String> chatListView;
     @FXML
@@ -66,7 +72,7 @@ public class ChatController {
     @FXML
     private Button shareButton; //Added FXML annotation
     @FXML
-    private VBox areaOfEmojis; //Added FXML annotation
+    private FlowPane areaOfEmojis; //Added FXML annotation
     @FXML
     private Button audioCallButton;
     @FXML
@@ -83,6 +89,11 @@ public class ChatController {
 
     @FXML
     private HBox chatListItem;
+<<<<<<< HEAD
+=======
+    @FXML
+    private ScrollPane emojiScrollPane;
+>>>>>>> c6845a11b4cd526247a7f25cd146c527a535b34b
 
     private int userCardCount = 0;
 
@@ -380,19 +391,60 @@ public class ChatController {
 
     @FXML
     private void handleEmojiButtonAction() {
-        System.out.println("boooo");
-        // Toggle visibility: if visible, hide it; if hidden, show it
-        boolean isVisible = areaOfEmojis.isVisible();
-        areaOfEmojis.setVisible(!isVisible);
+        System.out.println("Emoji button clicked!");
 
-        // Only populate emojis when making it visible
-        if (!isVisible) {
-            areaOfEmojis.getChildren().clear();
+        // تبديل حالة الظهور للـ ScrollPane
+        boolean isVisible = emojiScrollPane.isVisible();
+        emojiScrollPane.setVisible(!isVisible);
+        emojiScrollPane.setManaged(!isVisible); // تبديل خاصية Managed
 
-            String[] emojis = {
-                    "\uD83D\uDE00", "\uD83D\uDE01", "\uD83D\uDE02", "\uD83D\uDE03", "\uD83D\uDE04"
-            };
+        // إذا أصبحت اللوحة مرئية، قم بتعبئة الإيموجي إذا كانت حاوية الإيموجي فارغة
+        if (!isVisible) { // بمعنى إذا كانت ستصبح مرئية الآن
+            if (areaOfEmojis.getChildren().isEmpty()) { // نتحقق من FlowPane الفعلي
+                String[] emojis = {
+                        "\uD83D\uDE00", "\uD83D\uDE01", "\uD83D\uDE02", "\uD83D\uDE03", "\uD83D\uDE04",
+                        "\uD83D\uDE05", "\uD83D\uDE06", "\uD83D\uDE07", "\uD83D\uDE08", "\uD83D\uDE09",
+                        "\uD83D\uDE0A", "\uD83D\uDE0B", "\uD83D\uDE0C", "\uD83D\uDE0D", "\uD83D\uDE0E",
+                        "\uD83D\uDE0F", "\uD83D\uDE10", "\uD83D\uDE11", "\uD83D\uDE12", "\uD83D\uDE13",
+                        "\uD83D\uDE14", "\uD83D\uDE15", "\uD83D\uDE16", "\uD83D\uDE17", "\uD83D\uDE18",
+                        "\uD83D\uDE19", "\uD83D\uDE1A", "\uD83D\uDE1B", "\uD83D\uDE1C", "\uD83D\uDE1D",
+                        "\uD83D\uDE1E", "\uD83D\uDE1F", "\uD83D\uDE20", "\uD83D\uDE21", "\uD83D\uDE22",
+                        "\uD83D\uDE23", "\uD83D\uDE24", "\uD83D\uDE25", "\uD83D\uDE26", "\uD83D\uDE27",
+                        "\uD83D\uDE28", "\uD83D\uDE29", "\uD83D\uDE2A", "\uD83D\uDE2B", "\uD83D\uDE2C",
+                        "\uD83D\uDE2D", "\uD83D\uDE2E", "\uD83D\uDE2F", "\uD83D\uDE30", "\uD83D\uDE31",
+                        "\uD83D\uDE32", "\uD83D\uDE33", "\uD83D\uDE34", "\uD83D\uDE35", "\uD83D\uDE36",
+                        "\uD83D\uDE37", "\uD83E\uDD2A", "\uD83E\uDD2B", "\uD83E\uDD2C", "\uD83E\uDD2D",
+                        "\uD83E\uDD2E", "\uD83E\uDD2F", "\uD83E\uDD70", "\uD83E\uDD71", "\uD83E\uDD72",
+                        "\uD83E\uDD73", "\uD83E\uDD74", "\uD83E\uDD75", "\uD83E\uDD76", "\uD83E\uDD77",
+                        "\uD83E\uDD78", "\uD83E\uDD7A", "\uD83E\uDD7B", "\uD83E\uDD7C", "\uD83E\uDD7D",
+                        "\uD83E\uDD7E", "\uD83D\uDC4D", "\uD83D\uDC4F", "\uD83D\uDC4C", "\uD83D\uDC4A",
+                        "\uD83D\uDC4B", "\uD83D\uDC4E", "\uD83D\uDE4B", "\u270C\uFE0F", "\uD83D\uDC50",
+                        "\uD83D\uDE4C", "\u2764\uFE0F", "\uD83D\uDC99", "\uD83D\uDC9A", "\uD83D\uDC9B",
+                        "\uD83D\uDC9C", "\uD83D\uDC9D", "\uD83D\uDC9E", "\uD83D\uDC9F", "\uD83D\uDCAF",
+                        "\uD83D\uDCA3", "\uD83D\uDCA4", "\uD83D\uDCA6", "\uD83D\uDCA8", "\uD83D\uDCAB",
+                        "\uD83D\uDCC8", "\uD83D\uDCC9", "\uD83D\uDCCC", "\uD83D\uDCCD", "\uD83D\uDCE0",
+                        "\uD83D\uDCE1", "\uD83D\uDCE2", "\uD83D\uDCE3", "\uD83D\uDCE4", "\uD83D\uDCE5",
+                        "\uD83D\uDCE6", "\uD83D\uDCE7", "\uD83D\uDCE8", "\uD83D\uDCE9", "\uD83D\uDCEA",
+                        "\uD83D\uDCED", "\uD83D\uDCEF", "\uD83D\uDCF0", "\uD83D\uDCF1", "\uD83D\uDCF2",
+                        "\uD83D\uDCF3", "\uD83D\uDCF4", "\uD83D\uDCF5", "\uD83D\uDCF6", "\uD83D\uDCF7",
+                        "\uD83D\uDCF8", "\uD83D\uDCF9", "\uD83D\uDCFA", "\uD83D\uDCFB", "\uD83D\uDCFC",
+                        "\uD83D\uDCFD", "\uD83D\uDCFE", "\uD83D\uDCFF", "\uD83D\uDD00", "\uD83D\uDD01",
+                        "\uD83D\uDD02", "\uD83D\uDD03", "\uD83D\uDD04", "\uD83D\uDD05", "\uD83D\uDD06",
+                        "\uD83D\uDD07", "\uD83D\uDD08", "\uD83D\uDD09", "\uD83D\uDD0A", "\uD83D\uDD0B",
+                        "\uD83D\uDD0C", "\uD83D\uDD0D", "\uD83D\uDD0E", "\uD83D\uDD0F", "\uD83D\uDD10",
+                        "\uD83D\uDD11", "\uD83D\uDD12", "\uD83D\uDD13", "\uD83D\uDD14", "\uD83D\uDD15",
+                        "\uD83D\uDD16", "\uD83D\uDD17", "\uD83D\uDD18", "\uD83D\uDD19", "\uD83D\uDD1A",
+                        "\uD83D\uDD1B", "\uD83D\uDD1C", "\uD83D\uDD1D", "\uD83D\uDD1E", "\uD83D\uDD1F",
+                        "\uD83D\uDD20", "\uD83D\uDD21", "\uD83D\uDD22", "\uD83D\uDD23", "\uD83D\uDD24",
+                        "\uD83D\uDD25", "\uD83D\uDD26", "\uD83D\uDD27", "\uD83D\uDD28", "\uD83D\uDD29",
+                        "\uD83D\uDD2A", "\uD83D\uDD2B", "\uD83D\uDD2C", "\uD83D\uDD2D", "\uD83D\uDD2E",
+                        "\uD83D\uDD2F", "\uD83D\uDD30", "\uD83D\uDD31", "\uD83D\uDD32", "\uD83D\uDD33",
+                        "\uD83D\uDD34", "\uD83D\uDD35", "\uD83D\uDD36", "\uD83D\uDD37", "\uD83D\uDD38",
+                        "\uD83D\uDD39", "\uD83D\uDD3A", "\uD83D\uDD3B", "\u2B1C", "\u2B1B",
+                        "\u25FC", "\u25FB", "\u25FD", "\u25FE"
+                };
 
+<<<<<<< HEAD
             for (String emoji : emojis) {
                 Label emojiLabel = new Label(emoji);
                 emojiLabel.setStyle("-fx-font-size: 30px;");
@@ -403,6 +455,21 @@ public class ChatController {
                         messageInputField.setText(messageInputField.getText() + emoji);
                     }
                 });
+=======
+                for (String emoji : emojis) {
+                    Label emojiLabel = new Label(emoji);
+                    emojiLabel.setStyle("-fx-font-size: 30px; -fx-padding: 5px;");
+                    emojiLabel.setOnMouseClicked((MouseEvent e) -> {
+                        messageInputField.appendText(emojiLabel.getText());
+                        // عند اختيار إيموجي، قم بإخفاء الـ ScrollPane وإعادة منطقة المنتصف إلى التوسع
+                        //emojiScrollPane.setVisible(false);
+                        //emojiScrollPane.setManaged(false);
+                        messageInputField.requestFocus();
+                        e.consume();
+                    });
+                    areaOfEmojis.getChildren().add(emojiLabel);
+                }
+>>>>>>> c6845a11b4cd526247a7f25cd146c527a535b34b
             }
         }
     }
