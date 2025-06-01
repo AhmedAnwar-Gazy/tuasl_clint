@@ -235,15 +235,6 @@
 
 /* Placeholder for message bubbles */
 #messageDisplayArea .label {
-    -fx-background-color: #ffffff; /* White background for incoming */
-    -fx-padding: 8px 12px;
-    -fx-background-radius: 10px;
-    -fx-border-radius: 10px; /* Match background */
-    /* Add more styles for sent vs received messages */
-    -fx-border-color: #e1e8ed; /* Light border */
-    -fx-border-width: 1px;
-    -fx-max-width: 400px;       /* عرض مناسب لمنع الكسر عند كل حرف */
-
     -fx-wrap-text: true;
 }
 
