@@ -4,7 +4,7 @@ import orgs.tuasl_clint.models2.User;
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 
 import java.sql.*;
-import java.math.BigInteger;
+
 
 public class UserFactory {
     public User create() {
@@ -13,7 +13,7 @@ public class UserFactory {
 
     public User createFromResultSet(ResultSet rs) throws SQLException {
         return new User(
-                BigInteger.valueOf(rs.getLong("user_id")),
+                (rs.getLong("user_id")),
                 rs.getString("phone_number"),
                 rs.getString("username"),
                 rs.getString("first_name"),
@@ -55,10 +55,10 @@ public class UserFactory {
         return null;
     }
 
-    public User findById(BigInteger userId) throws SQLException {
+    public User findById(long userId) throws SQLException {
         String sql = "SELECT * FROM users WHERE user_id = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
-            statement.setLong(1, userId.longValue());
+            statement.setLong(1, userId);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return createFromResultSet(rs);

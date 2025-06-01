@@ -4,7 +4,7 @@ import orgs.tuasl_clint.models2.Chat;
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 
 import java.sql.*;
-import java.math.BigInteger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,24 +13,24 @@ public class ChatFactory {
         return new Chat();
     }
 
-    public Chat createFromResultSet(ResultSet rs) throws SQLException {
+    public static Chat createFromResultSet(ResultSet rs) throws SQLException {
         return new Chat(
-                BigInteger.valueOf(rs.getLong("chat_id")),
+                (rs.getLong("chat_id")),
                 Chat.ChatType.fromString(rs.getString("chat_type")),
                 rs.getString("chat_name"),
                 rs.getString("chat_description"),
                 rs.getString("chat_picture_url"),
-                BigInteger.valueOf(rs.getLong("creator_user_id")),
+                (rs.getLong("creator_user_id")),
                 rs.getString("public_link"),
                 rs.getTimestamp("created_at"),
                 rs.getTimestamp("updated_at")
         );
     }
 
-    public Chat findById(BigInteger chatId) throws SQLException {
+    public static Chat findById(long chatId) throws SQLException {
         String sql = "SELECT * FROM chats WHERE chat_id = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
-            statement.setLong(1, chatId.longValue());
+            statement.setLong(1, chatId);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return createFromResultSet(rs);
@@ -40,7 +40,7 @@ public class ChatFactory {
         return null;
     }
 
-    public Chat findByPublicLink(String publicLink) throws SQLException {
+    public static Chat findByPublicLink(String publicLink) throws SQLException {
         String sql = "SELECT * FROM chats WHERE public_link = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
             statement.setString(1, publicLink);
@@ -53,11 +53,11 @@ public class ChatFactory {
         return null;
     }
 
-    public List<Chat> findByCreator(BigInteger creatorUserId) throws SQLException {
+    public static List<Chat> findByCreator(long creatorUserId) throws SQLException {
         String sql = "SELECT * FROM chats WHERE creator_user_id = ?";
         List<Chat> chats = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
-            statement.setLong(1, creatorUserId.longValue());
+            statement.setLong(1, creatorUserId);
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     chats.add(createFromResultSet(rs));
@@ -67,7 +67,7 @@ public class ChatFactory {
         return chats;
     }
 
-    public List<Chat> findByType(Chat.ChatType chatType) throws SQLException {
+    public static List<Chat> findByType(Chat.ChatType chatType) throws SQLException {
         String sql = "SELECT * FROM chats WHERE chat_type = ?";
         List<Chat> chats = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {

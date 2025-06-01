@@ -169,6 +169,7 @@ CREATE INDEX idx_user_settings_user_id ON user_settings(user_id);
 -- Insert sample data
 BEGIN TRANSACTION;
 
+
 -- Users
 INSERT INTO users (phone_number, username, first_name, last_name, bio, profile_picture_url, hashed_password, two_factor_secret) VALUES
 ('123-456-7890', 'user1', 'Alice', 'Smith', 'About Alice', 'http://example.com/alice.jpg', 'hashedpass1', 'secret1'),

@@ -2,15 +2,15 @@ package orgs.tuasl_clint.models2;
 
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import java.sql.*;
-import java.math.BigInteger;
+
 
 public class Chat {
-    private BigInteger chatId;
+    private long chatId;
     private ChatType chatType;
     private String chatName;
     private String chatDescription;
     private String chatPictureUrl;
-    private BigInteger creatorUserId;
+    private long creatorUserId;
     private String publicLink;
     private Timestamp createdAt;
     private Timestamp updatedAt;
@@ -35,7 +35,7 @@ public class Chat {
         this.createdAt = createdAt;
     }
 
-    public Chat(BigInteger chatId, ChatType chatType, String chatName, String chatDescription, String chatPictureUrl, BigInteger creatorUserId, String publicLink, Timestamp createdAt, Timestamp updatedAt) {
+    public Chat(long chatId, ChatType chatType, String chatName, String chatDescription, String chatPictureUrl, long creatorUserId, String publicLink, Timestamp createdAt, Timestamp updatedAt) {
         this.chatId = chatId;
         this.chatType = chatType;
         this.chatName = chatName;
@@ -47,8 +47,8 @@ public class Chat {
         this.updatedAt = updatedAt;
     }
 
-    public BigInteger getChatId() { return chatId; }
-    public void setChatId(BigInteger chatId) { this.chatId = chatId; }
+    public long getChatId() { return chatId; }
+    public void setChatId(long chatId) { this.chatId = chatId; }
     public ChatType getChatType() { return chatType; }
     public void setChatType(ChatType chatType) { this.chatType = chatType; }
     public String getChatName() { return chatName; }
@@ -57,8 +57,8 @@ public class Chat {
     public void setChatDescription(String chatDescription) { this.chatDescription = chatDescription; }
     public String getChatPictureUrl() { return chatPictureUrl; }
     public void setChatPictureUrl(String chatPictureUrl) { this.chatPictureUrl = chatPictureUrl; }
-    public BigInteger getCreatorUserId() { return creatorUserId; }
-    public void setCreatorUserId(BigInteger creatorUserId) { this.creatorUserId = creatorUserId; }
+    public long getCreatorUserId() { return creatorUserId; }
+    public void setCreatorUserId(long creatorUserId) { this.creatorUserId = creatorUserId; }
     public String getPublicLink() { return publicLink; }
     public void setPublicLink(String publicLink) { this.publicLink = publicLink; }
     public Timestamp getCreatedAt() { return createdAt; }
@@ -73,7 +73,7 @@ public class Chat {
             statement.setString(2, chatName);
             statement.setString(3, chatDescription);
             statement.setString(4, chatPictureUrl);
-            statement.setLong(5, creatorUserId.longValue());
+            statement.setLong(5, creatorUserId);
             statement.setString(6, publicLink);
             statement.setTimestamp(7, createdAt);
             statement.setTimestamp(8, updatedAt);
@@ -82,7 +82,7 @@ public class Chat {
             if (isInserted) {
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        this.chatId = BigInteger.valueOf(generatedKeys.getLong(1));
+                        this.chatId = (generatedKeys.getLong(1));
                     }
                 }
             }
@@ -97,10 +97,10 @@ public class Chat {
             statement.setString(2, chatName);
             statement.setString(3, chatDescription);
             statement.setString(4, chatPictureUrl);
-            statement.setLong(5, creatorUserId.longValue());
+            statement.setLong(5, creatorUserId);
             statement.setString(6, publicLink);
             statement.setTimestamp(7, updatedAt);
-            statement.setLong(8, chatId.longValue());
+            statement.setLong(8, chatId);
 
             return statement.executeUpdate() > 0;
         }
@@ -109,7 +109,7 @@ public class Chat {
     public boolean delete() throws SQLException {
         String sql = "DELETE FROM chats WHERE chat_id = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
-            statement.setLong(1, chatId.longValue());
+            statement.setLong(1, chatId);
             return statement.executeUpdate() > 0;
         }
     }

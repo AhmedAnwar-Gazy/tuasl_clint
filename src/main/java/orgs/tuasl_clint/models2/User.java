@@ -2,10 +2,10 @@ package orgs.tuasl_clint.models2;
 
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import java.sql.*;
-import java.math.BigInteger;
+
 
 public class User {
-    private BigInteger userId;
+    private long userId;
     private String phoneNumber;
     private String username;
     private String firstName;
@@ -18,6 +18,7 @@ public class User {
     private boolean isOnline;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    public static User user = new User(1,"783429731","Mubarak123","Mubarak","Alqadasi","BIO","","","",new Timestamp(11,2,23,1,22,23,23),true,new Timestamp(11,2,23,1,22,23,23),new Timestamp(11,2,23,1,22,23,23));
 
     public User() {}
 
@@ -27,7 +28,7 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public User(BigInteger userId, String phoneNumber, String username, String firstName, String lastName, String bio, String profilePictureUrl, String hashedPassword, String twoFactorSecret, Timestamp lastSeenAt, boolean isOnline, Timestamp createdAt, Timestamp updatedAt) {
+    public User(long userId, String phoneNumber, String username, String firstName, String lastName, String bio, String profilePictureUrl, String hashedPassword, String twoFactorSecret, Timestamp lastSeenAt, boolean isOnline, Timestamp createdAt, Timestamp updatedAt) {
         this.userId = userId;
         this.phoneNumber = phoneNumber;
         this.username = username;
@@ -43,8 +44,8 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    public BigInteger getUserId() { return userId; }
-    public void setUserId(BigInteger userId) { this.userId = userId; }
+    public long getUserId() { return userId; }
+    public void setUserId(long userId) { this.userId = userId; }
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public String getUsername() { return username; }
@@ -90,7 +91,7 @@ public class User {
             if (isInserted) {
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        this.userId = BigInteger.valueOf(generatedKeys.getLong(1));
+                        this.userId = (generatedKeys.getLong(1));
                     }
                 }
             }
@@ -112,7 +113,7 @@ public class User {
             statement.setTimestamp(9, lastSeenAt);
             statement.setInt(10, isOnline ? 1 : 0);
             statement.setTimestamp(11, updatedAt);
-            statement.setLong(12, userId.longValue());
+            statement.setLong(12, userId);
 
             return statement.executeUpdate() > 0;
         }
@@ -121,7 +122,7 @@ public class User {
     public boolean delete() throws SQLException {
         String sql = "DELETE FROM users WHERE user_id = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
-            statement.setLong(1, userId.longValue());
+            statement.setLong(1, userId);
             return statement.executeUpdate() > 0;
         }
     }

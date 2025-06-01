@@ -9,6 +9,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import orgs.tuasl_clint.models2.*;
 import orgs.tuasl_clint.utils.DatabaseConnection;
+import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import orgs.tuasl_clint.utils.FilesHelper;
 import orgs.tuasl_clint.utils.Navigation;
 import javafx.collections.FXCollections;
@@ -81,24 +82,21 @@ public class ChatController {
     private HBox chatListItem;
     @FXML
     private ScrollPane emojiScrollPane;
+
+
     private int userCardCount = 0;
     private boolean isRecording = false;
     private TargetDataLine line;    // Define the folder where recordings should be saved
     private final String RECORDING_FOLDER = "src/main/resources/orgs/tuasl_clint/voiceNote/";
-    // Dummy data for chat list
     private ObservableList<String> chatItems = FXCollections.observableArrayList();
     private ObservableList<Chat> chatItemsChats = FXCollections.observableArrayList();
-    // Dummy data for messages list
     private ObservableList<String> messageItems = FXCollections.observableArrayList();
     private ObservableList<Message> messageItemsMessage = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-        // Populate the chat list
         loadMyChats();
-//        chatListView.setItems(chatItems);
         chatListView.setItems(chatItems);
-        // Add listener to chat list selection
         chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             System.out.println();
             if (newSelection != null) {
@@ -148,17 +146,15 @@ public class ChatController {
         //private void loadMessages(String messageText) {
         try {
             // Create an FXMLLoader instance
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/sendMessageItem.fxml"));            // Load the FXML file. This returns the root node of UserCard.fxml.
-            Parent userCardNode = loader.load();            // Get the controller for the loaded FXML (if you need to interact with it)
-            SendMessageItemController sendMessageItemController = loader.getController();            // Pass some data to the loaded controller
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/sendMessageItem.fxml"));
+            Parent userCardNode = loader.load();
+            SendMessageItemController sendMessageItemController = loader.getController();
             userCardCount++;
             sendMessageItemController.setUserData(messageText);
             messageScrollPane.setVvalue(1.0);
-            // Add the loaded FXML's root node to the VBox
             messageDisplayArea.getChildren().add(userCardNode);
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle the error, e.g., show an alert
             System.err.println("Failed to load UserCard.fxml: " + e.getMessage());
         }
     }
@@ -185,10 +181,10 @@ public class ChatController {
     private void animateButton(boolean isClicked) {
         ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(200), sendVoiceButton);
         if (isClicked) {
-            scaleTransition.setToX(1.2); // Expand the button
+            scaleTransition.setToX(1.2);
             scaleTransition.setToY(1.2);
         } else {
-            scaleTransition.setToX(1.0); // Return to normal size
+            scaleTransition.setToX(1.0);
             scaleTransition.setToY(1.0);
         }
         scaleTransition.play();
@@ -344,20 +340,25 @@ public class ChatController {
     }
 
     public void loadMyChats() {
-        try {
-            Connection con = DatabaseConnection.getConnection();
+        try (Connection con = DatabaseConnectionSQLite.getInstance().getConnection()){
 
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT chats.* FROM users LEFT JOIN chat_participants on users.id = chat_participants.user_id LEFT JOIN chats on chat_participants.chat_id = chats.id WHERE users.id = 2");
+
+            String sql = "SELECT c.* FROM users LEFT JOIN chat_participants on users.user_id = chat_participants.user_id LEFT JOIN chats c on chat_participants.chat_id = c.chat_id WHERE users.user_id = ?";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            //TODO: replace with current user id
+            stmt.setLong(1,User.user.getUserId());
+
+            ResultSet rs = stmt.executeQuery();
 
 
             while (rs.next()) {
                 chatItems.add(rs.getString("chat_name"));
-                Chat chat = ChatFactory.createChatFromResultSet(rs);
+                Chat chat = orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory.createFromResultSet(rs);
                 chatItemsChats.add(chat);
                 System.out.println(chat.getChatName());
             }
-
+            rs.close();
+            stmt.close();
         } catch (SQLException e) {
             System.err.println("An error occurred during database operations: " + e.getMessage());
         }
@@ -365,15 +366,17 @@ public class ChatController {
 
     public void loadChatsMessages(String chatname) {
         try {
-            Connection con = DatabaseConnection.getConnection();
+            Connection con = DatabaseConnectionSQLite.getInstance().getConnection();
             System.out.println("colam :" + chatname);
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT messages.* ,media.* FROM chats left join messages on chats.id = messages.chat_id LEFT JOIN media on messages.media_id =   media.id  WHERE chats.chat_name =  \"" + chatname + "\" ORDER BY messages.id  ASC; ");
+            String sql = "SELECT messages.* ,media.* FROM chats left join messages on chats.chat_id = messages.chat_id LEFT JOIN media on messages.media_id =   media.media_id  WHERE chats.chat_name = ? ORDER BY messages.message_id  ASC; ";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1,chatname);
+            ResultSet rs = stmt.executeQuery();
 
 
             while (rs.next()) {
                 messageItems.add(rs.getString(4));
-                Message message = MessageFactory.createMessageFromResultSet(rs);
+                Message message = orgs.tuasl_clint.models2.FactoriesSQLite.MessageFactory.createFromResultSet(rs);
                 messageItemsMessage.add(message);
             }
 
@@ -412,7 +415,7 @@ public class ChatController {
 
     @FXML
     public void handleVideoCallButtonAction(ActionEvent event) {
-            String selectedUser = chatListView.getSelectionModel().getSelectedItem();
+        String selectedUser = chatListView.getSelectionModel().getSelectedItem();
         if (selectedUser == null) {
             System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
             return;

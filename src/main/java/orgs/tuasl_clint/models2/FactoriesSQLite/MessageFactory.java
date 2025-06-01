@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MessageFactory {
 
-    public Message createFromResultSet(ResultSet rs) throws SQLException {
+    public static Message createFromResultSet(ResultSet rs) throws SQLException {
         Message message = new Message(
                 rs.getLong("message_id"),
                 rs.getLong("chat_id"),
@@ -36,7 +36,7 @@ public class MessageFactory {
         return message;
     }
 
-    public Message findById(Long messageId) throws SQLException {
+    public static Message findById(Long messageId) throws SQLException {
         String sql = "SELECT m.*, u.first_name AS sender_name FROM messages m " +
                 "JOIN users u ON m.sender_user_id = u.user_id " +
                 "WHERE m.message_id = ?";
@@ -51,7 +51,7 @@ public class MessageFactory {
         return null;
     }
 
-    public List<Message> findByChatId(Long chatId) throws SQLException {
+    public static List<Message> findByChatId(Long chatId) throws SQLException {
         String sql = "SELECT m.*, u.first_name AS sender_name FROM messages m " +
                 "JOIN users u ON m.sender_user_id = u.user_id " +
                 "WHERE m.chat_id = ? ORDER BY m.sent_at DESC";
@@ -67,7 +67,7 @@ public class MessageFactory {
         return messages;
     }
 
-    public List<Message> findBySender(Long senderUserId) throws SQLException {
+    public static List<Message> findBySender(Long senderUserId) throws SQLException {
         String sql = "SELECT m.*, u.first_name AS sender_name FROM messages m " +
                 "JOIN users u ON m.sender_user_id = u.user_id " +
                 "WHERE m.sender_user_id = ? ORDER BY m.sent_at DESC";
@@ -83,7 +83,7 @@ public class MessageFactory {
         return messages;
     }
 
-    public List<Message> findByMessageType(String messageType) throws SQLException {
+    public static List<Message> findByMessageType(String messageType) throws SQLException {
         String sql = "SELECT m.*, u.first_name AS sender_name FROM messages m " +
                 "JOIN users u ON m.sender_user_id = u.user_id " +
                 "WHERE m.message_type = ? ORDER BY m.sent_at DESC";
@@ -99,7 +99,7 @@ public class MessageFactory {
         return messages;
     }
 
-    public List<Message> findRecent(int limit) throws SQLException {
+    public static List<Message> findRecent(int limit) throws SQLException {
         String sql = "SELECT m.*, u.first_name AS sender_name FROM messages m " +
                 "JOIN users u ON m.sender_user_id = u.user_id " +
                 "ORDER BY m.sent_at DESC LIMIT ?";
@@ -115,7 +115,7 @@ public class MessageFactory {
         return messages;
     }
 
-    public List<Message> findReplies(Long originalMessageId) throws SQLException {
+    public static List<Message> findReplies(Long originalMessageId) throws SQLException {
         String sql = "SELECT m.*, u.first_name AS sender_name FROM messages m " +
                 "JOIN users u ON m.sender_user_id = u.user_id " +
                 "WHERE m.replied_to_message_id = ? ORDER BY m.sent_at DESC";
