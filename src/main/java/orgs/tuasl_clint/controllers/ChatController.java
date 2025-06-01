@@ -1,18 +1,9 @@
 package orgs.tuasl_clint.controllers;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
-<<<<<<< HEAD
-import javafx.scene.input.MouseEvent;
-=======
 import javafx.scene.layout.FlowPane;
->>>>>>> c6845a11b4cd526247a7f25cd146c527a535b34b
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -26,10 +17,10 @@ import javafx.event.ActionEvent;
 import javafx.animation.ScaleTransition;
 //import javafx.scene.media.AudioRecorder;
 import javafx.util.Duration;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,6 +29,7 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.sound.sampled.*;
+
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -47,7 +39,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Button; // Import Button
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.control.ScrollPane;
+
 public class ChatController {
     @FXML
     private BorderPane rootBorderPane;
@@ -85,25 +77,14 @@ public class ChatController {
     private VBox main_message_input_container;
     @FXML
     private HBox message_media_selected_container;
-
-
     @FXML
     private HBox chatListItem;
-<<<<<<< HEAD
-=======
     @FXML
     private ScrollPane emojiScrollPane;
->>>>>>> c6845a11b4cd526247a7f25cd146c527a535b34b
-
     private int userCardCount = 0;
-
     private boolean isRecording = false;
-    private TargetDataLine line;
-
-    // Define the folder where recordings should be saved
+    private TargetDataLine line;    // Define the folder where recordings should be saved
     private final String RECORDING_FOLDER = "src/main/resources/orgs/tuasl_clint/voiceNote/";
-
-
     // Dummy data for chat list
     private ObservableList<String> chatItems = FXCollections.observableArrayList();
     private ObservableList<Chat> chatItemsChats = FXCollections.observableArrayList();
@@ -114,53 +95,31 @@ public class ChatController {
     @FXML
     public void initialize() {
         // Populate the chat list
-
-
         loadMyChats();
-
-
 //        chatListView.setItems(chatItems);
         chatListView.setItems(chatItems);
-
         // Add listener to chat list selection
         chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             System.out.println();
             if (newSelection != null) {
-
                 chatTitleLabel.setText(newSelection);
                 // Clear previous messages and load messages for the selected chat
                 messageItems.clear();
                 messageItemsMessage.clear();
-
-                messageDisplayArea.getChildren().clear();
-
-                // Add placeholder message loading logic
+                messageDisplayArea.getChildren().clear();                // Add placeholder message loading logic
                 messageDisplayArea.getChildren().add(new Label("Messages for " + newSelection + " would load here."));
-
-                loadChatsMessages(newSelection);
-
-                // --- NEW CODE: Populate messageDisplayArea directly after loading messages ---
+                loadChatsMessages(newSelection);                // --- NEW CODE: Populate messageDisplayArea directly after loading messages ---
                 for (Message message : messageItemsMessage) {
-
                     loadMessages(message);
                     //messageDisplayArea.getChildren().add(new Label(message.getContent()));
                 }
                 // --- END NEW CODE ---
-
-
-                //System.out.println(messageItems);
-
-                System.out.println("Selected chat: " + newSelection);
-
-
+                //System.out.println(messageItems);                System.out.println("Selected chat: " + newSelection);
             }
-        });
-
-        // Select the first chat by default
+        });        // Select the first chat by default
         if (!chatItems.isEmpty()) {
             chatListView.getSelectionModel().selectFirst();
         }
-
         messageInputField.setFont(Font.font("Segoe UI Emoji"));
         // Ensure the scroll pane scrolls to the bottom when new messages are added (basic setup)
         messageDisplayArea.heightProperty().addListener(observable -> messageScrollPane.setVvalue(1D));
@@ -176,15 +135,9 @@ public class ChatController {
         String messageText = messageInputField.getText().trim();
         if (!messageText.isEmpty()) {
             System.out.println("Sending message: " + messageText);
-
-
             loadMessages(new Message(messageText));
-
-
             // Clear the input field
             messageInputField.clear();
-
-
             // Scroll to bottom (might need slight delay depending on layout)
             messageScrollPane.setVvalue(1.0);
         }
@@ -195,21 +148,14 @@ public class ChatController {
         //private void loadMessages(String messageText) {
         try {
             // Create an FXMLLoader instance
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/sendMessageItem.fxml"));
-
-            // Load the FXML file. This returns the root node of UserCard.fxml.
-            Parent userCardNode = loader.load();
-
-            // Get the controller for the loaded FXML (if you need to interact with it)
-            SendMessageItemController sendMessageItemController = loader.getController();
-
-            // Pass some data to the loaded controller
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/sendMessageItem.fxml"));            // Load the FXML file. This returns the root node of UserCard.fxml.
+            Parent userCardNode = loader.load();            // Get the controller for the loaded FXML (if you need to interact with it)
+            SendMessageItemController sendMessageItemController = loader.getController();            // Pass some data to the loaded controller
             userCardCount++;
             sendMessageItemController.setUserData(messageText);
             messageScrollPane.setVvalue(1.0);
             // Add the loaded FXML's root node to the VBox
             messageDisplayArea.getChildren().add(userCardNode);
-
         } catch (IOException e) {
             e.printStackTrace();
             // Handle the error, e.g., show an alert
@@ -217,11 +163,9 @@ public class ChatController {
         }
     }
 
-
     @FXML
     private void handleSendVoiceButtonAction1(ActionEvent event) {
         System.out.println("Send Voice Button Clicked!");
-
     }
 
     @FXML
@@ -232,7 +176,6 @@ public class ChatController {
             animateButton(true); // Start animation
             startRecording(); // Begin recording
         });
-
         sendVoiceButton.setOnMouseReleased(event -> {
             stopRecording(); // Stop recording when released
             animateButton(false); // Reset animation
@@ -257,27 +200,20 @@ public class ChatController {
             File folder = new File(RECORDING_FOLDER);
             if (!folder.exists()) {
                 folder.mkdirs(); // Create directory if it doesn’t exist
-            }
-
-            // Generate a unique filename based on the current timestamp
+            }            // Generate a unique filename based on the current timestamp
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             File audioFile = new File(RECORDING_FOLDER, "recording_" + timeStamp + ".wav");
-
             AudioFormat format = new AudioFormat(16000, 8, 2, true, true);
             DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-
             if (!AudioSystem.isLineSupported(info)) {
                 System.err.println("Line not supported");
                 return;
             }
-
             line = (TargetDataLine) AudioSystem.getLine(info);
             line.open(format);
             line.start();
             isRecording = true;
-
             System.out.println("Recording started: " + audioFile.getAbsolutePath());
-
             Thread recordingThread = new Thread(() -> {
                 try (AudioInputStream audioStream = new AudioInputStream(line)) {
                     AudioSystem.write(audioStream, AudioFileFormat.Type.WAVE, audioFile);
@@ -285,9 +221,7 @@ public class ChatController {
                     e.printStackTrace();
                 }
             });
-
             recordingThread.start();
-
         } catch (LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -302,103 +236,51 @@ public class ChatController {
         }
     }
 
-
     @FXML
     private void handleMenuButtonAction(ActionEvent event) {
-
     }
 
+    private final String SHARE_FOLDER = "src/main/resources/orgs/tuasl_clint/file/";
 
-
-
-        private final String SHARE_FOLDER = "src/main/resources/orgs/tuasl_clint/file/";
-
-
-        @FXML
-        private void handleShareButtonAction(ActionEvent event) {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Select File to Share");
-
-            // Optional: Set initial directory
-            // You might want to save the last used directory or default to user's home
-            // File initialDirectory = new File(System.getProperty("user.home"));
-            // if (initialDirectory.exists()) {
-            //     fileChooser.setInitialDirectory(initialDirectory);
-            // }
-
-            // Get the stage from the event source (the button)
-            Stage stage = (Stage) shareButton.getScene().getWindow();
-
-            // Show the open file dialog
-            File selectedFile = fileChooser.showOpenDialog(stage);
-            if (selectedFile != null) {
-                try {
-                    // Ensure the destination directory exists
-                    Path destinationDirectory = Paths.get(FilesHelper.getFilePath(selectedFile));
-                    if (!Files.exists(destinationDirectory)) {
-                        Files.createDirectories(destinationDirectory);
-                        System.out.println("Created directory: " + destinationDirectory.toAbsolutePath());
-                    }
-
-                    // Define the destination path for the selected file
-                    Path destinationPath = destinationDirectory.resolve(selectedFile.getName());
-
-                    // Copy the selected file to the destination directory
-                    // StandardCopyOption.REPLACE_EXISTING will overwrite if a file with the same name already exists
-                    Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-                    String FileItem = FilesHelper.getMediaViewerPath(selectedFile);
-                    //this.message_media_selected_container.setVisible(false);
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/fileItem.fxml"));
-                    Parent pp = loader.load();
-                    FileItemController f = loader.getController();
-                    f.setFileInfo(selectedFile);
-                    this.message_media_selected_container.getChildren().add(0,pp);
-//                    this.main_message_input_container.setPrefHeight(Region.USE_COMPUTED_SIZE);
-//                    this.message_media_selected_container.setPrefHeight(Region.USE_COMPUTED_SIZE);
-                    System.out.println("File copied successfully: " + selectedFile.getAbsolutePath() +
-                            " to " + destinationPath.toAbsolutePath());
-
-                    // Optional: You might want to send a message here indicating file shared,
-                    // or update your UI to show the shared file.
-                    // Example:
-                    // Message sharedMessage = new Message("Shared file: " + selectedFile.getName(), "file", destinationPath.toString());
-                    // loadMessages(sharedMessage); // Assuming you have a loadMessages method that handles file types
-
-                } catch (IOException e) {
-                    System.err.println("Error copying file: " + e.getMessage());
-                    e.printStackTrace();
-                    // Optionally show an error dialog to the user
-                    // Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to share file: " + e.getMessage());
-                    // alert.showAndWait();
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
+    @FXML
+    private void handleShareButtonAction(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select File to Share");
+        Stage stage = (Stage) shareButton.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+        if (selectedFile != null) {
+            try {
+                Path destinationDirectory = Paths.get(FilesHelper.getFilePath(selectedFile));
+                if (!Files.exists(destinationDirectory)) {
+                    Files.createDirectories(destinationDirectory);
+                    System.out.println("Created directory: " + destinationDirectory.toAbsolutePath());
                 }
-            } else {
-                System.out.println("File selection cancelled.");
+                Path destinationPath = destinationDirectory.resolve(selectedFile.getName());                    // Copy the selected file to the destination directory
+                Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                String FileItem = FilesHelper.getMediaViewerPath(selectedFile);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/fileItem.fxml"));
+                Parent pp = loader.load();
+                FileItemController f = loader.getController();
+                f.setFileInfo(selectedFile);
+                this.message_media_selected_container.getChildren().add(0, pp);
+                System.out.println("File copied successfully: " + selectedFile.getAbsolutePath() +
+                        " to " + destinationPath.toAbsolutePath());
+            } catch (Exception e) {
+                System.err.println("Error copying file: " + e.getMessage());
+                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
+        } else {
+            System.out.println("File selection cancelled.");
         }
-
-//    @FXML
-//    void handle_unselect_message_media(ActionEvent event) {
-//            if(fileItemController != null){
-//                this.message_media_selected_container.getChildren().remove(fileItemController);
-//                fileItemController = null;
-//                this.message_media_selected_container.setVisible(false);
-//            }
-//
-//    }
-
+    }
 
     @FXML
     private void handleEmojiButtonAction() {
-        System.out.println("Emoji button clicked!");
-
-        // تبديل حالة الظهور للـ ScrollPane
+        System.out.println("Emoji button clicked!");        // تبديل حالة الظهور للـ ScrollPane
         boolean isVisible = emojiScrollPane.isVisible();
         emojiScrollPane.setVisible(!isVisible);
-        emojiScrollPane.setManaged(!isVisible); // تبديل خاصية Managed
-
-        // إذا أصبحت اللوحة مرئية، قم بتعبئة الإيموجي إذا كانت حاوية الإيموجي فارغة
+        emojiScrollPane.setManaged(!isVisible); // تبديل خاصية Managed        // إذا أصبحت اللوحة مرئية، قم بتعبئة الإيموجي إذا كانت حاوية الإيموجي فارغة
         if (!isVisible) { // بمعنى إذا كانت ستصبح مرئية الآن
             if (areaOfEmojis.getChildren().isEmpty()) { // نتحقق من FlowPane الفعلي
                 String[] emojis = {
@@ -443,19 +325,6 @@ public class ChatController {
                         "\uD83D\uDD39", "\uD83D\uDD3A", "\uD83D\uDD3B", "\u2B1C", "\u2B1B",
                         "\u25FC", "\u25FB", "\u25FD", "\u25FE"
                 };
-
-<<<<<<< HEAD
-            for (String emoji : emojis) {
-                Label emojiLabel = new Label(emoji);
-                emojiLabel.setStyle("-fx-font-size: 30px;");
-                areaOfEmojis.getChildren().add(emojiLabel);
-                emojiLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        messageInputField.setText(messageInputField.getText() + emoji);
-                    }
-                });
-=======
                 for (String emoji : emojis) {
                     Label emojiLabel = new Label(emoji);
                     emojiLabel.setStyle("-fx-font-size: 30px; -fx-padding: 5px;");
@@ -469,7 +338,7 @@ public class ChatController {
                     });
                     areaOfEmojis.getChildren().add(emojiLabel);
                 }
->>>>>>> c6845a11b4cd526247a7f25cd146c527a535b34b
+
             }
         }
     }
@@ -567,44 +436,5 @@ public class ChatController {
             e.printStackTrace();
             System.out.println("❌ فشل الاتصال بمكالمة الفيديو والصوت");
         }
-
     }
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
