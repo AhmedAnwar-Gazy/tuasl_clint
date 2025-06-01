@@ -1,13 +1,20 @@
 package orgs.tuasl_clint.controllers;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import orgs.tuasl_clint.models2.*;
 import orgs.tuasl_clint.utils.DatabaseConnection;
+import orgs.tuasl_clint.utils.FilesHelper;
 import orgs.tuasl_clint.utils.Navigation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +25,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,10 +73,16 @@ public class ChatController {
     private Button menuButton;
     @FXML
     private Button videoCallButton;
+    @FXML
+    private Button cancel_message_media;
+    @FXML
+    private VBox main_message_input_container;
+    @FXML
+    private HBox message_media_selected_container;
+
 
     @FXML
     private HBox chatListItem;
-
 
     private int userCardCount = 0;
 
@@ -306,11 +320,10 @@ public class ChatController {
 
             // Show the open file dialog
             File selectedFile = fileChooser.showOpenDialog(stage);
-
             if (selectedFile != null) {
                 try {
                     // Ensure the destination directory exists
-                    Path destinationDirectory = Paths.get(SHARE_FOLDER);
+                    Path destinationDirectory = Paths.get(FilesHelper.getFilePath(selectedFile));
                     if (!Files.exists(destinationDirectory)) {
                         Files.createDirectories(destinationDirectory);
                         System.out.println("Created directory: " + destinationDirectory.toAbsolutePath());
@@ -322,7 +335,15 @@ public class ChatController {
                     // Copy the selected file to the destination directory
                     // StandardCopyOption.REPLACE_EXISTING will overwrite if a file with the same name already exists
                     Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-
+                    String FileItem = FilesHelper.getMediaViewerPath(selectedFile);
+                    //this.message_media_selected_container.setVisible(false);
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/fileItem.fxml"));
+                    Parent pp = loader.load();
+                    FileItemController f = loader.getController();
+                    f.setFileInfo(selectedFile);
+                    this.message_media_selected_container.getChildren().add(0,pp);
+//                    this.main_message_input_container.setPrefHeight(Region.USE_COMPUTED_SIZE);
+//                    this.message_media_selected_container.setPrefHeight(Region.USE_COMPUTED_SIZE);
                     System.out.println("File copied successfully: " + selectedFile.getAbsolutePath() +
                             " to " + destinationPath.toAbsolutePath());
 
@@ -338,13 +359,23 @@ public class ChatController {
                     // Optionally show an error dialog to the user
                     // Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to share file: " + e.getMessage());
                     // alert.showAndWait();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
             } else {
                 System.out.println("File selection cancelled.");
             }
         }
 
-
+//    @FXML
+//    void handle_unselect_message_media(ActionEvent event) {
+//            if(fileItemController != null){
+//                this.message_media_selected_container.getChildren().remove(fileItemController);
+//                fileItemController = null;
+//                this.message_media_selected_container.setVisible(false);
+//            }
+//
+//    }
 
 
     @FXML
@@ -366,6 +397,12 @@ public class ChatController {
                 Label emojiLabel = new Label(emoji);
                 emojiLabel.setStyle("-fx-font-size: 30px;");
                 areaOfEmojis.getChildren().add(emojiLabel);
+                emojiLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        messageInputField.setText(messageInputField.getText() + emoji);
+                    }
+                });
             }
         }
     }

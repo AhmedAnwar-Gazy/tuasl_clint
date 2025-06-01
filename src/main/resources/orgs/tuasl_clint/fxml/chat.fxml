@@ -5,7 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane style="-fx-max-height: 800px;" styleClass="root-pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.ChatController">
+<BorderPane prefHeight="511.0" prefWidth="917.0" style="-fx-max-height: 800px;" styleClass="root-pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.ChatController">
     <left>
         <VBox maxWidth="300" minWidth="200" spacing="5.0" styleClass="sidebar" BorderPane.alignment="CENTER">
             <padding>
@@ -78,57 +78,62 @@
                     </content>
                 </ScrollPane>
             </center>
-            <bottom>
-                <HBox alignment="CENTER_LEFT" prefHeight="71.0" prefWidth="487.0" spacing="5.0" styleClass="input-area">
-                    <padding>
-                        <Insets bottom="5.0" left="7.0" right="7.0" top="5.0" />
-                    </padding>
-                    <Button fx:id="shareButton" onAction="#handleShareButtonAction" style="-fx-background-color: #FF000000;" styleClass="icon-button">
-                        <graphic>
-                            <ImageView fitHeight="36.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                    <Image url="@../icons/attachment.png" />
-                                </image>
-                            </ImageView>
-                        </graphic>
-                    </Button>
-                    <TextField fx:id="messageInputField" onAction="#handleSendButtonAction" prefHeight="39.0" promptText="Write a message..." style="-fx-background-radius: 20;" HBox.hgrow="ALWAYS" />
-
-                    <Button fx:id="emojiButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleEmojiButtonAction" prefHeight="15.0" prefWidth="30.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
-                        <graphic>
-                            <ImageView fitHeight="32.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                    <Image url="@../icons/emoji.png" />
-                                </image>
-                            </ImageView>
-                        </graphic>
-                        <HBox.margin>
-                            <Insets />
-                        </HBox.margin>
-                    </Button>
-                    <Button fx:id="sendVoiceButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleSendVoiceButtonAction" prefHeight="46.0" prefWidth="44.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
-                        <graphic>
-                            <ImageView fitHeight="31.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                    <Image url="@../icons/voiceButton.png" />
-                                </image>
-                            </ImageView>
-                        </graphic>
-                        <HBox.margin>
-                            <Insets />
-                        </HBox.margin>
-                    </Button>
-                    <Button fx:id="sendButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleSendButtonAction" prefHeight="43.0" prefWidth="37.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
-                        <graphic>
-                            <ImageView fitHeight="35.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                    <Image url="@../icons/tel.png" />
-                                </image>
-                            </ImageView>
-                        </graphic>
-                    </Button>
-                </HBox>
-            </bottom>
+         <bottom>
+            <VBox id="message_media_shower" fx:id="main_message_input_container" maxHeight="-Infinity" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox fx:id="message_media_selected_container" alignment="CENTER" maxHeight="96.0" VBox.vgrow="ALWAYS" />
+                      <HBox id="insertion_hbox" alignment="CENTER_LEFT" prefHeight="54.0" prefWidth="419.0" spacing="5.0" styleClass="input-area">
+                          <padding>
+                              <Insets bottom="5.0" left="7.0" right="7.0" top="5.0" />
+                          </padding>
+                          <Button fx:id="shareButton" onAction="#handleShareButtonAction" style="-fx-background-color: #FF000000;" styleClass="icon-button">
+                              <graphic>
+                                  <ImageView fitHeight="36.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                          <Image url="@../icons/attachment.png" />
+                                      </image>
+                                  </ImageView>
+                              </graphic>
+                          </Button>
+                          <TextField fx:id="messageInputField" onAction="#handleSendButtonAction" prefHeight="39.0" promptText="Write a message..." style="-fx-background-radius: 20;" HBox.hgrow="ALWAYS" />
+      
+                          <Button fx:id="emojiButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleEmojiButtonAction" prefHeight="15.0" prefWidth="30.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
+                              <graphic>
+                                  <ImageView fitHeight="32.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                          <Image url="@../icons/emoji.png" />
+                                      </image>
+                                  </ImageView>
+                              </graphic>
+                              <HBox.margin>
+                                  <Insets />
+                              </HBox.margin>
+                          </Button>
+                          <Button fx:id="sendVoiceButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleSendVoiceButtonAction" prefHeight="46.0" prefWidth="44.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
+                              <graphic>
+                                  <ImageView fitHeight="31.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                          <Image url="@../icons/voiceButton.png" />
+                                      </image>
+                                  </ImageView>
+                              </graphic>
+                              <HBox.margin>
+                                  <Insets />
+                              </HBox.margin>
+                          </Button>
+                          <Button fx:id="sendButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleSendButtonAction" prefHeight="43.0" prefWidth="37.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
+                              <graphic>
+                                  <ImageView fitHeight="35.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                          <Image url="@../icons/tel.png" />
+                                      </image>
+                                  </ImageView>
+                              </graphic>
+                          </Button>
+                      </HBox>
+               </children>
+            </VBox>
+         </bottom>
         </BorderPane>
     </center>
     <right>

@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageFactory {
-    public Message create() {
-        return new Message(null);
-    }
 
     public Message createFromResultSet(ResultSet rs) throws SQLException {
         Message message = new Message(
