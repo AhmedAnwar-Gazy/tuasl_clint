@@ -4,6 +4,10 @@ import orgs.tuasl_clint.models2.User;
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 
 import java.sql.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class UserFactory {
@@ -11,7 +15,7 @@ public class UserFactory {
         return new User();
     }
 
-    public User createFromResultSet(ResultSet rs) throws SQLException {
+    public static User createFromResultSet(ResultSet rs) throws SQLException {
         return new User(
                 (rs.getLong("user_id")),
                 rs.getString("phone_number"),
@@ -29,7 +33,7 @@ public class UserFactory {
         );
     }
 
-    public User findByPhoneNumber(String phoneNumber) throws SQLException {
+    public static User findByPhoneNumber(String phoneNumber) throws SQLException {
         String sql = "SELECT * FROM users WHERE phone_number = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
             statement.setString(1, phoneNumber);
@@ -42,7 +46,7 @@ public class UserFactory {
         return null;
     }
 
-    public User findByUsername(String username) throws SQLException {
+    public static User findByUsername(String username) throws SQLException {
         String sql = "SELECT * FROM users WHERE username = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
             statement.setString(1, username);
@@ -55,7 +59,7 @@ public class UserFactory {
         return null;
     }
 
-    public User findById(long userId) throws SQLException {
+    public static User findById(long userId) throws SQLException {
         String sql = "SELECT * FROM users WHERE user_id = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
             statement.setLong(1, userId);

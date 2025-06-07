@@ -27,4 +27,10 @@ public class LoginController {
     private void handleRegisterButtonAction(ActionEvent event) {
         Navigation.loadPage("registration.fxml");
     }
+
+    @FXML
+    public void handleReaction (ActionEvent event){
+
+    }
+
 }

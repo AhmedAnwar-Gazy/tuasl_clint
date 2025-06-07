@@ -8,7 +8,6 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import orgs.tuasl_clint.models2.*;
-import orgs.tuasl_clint.utils.DatabaseConnection;
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import orgs.tuasl_clint.utils.FilesHelper;
 import orgs.tuasl_clint.utils.Navigation;
@@ -151,7 +150,7 @@ public class ChatController {
             SendMessageItemController sendMessageItemController = loader.getController();
             userCardCount++;
             sendMessageItemController.setUserData(messageText);
-            messageScrollPane.setVvalue(1.0);
+            //messageScrollPane.setVvalue(1.0);
             messageDisplayArea.getChildren().add(userCardNode);
         } catch (IOException e) {
             e.printStackTrace();
@@ -365,8 +364,7 @@ public class ChatController {
     }
 
     public void loadChatsMessages(String chatname) {
-        try {
-            Connection con = DatabaseConnectionSQLite.getInstance().getConnection();
+        try(Connection con = DatabaseConnectionSQLite.getInstance().getConnection()) {
             System.out.println("colam :" + chatname);
             String sql = "SELECT messages.* ,media.* FROM chats left join messages on chats.chat_id = messages.chat_id LEFT JOIN media on messages.media_id =   media.media_id  WHERE chats.chat_name = ? ORDER BY messages.message_id  ASC; ";
             PreparedStatement stmt = con.prepareStatement(sql);
