@@ -54,6 +54,7 @@ CREATE TABLE chat_participants (
     unread_count INTEGER DEFAULT 0,
     last_read_message_id INTEGER,
     UNIQUE (chat_id, user_id),
+
     FOREIGN KEY (chat_id) REFERENCES chats(chat_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (last_read_message_id) REFERENCES messages(message_id) ON DELETE SET NULL
@@ -166,128 +167,7 @@ CREATE INDEX idx_sessions_user_id ON sessions(user_id);
 CREATE INDEX idx_sessions_last_active_at ON sessions(last_active_at);
 CREATE INDEX idx_user_settings_user_id ON user_settings(user_id);
 
--- Insert sample data
-BEGIN TRANSACTION;
 
-
--- Users
-INSERT INTO users (phone_number, username, first_name, last_name, bio, profile_picture_url, hashed_password, two_factor_secret) VALUES
-('123-456-7890', 'user1', 'Alice', 'Smith', 'About Alice', 'http://example.com/alice.jpg', 'hashedpass1', 'secret1'),
-('123-456-7891', 'user2', 'Bob', 'Johnson', 'About Bob', 'http://example.com/bob.jpg', 'hashedpass2', 'secret2'),
-('123-456-7892', 'user3', 'Charlie', 'Williams', 'About Charlie', 'http://example.com/charlie.jpg', 'hashedpass3', 'secret3'),
-('123-456-7893', 'user4', 'David', 'Brown', 'About David', 'http://example.com/david.jpg', 'hashedpass4', 'secret4'),
-('123-456-7894', 'user5', 'Emily', 'Davis', 'About Emily', 'http://example.com/emily.jpg', 'hashedpass5', 'secret5'),
-('123-456-7895', 'user6', 'Frank', 'Miller', 'About Frank', 'http://example.com/frank.jpg', 'hashedpass6', 'secret6'),
-('123-456-7896', 'user7', 'Grace', 'Wilson', 'About Grace', 'http://example.com/grace.jpg', 'hashedpass7', 'secret7'),
-('123-456-7897', 'user8', 'Henry', 'Moore', 'About Henry', 'http://example.com/henry.jpg', 'hashedpass8', 'secret8'),
-('123-456-7898', 'user9', 'Ivy', 'Taylor', 'About Ivy', 'http://example.com/ivy.jpg', 'hashedpass9', 'secret9'),
-('123-456-7899', 'user10', 'Jack', 'Anderson', 'About Jack', 'http://example.com/jack.jpg', 'hashedpass10', 'secret10');
-
--- Chats
-INSERT INTO chats (chat_type, chat_name, chat_description, chat_picture_url, creator_user_id, public_link) VALUES
-('private', 'Alice and Bob', 'Private chat', 'http://example.com/chat1.jpg', 1, NULL),
-('group', 'Group Chat 1', 'First group chat', 'http://example.com/chat2.jpg', 2, 'group1'),
-('channel', 'Channel 1', 'First channel', 'http://example.com/chat3.jpg', 3, 'channel1'),
-('private', 'Charlie and David', 'Private chat', 'http://example.com/chat4.jpg', 3, NULL),
-('group', 'Group Chat 2', 'Second group chat', 'http://example.com/chat5.jpg', 5, 'group2'),
-('channel', 'Channel 2', 'Second channel', 'http://example.com/chat6.jpg', 6, 'channel2'),
-('private', 'Emily and Frank', 'Private chat', 'http://example.com/chat7.jpg', 5, NULL),
-('group', 'Group Chat 3', 'Third group chat', 'http://example.com/chat8.jpg', 8, 'group3'),
-('channel', 'Channel 3', 'Third channel', 'http://example.com/chat9.jpg', 9, 'channel3'),
-('private', 'Grace and Henry', 'Private chat', 'http://example.com/chat10.jpg', 7, NULL);
-
--- Chat Participants
-INSERT INTO chat_participants (chat_id, user_id, role, muted_until, is_pinned, unread_count) VALUES
-(1, 1, 'creator', NULL, 1, 0),
-(1, 2, 'member', NULL, 0, 0),
-(2, 2, 'creator', NULL, 1, 0),
-(2, 3, 'admin', NULL, 0, 0),
-(2, 4, 'member', NULL, 0, 0),
-(3, 3, 'creator', NULL, 1, 0),
-(3, 5, 'admin', NULL, 0, 0),
-(4, 3, 'creator', NULL, 1, 0),
-(4, 4, 'member', NULL, 0, 0),
-(5, 5, 'creator', NULL, 1, 0);
-
--- Media
-INSERT INTO media (uploader_user_id, file_name, file_path_or_url, mime_type, file_size_bytes, thumbnail_url, duration_seconds, width, height) VALUES
-(1, 'file1.jpg', 'http://example.com/file1.jpg', 'image/jpeg', 1024, 'http://example.com/thumb1.jpg', NULL, 100, 100),
-(2, 'file2.mp4', 'http://example.com/file2.mp4', 'video/mp4', 2048, 'http://example.com/thumb2.jpg', 120, 0, 0),
-(3, 'file3.mp3', 'http://example.com/file3.mp3', 'audio/mp3', 512, NULL, 180, 0, 0),
-(4, 'file4.txt', 'http://example.com/file4.txt', 'text/plain', 256, NULL, NULL, 0, 0),
-(5, 'file5.gif', 'http://example.com/file5.gif', 'image/gif', 1000, 'http://example.com/thumb5.jpg', NULL, 150, 150),
-(6, 'file6.png', 'http://example.com/file6.png', 'image/png', 1500, 'http://example.com/thumb6.jpg', NULL, 200, 200),
-(7, 'file7.avi', 'http://example.com/file7.avi', 'video/avi', 3000, 'http://example.com/thumb7.jpg', 200, 0, 0),
-(8, 'file8.wav', 'http://example.com/file8.wav', 'audio/wav', 1000, NULL, 240, 0, 0),
-(9, 'file9.pdf', 'http://example.com/file9.pdf', 'application/pdf', 700, NULL, NULL, 0, 0),
-(10, 'file10.docx', 'http://example.com/file10.docx', 'application/docx', 800, NULL, NULL, 0, 0);
-
--- Messages
-INSERT INTO messages (chat_id, sender_user_id, message_type, content, media_id, replied_to_message_id, forwarded_from_user_id, forwarded_from_chat_id) VALUES
-(1, 1, 'text', 'Hello Bob!', NULL, NULL, NULL, NULL),
-(1, 2, 'text', 'Hi Alice!', NULL, 1, NULL, NULL),
-(2, 2, 'text', 'Welcome to the group!', NULL, NULL, NULL, NULL),
-(2, 3, 'text', 'Thanks!', NULL, NULL, NULL, NULL),
-(2, 4, 'text', 'Hello everyone!', NULL, NULL, NULL, NULL),
-(3, 3, 'text', 'Important announcement!', NULL, NULL, NULL, NULL),
-(3, 5, 'text', 'Got it!', NULL, NULL, NULL, NULL),
-(4, 3, 'text', 'How are you David?', NULL, NULL, NULL, NULL),
-(4, 4, 'text', 'I am fine, Charlie!', NULL, 8, NULL, NULL),
-(5, 5, 'text', 'New group rules!', NULL, NULL, NULL, NULL);
-
--- Contacts
-INSERT INTO contacts (owner_user_id, contact_user_id, alias_name) VALUES
-(1, 2, 'Bob'),
-(1, 3, 'Charlie'),
-(2, 1, 'Alice'),
-(2, 3, 'Charlie'),
-(3, 1, 'Alice'),
-(3, 2, 'Bob'),
-(3, 4, 'David'),
-(4, 3, 'Charlie'),
-(4, 5, 'Emily'),
-(5, 3, 'Charlie');
-
--- Blocked Users
-INSERT INTO blocked_users (blocker_user_id, blocked_user_id) VALUES
-(1, 5),
-(2, 6),
-(3, 7),
-(4, 8),
-(5, 9),
-(6, 10),
-(7, 1),
-(8, 2),
-(9, 3),
-(10, 4);
-
--- Sessions
-INSERT INTO sessions (session_id, user_id, device_info, ip_address, expires_at) VALUES
-(lower(hex(randomblob(16))), 1, 'Android Phone', '192.168.1.1', '2024-01-01 00:00:00'),
-(lower(hex(randomblob(16))), 2, 'iPhone', '192.168.1.2', '2024-01-02 00:00:00'),
-(lower(hex(randomblob(16))), 3, 'Web Browser', '192.168.1.3', '2024-01-03 00:00:00'),
-(lower(hex(randomblob(16))), 4, 'Tablet', '192.168.1.4', '2024-01-04 00:00:00'),
-(lower(hex(randomblob(16))), 5, 'Desktop', '192.168.1.5', '2024-01-05 00:00:00'),
-(lower(hex(randomblob(16))), 6, 'Android Tablet', '192.168.1.6', '2024-01-06 00:00:00'),
-(lower(hex(randomblob(16))), 7, 'Laptop', '192.168.1.7', '2024-01-07 00:00:00'),
-(lower(hex(randomblob(16))), 8, 'Smart TV', '192.168.1.8', '2024-01-08 00:00:00'),
-(lower(hex(randomblob(16))), 9, 'Game Console', '192.168.1.9', '2024-01-09 00:00:00'),
-(lower(hex(randomblob(16))), 10, 'Smartwatch', '192.168.1.10', '2024-01-10 00:00:00');
-
--- User Settings
-INSERT INTO user_settings (user_id, privacy_phone_number, privacy_last_seen, privacy_profile_photo, privacy_calls, privacy_groups_and_channels, privacy_forwarded_messages, notifications_private_chats, notifications_group_chats, notifications_channels, notification_sound, chat_theme, chat_text_size) VALUES
-(1, 'everyone', 'everyone', 'everyone', 'everyone', 'everyone', 'everyone', 1, 1, 1, 'default', 'default', 16),
-(2, 'my_contacts', 'my_contacts', 'my_contacts', 'my_contacts', 'my_contacts', 'my_contacts', 1, 1, 1, 'sound1', 'dark', 14),
-(3, 'nobody', 'nobody', 'nobody', 'nobody', 'nobody', 'nobody', 1, 1, 1, 'sound2', 'light', 18),
-(4, 'everyone', 'my_contacts', 'everyone', 'my_contacts', 'everyone', 'my_contacts', 1, 1, 1, 'default', 'blue', 16),
-(5, 'my_contacts', 'nobody', 'my_contacts', 'nobody', 'my_contacts', 'nobody', 1, 1, 1, 'sound3', 'green', 12),
-(6, 'nobody', 'everyone', 'nobody', 'everyone', 'nobody', 'everyone', 1, 1, 1, 'default', 'red', 20),
-(7, 'everyone', 'everyone', 'my_contacts', 'everyone', 'everyone', 'my_contacts', 1, 1, 1, 'sound4', 'purple', 16),
-(8, 'my_contacts', 'my_contacts', 'nobody', 'my_contacts', 'my_contacts', 'everyone', 1, 1, 1, 'default', 'orange', 14),
-(9, 'nobody', 'nobody', 'everyone', 'nobody', 'nobody', 'my_contacts', 1, 1, 1, 'sound5', 'yellow', 18),
-(10, 'everyone', 'everyone', 'everyone', 'everyone', 'everyone', 'everyone', 1, 1, 1, 'default', 'gray', 12);
-
-COMMIT;
 
 -- Verify data was inserted
 SELECT 'Database setup complete' AS message;

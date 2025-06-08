@@ -56,7 +56,8 @@ public class SendMessageItemController {
             User u= null;
             try {
                 u = UserFactory.findById(message.getSenderUserId());
-                message.setSenderName(u.getFirstName());
+                assert u != null;
+                    message.setSenderName(u.getFirstName());
             } catch (SQLException e) {
                 message.setSenderName("UnKnown");
                 System.err.println("Error getting the user for this message");
@@ -213,6 +214,7 @@ public class SendMessageItemController {
             reactionsContainer.setLayoutY(-1 * VboxMessage.getHeight() + 3);
         else
             reactionsContainer.setLayoutY(event.getY() - 100);
+        reactionsContainer.setLayoutX(VboxMessage.getWidth());
         this.reactionsContainer.setVisible(true);
 
     }
@@ -227,14 +229,15 @@ public class SendMessageItemController {
     @FXML
     void handleMessageHoverExit(MouseEvent event) {
         System.out.println("mouse exit message");
-        if(message.getViewCount() == 0)
+//        if(message.getViewCount() == 0)
             this.reactionsContainer.setVisible(false);
     }
 
     @FXML
     void handleReactionMouseSwipLeft(SwipeEvent event) {
         System.out.println("mouse swipe icons right message");
-        this.reactionsContainer.setVisible(false);
+        if(this.reactionsContainer.visibleProperty().get())
+            this.reactionsContainer.setVisible(false);
     }
 
 

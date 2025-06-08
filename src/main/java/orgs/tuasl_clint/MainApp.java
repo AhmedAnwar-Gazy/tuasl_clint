@@ -17,7 +17,11 @@ public class MainApp extends Application {
     private Stage primaryStage;
     @Override
     public void start(Stage stage) throws IOException {
-
+        try(Connection conn = DatabaseConnectionSQLite.getInstance().getConnection()){
+            System.out.println("Success Connect sqlite database");
+        }catch (SQLException e){
+            System.out.println("Connection Faild");
+        }
         this.primaryStage = stage;
         this.primaryStage.setTitle("Chat Application");
 

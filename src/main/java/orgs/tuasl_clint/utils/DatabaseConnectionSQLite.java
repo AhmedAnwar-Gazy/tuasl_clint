@@ -48,23 +48,32 @@ public class DatabaseConnectionSQLite {
     private void initializeDatabase() {
         // Example: Create tables if they don't exist
         System.out.println("init the database tables:");
-        try {
-            if(tableExists("users")){
-                System.out.println("Database Has Been Created Before..!!");
-                return;
-            }
-        } catch (SQLException e) {
-            System.out.println("Error cannot test database last creation...!!!");
-            e.printStackTrace();
-        }
+        // TODO: return this code after finishing project final build
+//        try {
+//            if(tableExists("users")){
+//                System.out.println("Database Has Been Created Before..!!");
+//                return;
+//            }
+//        } catch (SQLException e) {
+//            System.out.println("Error cannot test database last creation...!!!");
+//            e.printStackTrace();
+//        }
         try (var stmt = connection.createStatement()) {
             List<String> queries = FilesHelperReader.readUntilChar("src\\main\\resources\\orgs\\tuasl_clint\\file\\SQLiteDatabase.txt",';');
             for(String query : queries){
                 stmt.executeUpdate(query);
-                System.out.println("EXECUTED QUERY: "+ query + " IS DONE ...!!!");
+                System.out.println("   QUERY: \n"+ query + "\n   IS EXECUTED SUCCESSFULLY ...!!!");
+            }
+            List<String> inserts = FilesHelperReader.readUntilChar("src\\main\\resources\\orgs\\tuasl_clint\\file\\tusalDB_insertion_SQLite.txt",';');
+            for(String query : inserts){
+                System.out.print("   QUERY: \n\""+ query + "\"\n   IS EXECUTING ... STATE IS : ");
+                if(stmt.executeUpdate(query + ";") > 0)
+                    System.out.println("SUCCESS ...!!!");
+                else
+                    System.out.println("FAILURE ...!!!");
             }
         } catch (SQLException | IOException e) {
-            System.out.println("an Error occurred while truing create database tables ");
+            System.out.println("an Error occurred while trying create database tables or insert values error is : ");
             System.out.println(e.getMessage());
         }
     }
