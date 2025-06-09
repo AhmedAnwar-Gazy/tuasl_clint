@@ -2,6 +2,7 @@ package orgs.tuasl_clint.models2;
 
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import java.sql.*;
+import java.util.Date;
 
 public class Message {
     private Long messageId;
@@ -24,6 +25,8 @@ public class Message {
     }
     public Message(String content) {
         this.content = content;
+        this.sentAt = new Timestamp(new Date().getTime());
+        this.editedAt = sentAt;
     }
 
     public Message(Long messageId, Long chatId, Long senderUserId, String messageType, String content, Long mediaId, Long repliedToMessageId, Long forwardedFromUserId, Long forwardedFromChatId, Timestamp sentAt, Timestamp editedAt, Boolean isDeleted, Integer viewCount) {

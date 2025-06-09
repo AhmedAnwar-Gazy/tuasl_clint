@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 
 public class FilesHelper {
     public static enum fileType{
-        INVALID, IMAGE, VIDEO, AUDIO, PDF, STICKER, OTHER
+        INVALID, IMAGE, VIDEO, AUDIO, STICKER, TEXT, FILE
     }
     public static fileType getFileType(File file) {
         if (file == null || !file.exists()) {
@@ -29,9 +29,6 @@ public class FilesHelper {
                 // Audio formats
                 case "mp3", "wav", "ogg", "flac", "aac" -> fileType.AUDIO;
 
-                // Documents
-                case "pdf" -> fileType.PDF;
-
                 // Stickers (could be special image formats)
                 case "tgs" ->  // Telegram stickers
                         fileType.STICKER;
@@ -44,16 +41,31 @@ public class FilesHelper {
                             yield fileType.VIDEO;
                         } else if (mimeType.startsWith("audio/")) {
                             yield fileType.AUDIO;
-                        } else if (mimeType.equals("application/pdf")) {
-                            yield fileType.PDF;
                         }
                     }
-                    yield fileType.OTHER;
+                    yield fileType.FILE;
                 }
             };
         } catch (IOException | StringIndexOutOfBoundsException e) {
             return fileType.INVALID;
         }
+    }public static fileType getFileType(String Type) {
+            // First check by extension for more specific control
+            return switch (Type) {
+                // Image formats
+                case "jpg", "jpeg", "png", "gif", "bmp", "webp", "image" -> fileType.IMAGE;
+
+                // Video formats
+                case "mp4", "mov", "avi", "mkv", "webm", "wmv","video" -> fileType.VIDEO;
+
+                // Audio formats
+                case "mp3", "wav", "ogg", "flac", "aac", "audio" -> fileType.AUDIO;
+
+                // Stickers (could be special image formats)
+                case "tgs" ->  // Telegram stickers
+                        fileType.STICKER;
+                default -> fileType.FILE;
+            };
     }
     public static fileType getFileType(Path path) {
         return getFileType(path.toFile());
@@ -63,7 +75,7 @@ public class FilesHelper {
         switch(getFileType(file)){
             case VIDEO ->path += "videos";
             case IMAGE ->path+= "images";
-            case OTHER, PDF -> path += "file";
+            case FILE -> path += "file";
             case STICKER -> path += "sticker";
             case AUDIO -> path += "voiceNote";
             default -> throw new IOException("this file is not good!!");
@@ -75,7 +87,7 @@ public class FilesHelper {
         switch(getFileType(file)){
             case VIDEO ->path += "videoItem.fxml";
             case IMAGE ->path+= "imageItem.fxml";
-            case OTHER, PDF, STICKER -> path += "fileItem.fxml";
+            case FILE, STICKER -> path += "fileItem.fxml";
             case AUDIO -> path += "audioItem.fxml";
             default -> throw new Exception("this file is not good!!");
         }

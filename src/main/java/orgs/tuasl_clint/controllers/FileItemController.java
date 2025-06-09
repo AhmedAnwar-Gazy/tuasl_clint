@@ -33,7 +33,13 @@ public class FileItemController {
         } catch (ClassCastException | NullPointerException e) {
             System.err.println("Error deleting item: " + e.getMessage());
         }
+        if(action != null)
+            action.OnActionClose();
     }
+    public interface Action{
+        public void OnActionClose();
+    }
+    public Action action;
 
     public void setFileInfo(File file){
         this.fileNameLBL.setText(file.getName());

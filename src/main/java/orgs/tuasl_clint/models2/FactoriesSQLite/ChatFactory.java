@@ -26,7 +26,18 @@ public class ChatFactory {
                 rs.getTimestamp("updated_at")
         );
     }
-
+    public static Chat findByName(String chatName)throws SQLException{
+        String sql = "SELECT * FROM chats WHERE chat_name = ?";
+        try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
+            statement.setString(1, chatName);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return createFromResultSet(rs);
+                }
+            }
+        }
+        return null;
+    }
     public static Chat findById(long chatId) throws SQLException {
         String sql = "SELECT * FROM chats WHERE chat_id = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {

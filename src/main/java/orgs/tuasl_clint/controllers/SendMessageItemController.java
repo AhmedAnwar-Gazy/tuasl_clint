@@ -17,10 +17,9 @@ import orgs.tuasl_clint.models2.FactoriesSQLite.UserFactory;
 import orgs.tuasl_clint.models2.Media;
 import orgs.tuasl_clint.models2.Message;
 import orgs.tuasl_clint.models2.User;
+import orgs.tuasl_clint.utils.FilesHelper;
 
-import javax.swing.text.View;
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
@@ -73,19 +72,19 @@ public class SendMessageItemController {
         //ENUM('text', 'image', 'video', 'voiceNote', 'file', 'system')
 
 
-        switch (message.getMessageType()) {
-            case "text":
+        switch (FilesHelper.getFileType(message.getMessageType())){
+            case TEXT:
                 break;
-            case "image":
+            case IMAGE:
                 loadImageMessages(message);
                 break;
-            case "video":
+            case VIDEO:
                 loadVideoMessages(message);
                 break;
-            case "voiceNote":
+            case AUDIO:
                 loadAudioMessages(message);
                 break;
-            case "file":
+            case FILE, STICKER:
                 System.out.println("Handle file message");
                 break;
             default:

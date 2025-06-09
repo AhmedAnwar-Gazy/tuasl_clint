@@ -8,6 +8,7 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import orgs.tuasl_clint.models2.*;
+import orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory;
 import orgs.tuasl_clint.models2.FactoriesSQLite.MediaFactory;
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import orgs.tuasl_clint.utils.FilesHelper;
@@ -30,6 +31,7 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.*;
@@ -95,6 +97,10 @@ public class ChatController {
     private ObservableList<Chat> chatItemsChats = FXCollections.observableArrayList();
     private ObservableList<String> messageItems = FXCollections.observableArrayList();
     private ObservableList<Message> messageItemsMessage = FXCollections.observableArrayList();
+    private File audioFile;
+    private File mediaFile;
+    private Long currentChatId;
+
 
     @FXML
     public void initialize() {
@@ -134,14 +140,60 @@ public class ChatController {
     @FXML
     private void handleSendButtonAction(ActionEvent event) {
         String messageText = messageInputField.getText().trim();
+        if(mediaFile != null){
+            this.message_media_selected_container.getChildren().clear();
+            Media m = new Media(mediaFile.getName(),mediaFile.getAbsolutePath(),FilesHelper.getFileExtension(mediaFile),FilesHelper.getFileSize(mediaFile),new Timestamp(new Date().getTime()));
+            m.setUploaderUserId(User.user.getUserId());
+            try {
+                if(m.save()){
+                    Message mm = new Message(messageText);
+                    mm.setMediaId(m.getMediaId());
+                    mm.setSenderName(User.user.getFirstName());
+                    mm.setSenderUserId(User.user.getUserId());
+                    mm.setChatId(currentChatId);
+                    mm.setMessageType(FilesHelper.getFileType(mediaFile).name().toLowerCase());
+                    if(mm.save()){
+                    //TODO: send the file and message to reciver user
+                        System.out.println("the message has been saved");
+                        loadMessages(mm);
+                        messageInputField.clear();
+                        messageScrollPane.setVvalue(1.0);
+                        return;
+                    }
+                    else {
+                        System.out.println("cannot save the message");
+                    }
+                }
+                else {
+                    System.out.println("cannot save the media file");
+                }
+            } catch (SQLException e) {
+                System.out.println("an error occurred while trying to save the message or its media error: "+ e.getMessage());
+            }
+        }
         // Message  : Long messageId, Long chatId, Long senderUserId, String messageType, String content, Long mediaId, Long repliedToMessageId, Long forwardedFromUserId, Long forwardedFromChatId, Timestamp sentAt, Timestamp editedAt, Boolean isDeleted, Integer viewCount
         if (!messageText.isEmpty()) {
             System.out.println("Sending message: " + messageText);
-            loadMessages(new Message(messageText));
-            // Clear the input field
-            messageInputField.clear();
-            // Scroll to bottom (might need slight delay depending on layout)
-            messageScrollPane.setVvalue(1.0);
+            Message m = new Message(messageText);
+            m.setMediaId(m.getMediaId());
+            m.setSenderName(User.user.getFirstName());
+            m.setSenderUserId(User.user.getUserId());
+            m.setChatId(currentChatId);
+            m.setMessageType(FilesHelper.getFileType(mediaFile).name().toLowerCase());
+            try {
+                if(m.save()){
+                    loadMessages(m);
+                    // Clear the input field
+                    messageInputField.clear();
+                    // Scroll to bottom (might need slight delay depending on layout)
+                    messageScrollPane.setVvalue(1.0);
+                }
+                else{
+                    System.out.println("cannot save the message");
+                }
+            } catch (SQLException e) {
+                System.out.println("an error occurred while trying to save the message error: "+ e.getMessage());
+            }
         }
     }
 
@@ -202,7 +254,7 @@ public class ChatController {
                 folder.mkdirs(); // Create directory if it doesn’t exist
             }            // Generate a unique filename based on the current timestamp
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            File audioFile = new File(RECORDING_FOLDER, "recording_" + timeStamp + ".wav");
+            audioFile = new File(RECORDING_FOLDER, "recording_" + timeStamp + ".wav");
             AudioFormat format = new AudioFormat(16000, 8, 2, true, true);
             DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
             if (!AudioSystem.isLineSupported(info)) {
@@ -234,7 +286,23 @@ public class ChatController {
             line.close();
             isRecording = false;
             //TODO: send the audio file to current chat
-
+            this.mediaFile = audioFile;
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/fileItem.fxml"));
+                Parent pp = loader.load();
+                FileItemController f = loader.getController();
+                f.setFileInfo(audioFile);
+                f.action = new FileItemController.Action() {
+                    @Override
+                    public void OnActionClose() {
+                        audioFile.delete();
+                        mediaFile = null;
+                    }
+                };
+                this.message_media_selected_container.getChildren().addFirst(pp);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             System.out.println("Recording stopped and saved.");
         }
     }
@@ -265,7 +333,14 @@ public class ChatController {
                 Parent pp = loader.load();
                 FileItemController f = loader.getController();
                 f.setFileInfo(selectedFile);
-                this.message_media_selected_container.getChildren().add(0, pp);
+                f.action = new FileItemController.Action() {
+                    @Override
+                    public void OnActionClose() {
+                        mediaFile = null;
+                    }
+                };
+                this.mediaFile = selectedFile;
+                this.message_media_selected_container.getChildren().addFirst(pp);
                 System.out.println("File copied successfully: " + selectedFile.getAbsolutePath() +
                         " to " + destinationPath.toAbsolutePath());
             } catch (Exception e) {
@@ -347,6 +422,7 @@ public class ChatController {
     }
 
     public void loadMyChats() {
+        this.emojiScrollPane.setVisible(false);
         try (Connection con = DatabaseConnectionSQLite.getInstance().getConnection()){
 
 
@@ -359,8 +435,10 @@ public class ChatController {
 
 
             while (rs.next()) {
-                if(rs.getString("chat_name") != null)
+                if(rs.getString("chat_name") != null){
+                    currentChatId = rs.getLong("chat_id");
                     chatItems.add(rs.getString("chat_name"));
+                }
                 else{
                     chatItems.add("click to add Chat");
                     chatListView.setItems(chatItems);
@@ -385,8 +463,10 @@ public class ChatController {
                     return;
                 }
                 Chat chat = orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory.createFromResultSet(rs);
-                if(chat != null)
+                if(chat != null){
                     chatItemsChats.add(chat);
+                    currentChatId = chat.getChatId();
+                }
                 System.out.println(chat.getChatName());
             }
             rs.close();
@@ -399,13 +479,14 @@ public class ChatController {
     public void loadChatsMessages(String chatname) {
         try(Connection con = DatabaseConnectionSQLite.getInstance().getConnection()) {
             System.out.println("colam :" + chatname);
-            String sql = "SELECT messages.* ,media.* FROM chats left join messages on chats.chat_id = messages.chat_id LEFT JOIN media on messages.media_id =   media.media_id  WHERE chats.chat_name = ? ORDER BY messages.message_id  ASC; ";
+            String sql = "SELECT messages.* ,media.* , chats.chat_id FROM chats left join messages on chats.chat_id = messages.chat_id LEFT JOIN media on messages.media_id =   media.media_id  WHERE chats.chat_name = ? ORDER BY messages.message_id  ASC; ";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1,chatname);
             ResultSet rs = stmt.executeQuery();
 
 
             while (rs.next()) {
+                currentChatId = rs.getLong("chat_id");
                 messageItems.add(rs.getString(4));
                 Message message = orgs.tuasl_clint.models2.FactoriesSQLite.MessageFactory.createFromResultSet(rs);
                 messageItemsMessage.add(message);
@@ -424,9 +505,8 @@ public class ChatController {
             System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
             return;
         }
-
         try {
-
+            //TODO: use the socket to share call between these users
             Socket audioSocket = new Socket("localhost", 6001); // منفذ الصوت
             AudioCallWindow audioCallWindow = new AudioCallWindow("📞 مع " + selectedUser);
             AudioSender audioSender = new AudioSender();
