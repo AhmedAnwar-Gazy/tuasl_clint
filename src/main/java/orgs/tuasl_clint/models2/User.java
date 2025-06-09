@@ -2,6 +2,7 @@ package orgs.tuasl_clint.models2;
 
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import java.sql.*;
+import java.util.Date;
 
 
 public class User {
@@ -42,6 +43,18 @@ public class User {
         this.isOnline = isOnline;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public User(String username, String phone, String password) {
+        this.username = username;
+        this.phoneNumber = phone;
+        this.hashedPassword = password;
+        this.createdAt = new Timestamp(new Date().getTime());
+        this.lastSeenAt = createdAt;
+        this.updatedAt = createdAt;
+        this.firstName = username;
+        this.lastName = username;
+        this.bio = username;
     }
 
     public long getUserId() { return userId; }

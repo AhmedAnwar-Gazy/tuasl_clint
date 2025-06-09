@@ -8,6 +8,7 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import orgs.tuasl_clint.models2.*;
+import orgs.tuasl_clint.models2.FactoriesSQLite.MediaFactory;
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import orgs.tuasl_clint.utils.FilesHelper;
 import orgs.tuasl_clint.utils.Navigation;
@@ -28,6 +29,9 @@ import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.*;
 
 import javafx.scene.input.MouseEvent;
@@ -130,6 +134,7 @@ public class ChatController {
     @FXML
     private void handleSendButtonAction(ActionEvent event) {
         String messageText = messageInputField.getText().trim();
+        // Message  : Long messageId, Long chatId, Long senderUserId, String messageType, String content, Long mediaId, Long repliedToMessageId, Long forwardedFromUserId, Long forwardedFromChatId, Timestamp sentAt, Timestamp editedAt, Boolean isDeleted, Integer viewCount
         if (!messageText.isEmpty()) {
             System.out.println("Sending message: " + messageText);
             loadMessages(new Message(messageText));
@@ -215,6 +220,7 @@ public class ChatController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
             });
             recordingThread.start();
         } catch (LineUnavailableException e) {
@@ -227,6 +233,8 @@ public class ChatController {
             line.stop();
             line.close();
             isRecording = false;
+            //TODO: send the audio file to current chat
+
             System.out.println("Recording stopped and saved.");
         }
     }
@@ -344,16 +352,41 @@ public class ChatController {
 
             String sql = "SELECT c.* FROM users LEFT JOIN chat_participants on users.user_id = chat_participants.user_id LEFT JOIN chats c on chat_participants.chat_id = c.chat_id WHERE users.user_id = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
-            //TODO: replace with current user id
+            //TODO: replace with current user id : Done
             stmt.setLong(1,User.user.getUserId());
 
             ResultSet rs = stmt.executeQuery();
 
 
             while (rs.next()) {
-                chatItems.add(rs.getString("chat_name"));
+                if(rs.getString("chat_name") != null)
+                    chatItems.add(rs.getString("chat_name"));
+                else{
+                    chatItems.add("click to add Chat");
+                    chatListView.setItems(chatItems);
+                    chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+                        Chat c = new Chat(Chat.ChatType.GROUP, new Timestamp(new Date().getTime()));
+                        try {
+                            if(c.save()) {
+                                System.out.println("chat created");
+                                ChatParticipant cp = new ChatParticipant(c.getChatId(),User.user.getUserId(), new Timestamp(new Date().getTime()));
+                                if(cp.save()){
+                                    System.out.println("ChatParticipant created for chat");
+                                    loadMyChats();
+                                }else {
+                                    System.out.println("cannot create the chat ChatParticipant");
+                                }
+                            }
+                        } catch (SQLException e) {
+                            System.out.println("cannot create a chat");
+                            Logger.getLogger(getClass().getName()).log(Level.WARNING,"Create Chat Failed");
+                        }
+                    });
+                    return;
+                }
                 Chat chat = orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory.createFromResultSet(rs);
-                chatItemsChats.add(chat);
+                if(chat != null)
+                    chatItemsChats.add(chat);
                 System.out.println(chat.getChatName());
             }
             rs.close();

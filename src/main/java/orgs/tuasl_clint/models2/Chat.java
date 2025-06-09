@@ -16,7 +16,7 @@ public class Chat {
     private Timestamp updatedAt;
 
     public enum ChatType {
-        PRIVATE, GROUP, CHANNEL;
+        PRIVATE, GROUP, CHANNEL, UNKNOWN;
 
         public static ChatType fromString(String value) {
             for (ChatType type : ChatType.values()) {
@@ -24,7 +24,8 @@ public class Chat {
                     return type;
                 }
             }
-            throw new IllegalArgumentException("Invalid ChatType: " + value);
+            //throw new IllegalArgumentException("Invalid ChatType: " + value);
+            return UNKNOWN;
         }
     }
 

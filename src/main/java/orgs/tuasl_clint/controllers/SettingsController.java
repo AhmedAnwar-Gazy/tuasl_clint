@@ -1,10 +1,15 @@
 package orgs.tuasl_clint.controllers;
 
+import orgs.tuasl_clint.models2.User;
 import orgs.tuasl_clint.utils.Navigation;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Button; // Import Button
+
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SettingsController {
 
@@ -39,8 +44,22 @@ public class SettingsController {
         Navigation.loadPage("chat.fxml");
     }
 
-    public void handleRegisterButtonAction(ActionEvent event) {
-
+    @FXML
+    private void handleChangPasswordButton(ActionEvent event){
+        //TODO: load the page of chang the password
+    }
+    @FXML
+    private void handleLogoutButton(ActionEvent event){
+        try {
+            User.user.setOnline(false);
+            if(User.user.update()){
+                Navigation.loadPage("login.fxml");
+            }else{
+                Logger.getLogger(null).log(Level.WARNING,"Error occurred while trying to logout");
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(null).log(Level.WARNING,"Error occurred while trying to logout");
+        }
     }
 
     // Add handlers for other buttons (Change Password, Log Out) as needed

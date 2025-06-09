@@ -164,7 +164,9 @@ public class SendMessageItemController {
             ImageMessageController imageMessageController = loader.getController();
             Media m = MediaFactory.findById(message.getMediaId());
             if(m != null) {
-                imageMessageController.loadImage(m.getFilePathOrUrl() + m.getFileName() + '.' + m.getMimeType());
+                imageMessageController.loadImage(getClass().getResource("/orgs/tuasl_clint/images/") + m.getFileName());
+                //imageMessageController.loadImage(m.getFilePathOrUrl() + m.getFileName() + '.' + m.getMimeType());
+                System.out.println("Message id : "+message.getMessageId()+" with image media : "+ m.getFilePathOrUrl()+"/" + m.getFileName() + '.' + m.getMimeType());
             }
             else
                 imageMessageController.loadImage(getClass().getResource("/orgs/tuasl_clint/images/R.png").toString());
@@ -209,11 +211,13 @@ public class SendMessageItemController {
 
     @FXML
     void handleMessageHoverEnter(MouseEvent event) {
-        System.out.println("mouse enter message with x : "+ event.getX()+ " and y : "+ event.getY() + "messh : "+ VboxMessage.getHeight() + " messy : " + VboxMessage.getLayoutY() );
-        if(VboxMessage.getHeight() < event.getY() + sumofChildsHeights(reactionsContainer.getChildren()))
+        System.out.println("mouse enter message with x : "+ event.getX()+ " and y : "+ event.getY() + "messh : "+ VboxMessage.getHeight() + " sum... : " + + sumofChildsHeights(reactionsContainer.getChildren()) );
+        if(VboxMessage.getHeight() <= sumofChildsHeights(reactionsContainer.getChildren()))
             reactionsContainer.setLayoutY(-1 * VboxMessage.getHeight() + 3);
+        else if(VboxMessage.getHeight() > event.getY() + sumofChildsHeights(reactionsContainer.getChildren()))
+            reactionsContainer.setLayoutY(( event.getY()-VboxMessage.getHeight()));
         else
-            reactionsContainer.setLayoutY(event.getY() - 100);
+            reactionsContainer.setLayoutY(1 - sumofChildsHeights(reactionsContainer.getChildren()));
         reactionsContainer.setLayoutX(VboxMessage.getWidth());
         this.reactionsContainer.setVisible(true);
 

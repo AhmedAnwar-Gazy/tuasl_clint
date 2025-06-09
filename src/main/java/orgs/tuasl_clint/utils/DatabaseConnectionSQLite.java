@@ -48,16 +48,16 @@ public class DatabaseConnectionSQLite {
     private void initializeDatabase() {
         // Example: Create tables if they don't exist
         System.out.println("init the database tables:");
-        // TODO: return this code after finishing project final build
-//        try {
-//            if(tableExists("users")){
-//                System.out.println("Database Has Been Created Before..!!");
-//                return;
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("Error cannot test database last creation...!!!");
-//            e.printStackTrace();
-//        }
+        // TODO: return this code(try and catch code) after finishing project final build or make it comment to create the  database with it's default data : Done
+        try {
+            if(tableExists("users")){
+                System.out.println("Database Has Been Created Before..!!");
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error cannot test database last creation...!!!");
+            e.printStackTrace();
+        }
         try (var stmt = connection.createStatement()) {
             List<String> queries = FilesHelperReader.readUntilChar("src\\main\\resources\\orgs\\tuasl_clint\\file\\SQLiteDatabase.txt",';');
             for(String query : queries){

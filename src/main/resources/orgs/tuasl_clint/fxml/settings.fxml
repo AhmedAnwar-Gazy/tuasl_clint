@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" styleClass="root-pane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.SettingsController">
+<ScrollPane fitToWidth="true" styleClass="root-pane" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.SettingsController">
     <content>
         <VBox alignment="TOP_CENTER" spacing="20.0">
             <padding>
@@ -21,24 +21,24 @@
                 </font>
             </Label>
 
-            <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="400">
-                <Label text="Notifications:" styleClass="section-label"/>
-                <CheckBox fx:id="enableNotificationsCheckbox" text="Enable Desktop Notifications" selected="true"/>
-                <CheckBox fx:id="playSoundCheckbox" text="Play notification sound"/>
+            <VBox alignment="CENTER_LEFT" maxWidth="400" spacing="10">
+                <Label styleClass="section-label" text="Notifications:" />
+                <CheckBox fx:id="enableNotificationsCheckbox" selected="true" text="Enable Desktop Notifications" />
+                <CheckBox fx:id="playSoundCheckbox" text="Play notification sound" />
             </VBox>
 
-            <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="400">
-                <Label text="Appearance:" styleClass="section-label"/>
-                <Label text="(Theme options would go here)"/>
+            <VBox alignment="CENTER_LEFT" maxWidth="400" spacing="10">
+                <Label styleClass="section-label" text="Appearance:" />
+                <Label text="(Theme options would go here)" />
             </VBox>
 
-            <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="400">
-                <Label text="Account:" styleClass="section-label"/>
-                <Button text="Change Password..." styleClass="secondary-button"/>
-                <Button text="Log Out" styleClass="danger-button"/>
+            <VBox alignment="CENTER_LEFT" maxWidth="400" spacing="10">
+                <Label styleClass="section-label" text="Account:" />
+                <Button onAction="#handleChangPasswordButton" styleClass="secondary-button" text="Change Password..." />
+                <Button onAction="#handleLogoutButton" styleClass="danger-button" text="Log Out" />
             </VBox>
 
-            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButtonAction" styleClass="action-button" text="Back to Chat" maxWidth="400"/>
+            <Button fx:id="backButton" maxWidth="400" mnemonicParsing="false" onAction="#handleBackButtonAction" styleClass="action-button" text="Back to Chat" />
         </VBox>
     </content>
 </ScrollPane>

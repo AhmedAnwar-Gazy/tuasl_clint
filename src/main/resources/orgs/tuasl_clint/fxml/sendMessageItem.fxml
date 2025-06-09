@@ -11,7 +11,7 @@
 </padding>
 
           <Label fx:id="senderLabel" styleClass="message-sender" text="Sender Name" />
-    <VBox fx:id="mediaContainers" />
+    <VBox fx:id="mediaContainers" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" />
 
           <Text fx:id="contentText" accessibleText="1" styleClass="message-text" wrappingWidth="300" />
 
