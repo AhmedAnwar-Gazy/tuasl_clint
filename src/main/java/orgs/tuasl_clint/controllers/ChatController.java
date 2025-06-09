@@ -8,8 +8,6 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import orgs.tuasl_clint.models2.*;
-import orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory;
-import orgs.tuasl_clint.models2.FactoriesSQLite.MediaFactory;
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import orgs.tuasl_clint.utils.FilesHelper;
 import orgs.tuasl_clint.utils.Navigation;
@@ -17,12 +15,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.animation.ScaleTransition;
-//import javafx.scene.media.AudioRecorder;
 import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,10 +28,8 @@ import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Deque;
+import java.util.HashMap;
 import javax.sound.sampled.*;
 
 import javafx.scene.input.MouseEvent;
@@ -95,40 +91,50 @@ public class ChatController {
     private final String RECORDING_FOLDER = "src/main/resources/orgs/tuasl_clint/voiceNote/";
     private ObservableList<String> chatItems = FXCollections.observableArrayList();
     private ObservableList<Chat> chatItemsChats = FXCollections.observableArrayList();
-    private ObservableList<String> messageItems = FXCollections.observableArrayList();
-    private ObservableList<Message> messageItemsMessage = FXCollections.observableArrayList();
+//    private ObservableList<String> messageItems = FXCollections.observableArrayList();
+    private ObservableList<Message> messageItemsMessage;// = FXCollections.observableArrayList();
+
+    private HashMap<String,Chat> chatsMap;
+    private HashMap<Chat,ObservableList<Message>> chatsMessagesMap;
     private File audioFile;
-    private File mediaFile;
-    private Long currentChatId;
+    private FileItemController mediaFileController;
+    private Chat currentChat;
+    private URL resourcesUrl;
 
 
     @FXML
     public void initialize() {
+        chatsMap = new HashMap<>();
+        chatsMessagesMap = new HashMap<>();
+        this.resourcesUrl = getClass().getResource("/orgs/tusal_clint");
+//        this.emojiScrollPane.setVisible(false);
         loadMyChats();
         chatListView.setItems(chatItems);
         chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            System.out.println();
+            System.out.println("selected chat is changed");
             if (newSelection != null) {
                 chatTitleLabel.setText(newSelection);
                 // Clear previous messages and load messages for the selected chat
-                messageItems.clear();
-                messageItemsMessage.clear();
-                messageDisplayArea.getChildren().clear();                // Add placeholder message loading logic
-                messageDisplayArea.getChildren().add(new Label("Messages for " + newSelection + " would load here."));
+//                messageItems.clear();
+//                messageItemsMessage.clear();
+                messageDisplayArea.getChildren().clear();
+                messageDisplayArea.getChildren().add(new Label("Messages for " + newSelection + " are encrypted between all participles."));
                 loadChatsMessages(newSelection);                // --- NEW CODE: Populate messageDisplayArea directly after loading messages ---
                 for (Message message : messageItemsMessage) {
                     loadMessages(message);
-                    //messageDisplayArea.getChildren().add(new Label(message.getContent()));
                 }
-                // --- END NEW CODE ---
-                //System.out.println(messageItems);                System.out.println("Selected chat: " + newSelection);
+                System.out.println("Selected chat: " + newSelection);
+                currentChat = chatsMap.get(newSelection);
             }
         });        // Select the first chat by default
-        if (!chatItems.isEmpty()) {
+        if (!chatItems.isEmpty() && !chatsMap.isEmpty()) {
             chatListView.getSelectionModel().selectFirst();
         }
+        else {
+            chatTitleLabel.setText("Create a Chat to start chatting...");
+            main_message_input_container.setDisable(true);
+        }
         messageInputField.setFont(Font.font("Segoe UI Emoji"));
-        // Ensure the scroll pane scrolls to the bottom when new messages are added (basic setup)
         messageDisplayArea.heightProperty().addListener(observable -> messageScrollPane.setVvalue(1D));
     }
 
@@ -140,9 +146,9 @@ public class ChatController {
     @FXML
     private void handleSendButtonAction(ActionEvent event) {
         String messageText = messageInputField.getText().trim();
-        if(mediaFile != null){
+        if(!this.message_media_selected_container.getChildren().isEmpty()){
             this.message_media_selected_container.getChildren().clear();
-            Media m = new Media(mediaFile.getName(),mediaFile.getAbsolutePath(),FilesHelper.getFileExtension(mediaFile),FilesHelper.getFileSize(mediaFile),new Timestamp(new Date().getTime()));
+            Media m = new Media(mediaFileController.getFile().getName(), mediaFileController.getFile().getAbsolutePath(),FilesHelper.getFileExtension(mediaFileController.getFile()),FilesHelper.getFileSize(mediaFileController.getFile()),new Timestamp(new Date().getTime()));
             m.setUploaderUserId(User.user.getUserId());
             try {
                 if(m.save()){
@@ -150,13 +156,14 @@ public class ChatController {
                     mm.setMediaId(m.getMediaId());
                     mm.setSenderName(User.user.getFirstName());
                     mm.setSenderUserId(User.user.getUserId());
-                    mm.setChatId(currentChatId);
-                    mm.setMessageType(FilesHelper.getFileType(mediaFile).name().toLowerCase());
+                    mm.setChatId(currentChat.getChatId());
+                    mm.setMessageType(FilesHelper.getFileType(mediaFileController.getFile()).name().toLowerCase());
                     if(mm.save()){
-                    //TODO: send the file and message to reciver user
+                    //TODO: send the file and message to reciver user( Write the code Here and some is under this main if block)
                         System.out.println("the message has been saved");
                         loadMessages(mm);
                         messageInputField.clear();
+                        this.mediaFileController.clear();
                         messageScrollPane.setVvalue(1.0);
                         return;
                     }
@@ -178,14 +185,13 @@ public class ChatController {
             m.setMediaId(m.getMediaId());
             m.setSenderName(User.user.getFirstName());
             m.setSenderUserId(User.user.getUserId());
-            m.setChatId(currentChatId);
-            m.setMessageType(FilesHelper.getFileType(mediaFile).name().toLowerCase());
+            m.setChatId(currentChat.getChatId());
+            m.setMessageType(FilesHelper.fileType.TEXT.name().toLowerCase());
             try {
                 if(m.save()){
+                    //TODO write the code of send text Message Here
                     loadMessages(m);
-                    // Clear the input field
                     messageInputField.clear();
-                    // Scroll to bottom (might need slight delay depending on layout)
                     messageScrollPane.setVvalue(1.0);
                 }
                 else{
@@ -199,7 +205,6 @@ public class ChatController {
 
     @FXML
     private void loadMessages(Message messageText) {
-        //private void loadMessages(String messageText) {
         try {
             // Create an FXMLLoader instance
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/sendMessageItem.fxml"));
@@ -214,24 +219,21 @@ public class ChatController {
             System.err.println("Failed to load UserCard.fxml: " + e.getMessage());
         }
     }
-
     @FXML
-    private void handleSendVoiceButtonAction1(ActionEvent event) {
-        System.out.println("Send Voice Button Clicked!");
+    private void handleSendVoiceButtonPressed(MouseEvent event){
+        System.out.println("Send Voice button pressed...");
+//        if(mediaFile !=  null){
+//            System.out.println("Cannot record now because there is a media file exist to send");
+//            return;
+//        }
+        animateButton(true); // Start animation
+        startRecording(); // Begin recording
     }
-
     @FXML
-    public void handleSendVoiceButtonAction() {
-        System.out.println("Send Voice Button Clicked!");
-        sendVoiceButton.setOnAction(this::handleSendVoiceButtonAction1);
-        sendVoiceButton.setOnMousePressed(event -> {
-            animateButton(true); // Start animation
-            startRecording(); // Begin recording
-        });
-        sendVoiceButton.setOnMouseReleased(event -> {
-            stopRecording(); // Stop recording when released
-            animateButton(false); // Reset animation
-        });
+    private void handleSendVoiceButtonReleased(MouseEvent event){
+        System.out.println("Send Voice button Released");
+        stopRecording(); // Stop recording when released
+        animateButton(false); // Reset animation
     }
 
     private void animateButton(boolean isClicked) {
@@ -251,8 +253,8 @@ public class ChatController {
             // Ensure the directory exists
             File folder = new File(RECORDING_FOLDER);
             if (!folder.exists()) {
-                folder.mkdirs(); // Create directory if it doesn’t exist
-            }            // Generate a unique filename based on the current timestamp
+                folder.mkdirs();
+            }
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             audioFile = new File(RECORDING_FOLDER, "recording_" + timeStamp + ".wav");
             AudioFormat format = new AudioFormat(16000, 8, 2, true, true);
@@ -279,30 +281,62 @@ public class ChatController {
             e.printStackTrace();
         }
     }
+    @FXML
+    public void setMediaFile(File file, FileItemController.Action action) {
 
+        if(!this.message_media_selected_container.getChildren().isEmpty() && this.mediaFileController != null && this.mediaFileController.getState() != FileItemController.State.DELETED){
+            this.message_media_selected_container.getChildren().clear();
+            mediaFileController.setFile(file,action);
+        }
+        else if(!this.message_media_selected_container.getChildren().isEmpty() && this.mediaFileController == null){
+            this.message_media_selected_container.getChildren().clear();
+            setMediaFile(file,action);
+        }
+        else if(this.message_media_selected_container.getChildren().isEmpty()){
+            try {
+//                Recording started: C:\Users\alraw\OneDrive\سطح المكتب\ChatSystem\toasol\tuasl_clint\src\main\resources\orgs\tuasl_clint\voiceNote\recording_20250609_184935.wav
+//                Send Voice button Released
+//                Loading media file of : file:/C:/Users/alraw/OneDrive/سطح%20المكتب/ChatSystem/toasol/tuasl_clint/target/classes/orgs/tuasl_clint/fxml/fileItem.fxml
+                URL distinationUrl = new URL(resourcesUrl.getPath() +"/fxml/fileItem.fxml");
+                if(distinationUrl != null){
+                    System.out.println("Loading media file of : "+ distinationUrl.toString());
+                    FXMLLoader loader = new FXMLLoader(distinationUrl);
+                    Parent pp = loader.load();
+                    this.mediaFileController = loader.getController();
+                    this.mediaFileController.setFile(file,action);
+                    this.message_media_selected_container.getChildren().addFirst(pp);
+                }
+            } catch (IOException e) {
+                System.out.println("Cannot load the file Error is : " + e.getMessage());
+            }
+        }
+    }
+    public void setMessageText(String text){
+
+    }
+    public void SetMessage(Message message){
+
+    }
     private void stopRecording() {
         if (isRecording && line != null) {
             line.stop();
             line.close();
             isRecording = false;
             //TODO: send the audio file to current chat
-            this.mediaFile = audioFile;
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/fileItem.fxml"));
-                Parent pp = loader.load();
-                FileItemController f = loader.getController();
-                f.setFileInfo(audioFile);
-                f.action = new FileItemController.Action() {
-                    @Override
-                    public void OnActionClose() {
-                        audioFile.delete();
-                        mediaFile = null;
-                    }
-                };
-                this.message_media_selected_container.getChildren().addFirst(pp);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            this.setMediaFile(audioFile,new FileItemController.Action() {
+                @Override
+                public void OnActionDelete() {
+                    try {
+                        Files.delete(audioFile.toPath());
+                    } catch (IOException e) {
+                        System.out.println("cannot delete recorded voice file");
+                    };
+                }
+                @Override
+                public void OnActionCleared() {
+                    audioFile = null;
+                }
+            });
             System.out.println("Recording stopped and saved.");
         }
     }
@@ -329,18 +363,7 @@ public class ChatController {
                 Path destinationPath = destinationDirectory.resolve(selectedFile.getName());                    // Copy the selected file to the destination directory
                 Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
                 String FileItem = FilesHelper.getMediaViewerPath(selectedFile);
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/fileItem.fxml"));
-                Parent pp = loader.load();
-                FileItemController f = loader.getController();
-                f.setFileInfo(selectedFile);
-                f.action = new FileItemController.Action() {
-                    @Override
-                    public void OnActionClose() {
-                        mediaFile = null;
-                    }
-                };
-                this.mediaFile = selectedFile;
-                this.message_media_selected_container.getChildren().addFirst(pp);
+                this.setMediaFile(selectedFile,null);
                 System.out.println("File copied successfully: " + selectedFile.getAbsolutePath() +
                         " to " + destinationPath.toAbsolutePath());
             } catch (Exception e) {
@@ -425,47 +448,42 @@ public class ChatController {
         this.emojiScrollPane.setVisible(false);
         try (Connection con = DatabaseConnectionSQLite.getInstance().getConnection()){
 
-
             String sql = "SELECT c.* FROM users LEFT JOIN chat_participants on users.user_id = chat_participants.user_id LEFT JOIN chats c on chat_participants.chat_id = c.chat_id WHERE users.user_id = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
             //TODO: replace with current user id : Done
             stmt.setLong(1,User.user.getUserId());
 
             ResultSet rs = stmt.executeQuery();
-
-
             while (rs.next()) {
-                if(rs.getString("chat_name") != null){
-                    currentChatId = rs.getLong("chat_id");
-                    chatItems.add(rs.getString("chat_name"));
-                }
-                else{
-                    chatItems.add("click to add Chat");
-                    chatListView.setItems(chatItems);
-                    chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-                        Chat c = new Chat(Chat.ChatType.GROUP, new Timestamp(new Date().getTime()));
-                        try {
-                            if(c.save()) {
-                                System.out.println("chat created");
-                                ChatParticipant cp = new ChatParticipant(c.getChatId(),User.user.getUserId(), new Timestamp(new Date().getTime()));
-                                if(cp.save()){
-                                    System.out.println("ChatParticipant created for chat");
-                                    loadMyChats();
-                                }else {
-                                    System.out.println("cannot create the chat ChatParticipant");
-                                }
-                            }
-                        } catch (SQLException e) {
-                            System.out.println("cannot create a chat");
-                            Logger.getLogger(getClass().getName()).log(Level.WARNING,"Create Chat Failed");
-                        }
-                    });
-                    return;
-                }
+
+//                else{
+//                    chatItems.add("click to add Chat");
+//                    chatListView.setItems(chatItems);
+//                    chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+//                        Chat c = new Chat(Chat.ChatType.GROUP, new Timestamp(new Date().getTime()));
+//                        try {
+//                            if(c.save()) {
+//                                System.out.println("chat created");
+//                                ChatParticipant cp = new ChatParticipant(c.getChatId(),User.user.getUserId(), new Timestamp(new Date().getTime()));
+//                                if(cp.save()){
+//                                    System.out.println("ChatParticipant created for chat");
+//                                    loadMyChats();
+//                                }else {
+//                                    System.out.println("cannot create the chat ChatParticipant");
+//                                }
+//                            }
+//                        } catch (SQLException e) {
+//                            System.out.println("cannot create a chat");
+//                            Logger.getLogger(getClass().getName()).log(Level.WARNING,"Create Chat Failed");
+//                        }
+//                    });
+//                    return;
+//                }
                 Chat chat = orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory.createFromResultSet(rs);
                 if(chat != null){
+                    chatItems.add(chat.getChatName());
+                    chatsMap.put(chat.getChatName(),chat);
                     chatItemsChats.add(chat);
-                    currentChatId = chat.getChatId();
                 }
                 System.out.println(chat.getChatName());
             }
@@ -477,23 +495,29 @@ public class ChatController {
     }
 
     public void loadChatsMessages(String chatname) {
-        try(Connection con = DatabaseConnectionSQLite.getInstance().getConnection()) {
-            System.out.println("colam :" + chatname);
-            String sql = "SELECT messages.* ,media.* , chats.chat_id FROM chats left join messages on chats.chat_id = messages.chat_id LEFT JOIN media on messages.media_id =   media.media_id  WHERE chats.chat_name = ? ORDER BY messages.message_id  ASC; ";
-            PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setString(1,chatname);
-            ResultSet rs = stmt.executeQuery();
+        System.out.println("Loading Messages for chat :" + chatname);
+        if(!chatsMessagesMap.containsKey(chatsMap.get(chatname))){
+            System.out.println("This chat is first open now from last opening the application");
+            chatsMessagesMap.put(chatsMap.get(chatname),FXCollections.observableArrayList());
+            messageItemsMessage = chatsMessagesMap.get(chatsMap.get(chatname));
+            try(Connection con = DatabaseConnectionSQLite.getInstance().getConnection()) {
+                String sql = "SELECT messages.* ,media.* , chats.chat_id FROM chats left join messages on chats.chat_id = messages.chat_id LEFT JOIN media on messages.media_id =   media.media_id  WHERE chats.chat_name = ? ORDER BY messages.message_id  ASC; ";
+                PreparedStatement stmt = con.prepareStatement(sql);
+                stmt.setString(1,chatname);
+                ResultSet rs = stmt.executeQuery();
 
-
-            while (rs.next()) {
-                currentChatId = rs.getLong("chat_id");
-                messageItems.add(rs.getString(4));
-                Message message = orgs.tuasl_clint.models2.FactoriesSQLite.MessageFactory.createFromResultSet(rs);
-                messageItemsMessage.add(message);
+                while (rs.next()) {
+//                    messageItems.add(rs.getString(4));
+                    Message message = orgs.tuasl_clint.models2.FactoriesSQLite.MessageFactory.createFromResultSet(rs);
+                    messageItemsMessage.add(message);
+                }
+            } catch (SQLException e) {
+                System.err.println("An error occurred during database operations: " + e.getMessage());
             }
-
-        } catch (SQLException e) {
-            System.err.println("An error occurred during database operations: " + e.getMessage());
+        }
+        else{
+            System.out.println("this chat has been opend before and now is loaded successfully");
+            messageItemsMessage = chatsMessagesMap.get(chatsMap.get(chatname));
         }
     }
 
@@ -506,7 +530,7 @@ public class ChatController {
             return;
         }
         try {
-            //TODO: use the socket to share call between these users
+            //TODO: use the socket to share call between these users | participles
             Socket audioSocket = new Socket("localhost", 6001); // منفذ الصوت
             AudioCallWindow audioCallWindow = new AudioCallWindow("📞 مع " + selectedUser);
             AudioSender audioSender = new AudioSender();

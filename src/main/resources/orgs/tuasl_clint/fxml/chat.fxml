@@ -71,7 +71,7 @@
             <center>
                 <ScrollPane fx:id="messageScrollPane" fitToWidth="true" styleClass="message-area" BorderPane.alignment="CENTER">
                     <content>
-                        <VBox fx:id="messageDisplayArea" spacing="10.0"  style="-fx-background-image: url('images/img.png'); -fx-background-size: cover;">
+                        <VBox fx:id="messageDisplayArea" spacing="10.0" style="-fx-background-image: url('images/img.png'); -fx-background-size: cover;">
                             <padding><Insets bottom="10.0" left="15.0" right="15.0" top="10.0" /></padding>
                             <Label text="Welcome to the chat!" wrapText="true" />
                         </VBox>
@@ -109,7 +109,7 @@
                                   <Insets />
                               </HBox.margin>
                           </Button>
-                          <Button fx:id="sendVoiceButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleSendVoiceButtonAction" prefHeight="46.0" prefWidth="44.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
+                          <Button fx:id="sendVoiceButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMousePressed="#handleSendVoiceButtonPressed" onMouseReleased="#handleSendVoiceButtonReleased" prefHeight="46.0" prefWidth="44.0" style="-fx-background-color: #FF000000; -fx-background-radius: 50;">
                               <graphic>
                                   <ImageView fitHeight="31.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                       <image>
@@ -137,9 +137,9 @@
         </BorderPane>
     </center>
     <right>
-        <ScrollPane fx:id="emojiScrollPane" prefWidth="250.0" prefHeight="400.0" fitToWidth="true" hbarPolicy="NEVER">
+        <ScrollPane fx:id="emojiScrollPane" fitToWidth="true" hbarPolicy="NEVER" prefHeight="400.0" prefWidth="250.0">
             <content>
-                <FlowPane fx:id="areaOfEmojis" hgap="5.0" vgap="5.0" style="-fx-background-color: #f0f0f0; -fx-padding: 10;" />
+                <FlowPane fx:id="areaOfEmojis" hgap="5.0" style="-fx-background-color: #f0f0f0; -fx-padding: 10;" vgap="5.0" />
             </content>
         </ScrollPane>
     </right>

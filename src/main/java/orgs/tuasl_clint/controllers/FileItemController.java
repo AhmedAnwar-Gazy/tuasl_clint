@@ -2,6 +2,7 @@ package orgs.tuasl_clint.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -9,7 +10,9 @@ import orgs.tuasl_clint.utils.FilesHelper;
 
 import java.io.File;
 
-public class FileItemController {
+public abstract class FileItemController implements Initializable {
+
+    File file;
 
     @FXML
     private Button deleteItem;
@@ -25,8 +28,41 @@ public class FileItemController {
 
     @FXML
     void deleteItemHandler(ActionEvent event) {
+        this.deleteItem();
+    }
+    public interface Action{
+        public void OnActionDelete();
+        public void OnActionCleared();
+    }
+    public Action action;
+
+    public void initialize() {
+        this.state = State.NEW;
+    }
+
+    public void setFile(File file, Action StateChangedActions){
+        this.file = file;
+        this.fileNameLBL.setText(file.getName());
+        this.fileSizeLBL.setText(FilesHelper.formatFileSize(FilesHelper.getFileSize(file)));
+        this.fileTypeLBL.setText(FilesHelper.getFileExtension(file));
+        this.action = StateChangedActions;
+    }
+    public File getFile(){
+        return this.file;
+    }
+
+    public void clear(){
+        this.state = State.CLEARED;
+        if(this.action != null){
+            action.OnActionCleared();
+        }
+        this.file = null;
+        fileNameLBL.getParent().getParent().getChildrenUnmodifiable().remove(this.fileNameLBL.getParent());
+    }
+    public void deleteItem(){
         try {
-            Button deleteButton = (Button) event.getSource();
+            this.state = State.DELETED;
+            Button deleteButton = this.deleteItem;
             HBox itemContainer = (HBox) deleteButton.getParent();
             HBox itemsParentContainer = (HBox) itemContainer.getParent();
             itemsParentContainer.getChildren().clear();
@@ -34,17 +70,12 @@ public class FileItemController {
             System.err.println("Error deleting item: " + e.getMessage());
         }
         if(action != null)
-            action.OnActionClose();
+            action.OnActionDelete();
     }
-    public interface Action{
-        public void OnActionClose();
-    }
-    public Action action;
+    public enum State{CLOSED,CLEARED,DELETED,NEW}
+    private State state;
 
-    public void setFileInfo(File file){
-        this.fileNameLBL.setText(file.getName());
-        this.fileSizeLBL.setText(FilesHelper.formatFileSize(FilesHelper.getFileSize(file)));
-        this.fileTypeLBL.setText(FilesHelper.getFileExtension(file));
+    public State getState(){
+        return this.state;
     }
-
 }
