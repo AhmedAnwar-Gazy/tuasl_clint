@@ -49,9 +49,9 @@ public class FilesHelper {
         } catch (IOException | StringIndexOutOfBoundsException e) {
             return fileType.INVALID;
         }
-    }public static fileType getFileType(String Type) {
+    }public static fileType getFileType(String extenion) {
             // First check by extension for more specific control
-            return switch (Type) {
+            return switch (extenion) {
                 // Image formats
                 case "jpg", "jpeg", "png", "gif", "bmp", "webp", "image" -> fileType.IMAGE;
 
@@ -82,6 +82,18 @@ public class FilesHelper {
         }
         return path;
     }
+    public static String getFilePath(fileType type) throws IOException {
+        String path = "src/main/resources/orgs/tuasl_clint/";
+        switch(type){
+            case VIDEO ->path += "videos";
+            case IMAGE ->path+= "images";
+            case FILE -> path += "file";
+            case STICKER -> path += "sticker";
+            case AUDIO -> path += "voiceNote";
+            default -> throw new IOException("this file is not good!!");
+        }
+        return path;
+    }
     public static String getMediaViewerPath(File file)throws Exception{
         String path = "/orgs/tuasl_clint/fxml/";
         switch(getFileType(file)){
@@ -102,7 +114,7 @@ public class FilesHelper {
         if(file == null)
             return "";
         int dotIndex = file.getName().lastIndexOf('.');
-        return (dotIndex == file.length() - 1 && dotIndex > 0)? file.getName().substring(dotIndex + 1).toLowerCase() : file.getName();
+        return (dotIndex < file.getName().length() - 1 && dotIndex > 0)? file.getName().substring(dotIndex + 1).toLowerCase() : file.getName();
     }
     public static String formatFileSize(long size) {
         if (size <= 0) return "0 B";

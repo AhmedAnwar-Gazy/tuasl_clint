@@ -55,7 +55,7 @@ public class SendMessageItemController {
             User u= null;
             try {
                 u = UserFactory.findById(message.getSenderUserId());
-                assert u != null;
+                if (u != null)
                     message.setSenderName(u.getFirstName());
             } catch (SQLException e) {
                 message.setSenderName("UnKnown");
@@ -108,11 +108,8 @@ public class SendMessageItemController {
 
             // Load the FXML file. This returns the root node of UserCard.fxml.
             Parent mesiaCard = loader.load();
-
             // Get the controller for the loaded FXML (if you need to interact with it)
             AudioController audioController = loader.getController();
-
-
             //messageScrollPane.setVvalue(1.0);
 
             mediaContainers.getChildren().add(mesiaCard);
@@ -129,8 +126,8 @@ public class SendMessageItemController {
     private void loadVideoMessages(Message message) {
         this.message = message;
         try {
-            // Create an FXMLLoader instance
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/videoItem.fxml"));
+            //TODO: Error In Method getClass().getResource()  check the code and fix it.
 
             // Load the FXML file. This returns the root node of UserCard.fxml.
             Parent mesiaCard = loader.load();
@@ -163,9 +160,13 @@ public class SendMessageItemController {
             ImageMessageController imageMessageController = loader.getController();
             Media m = MediaFactory.findById(message.getMediaId());
             if(m != null) {
-                imageMessageController.loadImage(getClass().getResource("/orgs/tuasl_clint/images/") + m.getFileName());
+                String imagePath = getClass().getResource("/orgs/tuasl_clint/images/") + m.getFileName();
+                if(imagePath.contains("target/classes")) {
+                    imagePath = imagePath.replaceAll("target/classes","src/main/resources");
+                }
+                imageMessageController.loadImage(imagePath);
                 //imageMessageController.loadImage(m.getFilePathOrUrl() + m.getFileName() + '.' + m.getMimeType());
-                System.out.println("Message id : "+message.getMessageId()+" with image media : "+ m.getFilePathOrUrl()+"/" + m.getFileName() + '.' + m.getMimeType());
+                System.out.println("Message id : "+message.getMessageId()+" with image media : "+imagePath);
             }
             else
                 imageMessageController.loadImage(getClass().getResource("/orgs/tuasl_clint/images/R.png").toString());

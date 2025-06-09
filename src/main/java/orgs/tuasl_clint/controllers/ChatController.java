@@ -8,6 +8,8 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import orgs.tuasl_clint.models2.*;
+import orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory;
+import orgs.tuasl_clint.models2.FactoriesSQLite.MediaFactory;
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import orgs.tuasl_clint.utils.FilesHelper;
 import orgs.tuasl_clint.utils.Navigation;
@@ -99,14 +101,13 @@ public class ChatController {
     private File audioFile;
     private FileItemController mediaFileController;
     private Chat currentChat;
-    private URL resourcesUrl;
+
 
 
     @FXML
     public void initialize() {
         chatsMap = new HashMap<>();
         chatsMessagesMap = new HashMap<>();
-        this.resourcesUrl = getClass().getResource("/orgs/tusal_clint");
 //        this.emojiScrollPane.setVisible(false);
         loadMyChats();
         chatListView.setItems(chatItems);
@@ -114,17 +115,14 @@ public class ChatController {
             System.out.println("selected chat is changed");
             if (newSelection != null) {
                 chatTitleLabel.setText(newSelection);
-                // Clear previous messages and load messages for the selected chat
-//                messageItems.clear();
-//                messageItemsMessage.clear();
                 messageDisplayArea.getChildren().clear();
                 messageDisplayArea.getChildren().add(new Label("Messages for " + newSelection + " are encrypted between all participles."));
+                currentChat = chatsMap.get(newSelection);
                 loadChatsMessages(newSelection);                // --- NEW CODE: Populate messageDisplayArea directly after loading messages ---
                 for (Message message : messageItemsMessage) {
                     loadMessages(message);
                 }
                 System.out.println("Selected chat: " + newSelection);
-                currentChat = chatsMap.get(newSelection);
             }
         });        // Select the first chat by default
         if (!chatItems.isEmpty() && !chatsMap.isEmpty()) {
@@ -190,8 +188,8 @@ public class ChatController {
             try {
                 if(m.save()){
                     //TODO write the code of send text Message Here
-                    loadMessages(m);
                     messageInputField.clear();
+                    loadMessages(m);
                     messageScrollPane.setVvalue(1.0);
                 }
                 else{
@@ -214,6 +212,8 @@ public class ChatController {
             sendMessageItemController.setUserData(messageText);
             //messageScrollPane.setVvalue(1.0);
             messageDisplayArea.getChildren().add(userCardNode);
+            if(!chatsMessagesMap.get(chatsMap.get(currentChat.getChatName())).contains(messageText))
+                chatsMessagesMap.get(currentChat).add(messageText);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Failed to load UserCard.fxml: " + e.getMessage());
@@ -222,10 +222,6 @@ public class ChatController {
     @FXML
     private void handleSendVoiceButtonPressed(MouseEvent event){
         System.out.println("Send Voice button pressed...");
-//        if(mediaFile !=  null){
-//            System.out.println("Cannot record now because there is a media file exist to send");
-//            return;
-//        }
         animateButton(true); // Start animation
         startRecording(); // Begin recording
     }
@@ -281,11 +277,8 @@ public class ChatController {
             e.printStackTrace();
         }
     }
-    @FXML
     public void setMediaFile(File file, FileItemController.Action action) {
-
         if(!this.message_media_selected_container.getChildren().isEmpty() && this.mediaFileController != null && this.mediaFileController.getState() != FileItemController.State.DELETED){
-            this.message_media_selected_container.getChildren().clear();
             mediaFileController.setFile(file,action);
         }
         else if(!this.message_media_selected_container.getChildren().isEmpty() && this.mediaFileController == null){
@@ -294,28 +287,70 @@ public class ChatController {
         }
         else if(this.message_media_selected_container.getChildren().isEmpty()){
             try {
-//                Recording started: C:\Users\alraw\OneDrive\سطح المكتب\ChatSystem\toasol\tuasl_clint\src\main\resources\orgs\tuasl_clint\voiceNote\recording_20250609_184935.wav
-//                Send Voice button Released
-//                Loading media file of : file:/C:/Users/alraw/OneDrive/سطح%20المكتب/ChatSystem/toasol/tuasl_clint/target/classes/orgs/tuasl_clint/fxml/fileItem.fxml
-                URL distinationUrl = new URL(resourcesUrl.getPath() +"/fxml/fileItem.fxml");
-                if(distinationUrl != null){
-                    System.out.println("Loading media file of : "+ distinationUrl.toString());
-                    FXMLLoader loader = new FXMLLoader(distinationUrl);
-                    Parent pp = loader.load();
-                    this.mediaFileController = loader.getController();
-                    this.mediaFileController.setFile(file,action);
-                    this.message_media_selected_container.getChildren().addFirst(pp);
-                }
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/fileItem.fxml"));
+                Parent pp = loader.load();
+                this.mediaFileController = loader.getController();
+                this.mediaFileController.setFile(file,action);
+                this.message_media_selected_container.getChildren().addFirst(pp);
             } catch (IOException e) {
                 System.out.println("Cannot load the file Error is : " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }
     public void setMessageText(String text){
-
+        this.messageInputField.setText(text);
     }
     public void SetMessage(Message message){
-
+        this.messageInputField.setText(message.getContent());
+        if(!message.getMessageType().equals("text")){
+            Media m = null;
+            try {
+                m = MediaFactory.findById(message.getMediaId());
+            } catch (SQLException e) {
+                System.out.println("Cannot load this message");
+                e.printStackTrace();
+            }
+            if (m != null) {
+                File f = new File(m.getFilePathOrUrl());
+                this.setMediaFile(f,null);
+            }
+        }
+    }
+    public void SetMessage(Message message,Media m){
+        this.messageInputField.setText(message.getContent());
+        File f = new File(m.getFilePathOrUrl());
+        message.setMessageType(FilesHelper.getFileType(f).name().toLowerCase());
+        setMediaFile(f,null);
+    }
+    public void SetMessage(Message message, File f){
+        this.messageInputField.setText(message.getContent());
+        message.setMessageType(FilesHelper.getFileType(f).name().toLowerCase());
+        setMediaFile(f,null);
+    }
+    public void  reciveMessage(Message message){
+        Chat c = null;
+        try {
+            c = ChatFactory.findById(message.getChatId());
+        } catch (SQLException e) {
+            System.out.println("Cannot recive this message becouse no Chat in database has this message chat");
+            e.printStackTrace();
+        }
+        if(c != null){
+            if(c == currentChat){
+                loadMessages(message);
+                //TODO play the message recived sound
+            }else if(chatsMessagesMap.containsKey(c)) {
+                chatsMessagesMap.get(c).add(message);
+                //TODO: play the notifications sound
+            }else{
+                chatsMap.put(c.getChatName(),c);
+                chatsMessagesMap.put(c,FXCollections.observableArrayList());
+                chatsMessagesMap.get(c).add(message);
+                chatListView.getItems().add(c.getChatName());
+                //TODO: add the unread messages count to this item and play the notifications sound
+            }
+        }
     }
     private void stopRecording() {
         if (isRecording && line != null) {

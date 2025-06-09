@@ -2,7 +2,6 @@ package orgs.tuasl_clint.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -10,7 +9,7 @@ import orgs.tuasl_clint.utils.FilesHelper;
 
 import java.io.File;
 
-public abstract class FileItemController implements Initializable {
+public class FileItemController {
 
     File file;
 
@@ -57,7 +56,11 @@ public abstract class FileItemController implements Initializable {
             action.OnActionCleared();
         }
         this.file = null;
-        fileNameLBL.getParent().getParent().getChildrenUnmodifiable().remove(this.fileNameLBL.getParent());
+        Button deleteButton = this.deleteItem;
+        HBox itemContainer = (HBox) deleteButton.getParent();
+        HBox itemsParentContainer = (HBox) itemContainer.getParent();
+        if(itemsParentContainer != null)
+            itemsParentContainer.getChildren().clear();
     }
     public void deleteItem(){
         try {
