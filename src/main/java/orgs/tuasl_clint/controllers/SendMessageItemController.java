@@ -161,9 +161,9 @@ public class SendMessageItemController {
             Media m = MediaFactory.findById(message.getMediaId());
             if(m != null) {
                 String imagePath = getClass().getResource("/orgs/tuasl_clint/images/") + m.getFileName();
-                if(imagePath.contains("target/classes")) {
-                    imagePath = imagePath.replaceAll("target/classes","src/main/resources");
-                }
+//                if(imagePath.contains("target/classes")) {
+//                    imagePath = imagePath.replaceAll("target/classes","src/main/resources");
+//                }
                 imageMessageController.loadImage(imagePath);
                 //imageMessageController.loadImage(m.getFilePathOrUrl() + m.getFileName() + '.' + m.getMimeType());
                 System.out.println("Message id : "+message.getMessageId()+" with image media : "+imagePath);
