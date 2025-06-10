@@ -6,9 +6,9 @@ public class Chamnel {
 
     private  String profilepicture;
     private  String bio;
-    private ArrayList<Member> members = new ArrayList<Member>() ;
+    private ArrayList<Member> members;
     private  String content;
-    private  ArrayList<Message> messages = new ArrayList<Message>();
+    private  ArrayList<Message> messages;
 
     public Chamnel(String profilepicture, String bio, ArrayList<Member> members, String content, ArrayList<Message> messages) {
         this.profilepicture = profilepicture;
@@ -16,7 +16,6 @@ public class Chamnel {
         this.members = members;
         this.content = content;
         this.messages = messages;
-
     }
 
     public String getProfilepicture() {

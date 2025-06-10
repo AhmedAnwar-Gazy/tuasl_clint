@@ -93,7 +93,6 @@ public class ChatController {
     private final String RECORDING_FOLDER = "src/main/resources/orgs/tuasl_clint/voiceNote/";
     private ObservableList<String> chatItems = FXCollections.observableArrayList();
     private ObservableList<Chat> chatItemsChats = FXCollections.observableArrayList();
-//    private ObservableList<String> messageItems = FXCollections.observableArrayList();
     private ObservableList<Message> messageItemsMessage;// = FXCollections.observableArrayList();
 
     private HashMap<String,Chat> chatsMap;
@@ -146,7 +145,13 @@ public class ChatController {
         String messageText = messageInputField.getText().trim();
         if(!this.message_media_selected_container.getChildren().isEmpty()){
             this.message_media_selected_container.getChildren().clear();
-            Media m = new Media(mediaFileController.getFile().getName(), mediaFileController.getFile().getAbsolutePath(),FilesHelper.getFileExtension(mediaFileController.getFile()),FilesHelper.getFileSize(mediaFileController.getFile()),new Timestamp(new Date().getTime()));
+            Media m = new Media(
+                    mediaFileController.getFile().getName(),
+                    mediaFileController.getFile().getAbsolutePath(),
+                    FilesHelper.getFileExtension(mediaFileController.getFile()),
+                    FilesHelper.getFileSize(mediaFileController.getFile()),
+                    new Timestamp(new Date().getTime())
+            );
             m.setUploaderUserId(User.user.getUserId());
             try {
                 if(m.save()){
@@ -205,7 +210,9 @@ public class ChatController {
     private void loadMessages(Message messageText) {
         try {
             // Create an FXMLLoader instance
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/sendMessageItem.fxml"));
+            URL itemUrl = getClass().getResource("/orgs/tuasl_clint/fxml/sendMessageItem.fxml");
+            System.out.println("Loading Message Item From : "+ (itemUrl == null?"null":itemUrl.toString()));
+            FXMLLoader loader = new FXMLLoader(itemUrl);
             Parent userCardNode = loader.load();
             SendMessageItemController sendMessageItemController = loader.getController();
             userCardCount++;
@@ -249,7 +256,7 @@ public class ChatController {
             // Ensure the directory exists
             File folder = new File(RECORDING_FOLDER);
             if (!folder.exists()) {
-                folder.mkdirs();
+                Files.createDirectories(folder.toPath());
             }
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             audioFile = new File(RECORDING_FOLDER, "recording_" + timeStamp + ".wav");
@@ -274,6 +281,9 @@ public class ChatController {
             });
             recordingThread.start();
         } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("The folder is not exist and we cannot create it, Error message : "+ e.getMessage());
             e.printStackTrace();
         }
     }
@@ -490,36 +500,10 @@ public class ChatController {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
-//                else{
-//                    chatItems.add("click to add Chat");
-//                    chatListView.setItems(chatItems);
-//                    chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-//                        Chat c = new Chat(Chat.ChatType.GROUP, new Timestamp(new Date().getTime()));
-//                        try {
-//                            if(c.save()) {
-//                                System.out.println("chat created");
-//                                ChatParticipant cp = new ChatParticipant(c.getChatId(),User.user.getUserId(), new Timestamp(new Date().getTime()));
-//                                if(cp.save()){
-//                                    System.out.println("ChatParticipant created for chat");
-//                                    loadMyChats();
-//                                }else {
-//                                    System.out.println("cannot create the chat ChatParticipant");
-//                                }
-//                            }
-//                        } catch (SQLException e) {
-//                            System.out.println("cannot create a chat");
-//                            Logger.getLogger(getClass().getName()).log(Level.WARNING,"Create Chat Failed");
-//                        }
-//                    });
-//                    return;
-//                }
                 Chat chat = orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory.createFromResultSet(rs);
-                if(chat != null){
-                    chatItems.add(chat.getChatName());
-                    chatsMap.put(chat.getChatName(),chat);
-                    chatItemsChats.add(chat);
-                }
+                chatItems.add(chat.getChatName());
+                chatsMap.put(chat.getChatName(),chat);
+                chatItemsChats.add(chat);
                 System.out.println(chat.getChatName());
             }
             rs.close();

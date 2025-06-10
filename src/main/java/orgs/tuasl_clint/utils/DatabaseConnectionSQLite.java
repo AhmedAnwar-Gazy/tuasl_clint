@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DatabaseConnectionSQLite {
-    private static DatabaseConnectionSQLite instance;
     private Connection connection;
     private static final String DB_URL = "jdbc:sqlite:SQLiteDatabase.db";
 
@@ -23,15 +22,12 @@ public class DatabaseConnectionSQLite {
         }
     }
 
+    private static final class InstanceHolder {
+        private static final DatabaseConnectionSQLite instance = new DatabaseConnectionSQLite();
+    }
+
     public static DatabaseConnectionSQLite getInstance() {
-        if (instance == null) {
-            synchronized (DatabaseConnectionSQLite.class) {
-                if (instance == null) {
-                    instance = new DatabaseConnectionSQLite();
-                }
-            }
-        }
-        return instance;
+        return InstanceHolder.instance;
     }
 
     public Connection getConnection() {

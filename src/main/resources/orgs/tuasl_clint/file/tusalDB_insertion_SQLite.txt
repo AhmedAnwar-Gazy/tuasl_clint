@@ -1,6 +1,6 @@
 
 INSERT INTO users (phone_number, username, first_name, last_name, bio, profile_picture_url, is_online, last_seen_at, hashed_password, two_factor_secret) VALUES
-("+10000000001", "alpha_user", "Alpha", "One", "The first user. Explorer.", "http://example.com/p/alpha.jpg", 1, datetime('now', '-5 minutes'), 'hashedpass1', 'secret1'),
+("+967776022983", "mubarak", "mubarak", "alrawy", "Main developer.", "http://example.com/p/alpha.jpg", 0, datetime('now', '-5 minutes'), '1234567890', 'secret1'),
 ("+10000000002", "beta_dev", "Beta", "Dev", "Loves coding and debugging.", "http://example.com/p/beta.jpg", 1, datetime('now', '-10 minutes'), 'hashedpass2', 'secret2'),
 ("+10000000003", "gamma_gamer", "Gamma", "Gamer", "Pro gamer, casual streamer.", "http://example.com/p/gamma.jpg", 0, datetime('now', '-1 hour'), 'hashedpass3', 'secret3'),
 ("+10000000004", "delta_artist", "Delta", "Artist", "Creating digital art.", "http://example.com/p/delta.jpg", 1, datetime('now', '-15 minutes'), 'hashedpass4', 'secret4'),

@@ -16,7 +16,7 @@ public class MediaFactory {
     public static Media createFromResultSet(ResultSet rs) throws SQLException {
         return new Media(
                 (rs.getLong("media_id")),
-                rs.getLong("uploader_user_id") != 0 ? (rs.getLong("uploader_user_id")) : null,
+                rs.getLong("uploader_user_id"),
                 rs.getString("file_name"),
                 rs.getString("file_path_or_url"),
                 rs.getString("mime_type"),

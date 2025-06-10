@@ -10,12 +10,12 @@ import java.nio.file.Files;
 
 public class Server {
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(1234);
-        System.out.println("Server started on port 1234");
-
-        while (true) {
-            Socket clientSocket = serverSocket.accept();
-            new Thread(() -> handleClient(clientSocket)).start();
+        try(ServerSocket serverSocket = new ServerSocket(1234)){
+            System.out.println("Server started on port 1234");
+            for(;;) {
+                Socket clientSocket = serverSocket.accept();
+                new Thread(() -> handleClient(clientSocket)).start();
+            }
         }
     }
 /*
@@ -91,7 +91,7 @@ private static void handleClient(Socket socket) {
                 Files.write(new File(name + "_raw." + extension).toPath(), media);
             } else {
                 File dir = new File("received_images");
-                dir.mkdirs();
+                Files.createDirectories(dir.toPath());
                 File file = new File(dir, name + "." + extension);
                 ImageIO.write(image, extension, file);
                 System.out.println("✅ Image saved at: " + file.getAbsolutePath());
@@ -99,7 +99,7 @@ private static void handleClient(Socket socket) {
         } else {
             // حفظ الفيديو أو أي ملف آخر
             File dir = new File("received_videos");
-            dir.mkdirs();
+            Files.createDirectories(dir.toPath());
             File file = new File(dir, name + "." + extension);
             Files.write(file.toPath(), media);
             System.out.println("🎞️ Video or file saved at: " + file.getAbsolutePath());

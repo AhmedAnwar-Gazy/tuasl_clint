@@ -83,7 +83,7 @@ public class VideoCallWindow {
                             output.write(data);
                             output.flush();
                         }
-                        Thread.sleep(50); // تقريباً 20 فريم في الثانية
+                        Thread.sleep(50);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

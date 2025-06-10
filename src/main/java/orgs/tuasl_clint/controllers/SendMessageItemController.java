@@ -20,6 +20,7 @@ import orgs.tuasl_clint.models2.User;
 import orgs.tuasl_clint.utils.FilesHelper;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
@@ -150,38 +151,37 @@ public class SendMessageItemController {
     @FXML
     private void loadImageMessages(Message message) {
         try {
-            // Create an FXMLLoader instance
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/imageItem.fxml"));
-
-            // Load the FXML file. This returns the root node of UserCard.fxml.
             Parent mesiaCard = loader.load();
-
-            // Get the controller for the loaded FXML (if you need to interact with it)
             ImageMessageController imageMessageController = loader.getController();
-            Media m = MediaFactory.findById(message.getMediaId());
-            if(m != null) {
-                String imagePath = getClass().getResource("/orgs/tuasl_clint/images/") + m.getFileName();
-//                if(imagePath.contains("target/classes")) {
-//                    imagePath = imagePath.replaceAll("target/classes","src/main/resources");
-//                }
-                imageMessageController.loadImage(imagePath);
-                //imageMessageController.loadImage(m.getFilePathOrUrl() + m.getFileName() + '.' + m.getMimeType());
-                System.out.println("Message id : "+message.getMessageId()+" with image media : "+imagePath);
-            }
-            else
-                imageMessageController.loadImage(getClass().getResource("/orgs/tuasl_clint/images/R.png").toString());
 
-            //messageScrollPane.setVvalue(1.0);
+            Media m = MediaFactory.findById(message.getMediaId());
+            if (m != null) {
+                System.out.println("Looking for resource at: " + "/orgs/tuasl_clint/fxml/audioItem.fxml");
+                URL url = getClass().getResource("/orgs/tuasl_clint/fxml/audioItem.fxml");
+                System.out.println("Found at: " + (url != null ? url.toString() : "null"));
+
+                URL imageUrl = getClass().getResource("/orgs/tuasl_clint/images/" + m.getFileName());
+                if (imageUrl != null) {
+                    imageMessageController.loadImage(imageUrl.toString());
+                } else {
+                    // Fallback to default image if specific image not found
+                    URL defaultImage = getClass().getResource("/orgs/tuasl_clint/images/R.png");
+                    if (defaultImage != null) {
+                        imageMessageController.loadImage(defaultImage.toString());
+                    }
+                }
+            } else {
+                URL defaultImage = getClass().getResource("/orgs/tuasl_clint/images/R.png");
+                if (defaultImage != null) {
+                    imageMessageController.loadImage(defaultImage.toString());
+                }
+            }
 
             mediaContainers.getChildren().add(mesiaCard);
-
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
-            // Handle the error, e.g., show an alert
-            System.err.println("Failed to load UserCard.fxml: " + e.getMessage());
-        } catch (SQLException e) {
-            System.err.println("Image not found for this message");
-            e.printStackTrace();
+            // Handle error appropriately
         }
     }
     @FXML
@@ -211,7 +211,7 @@ public class SendMessageItemController {
 
     @FXML
     void handleMessageHoverEnter(MouseEvent event) {
-        System.out.println("mouse enter message with x : "+ event.getX()+ " and y : "+ event.getY() + "messh : "+ VboxMessage.getHeight() + " sum... : " + + sumofChildsHeights(reactionsContainer.getChildren()) );
+        System.out.println("mouse enter message with x : "+ event.getX()+ " and y : "+ event.getY() + "messh : "+ VboxMessage.getHeight() + " sum... : " + sumofChildsHeights(reactionsContainer.getChildren()) );
         if(VboxMessage.getHeight() <= sumofChildsHeights(reactionsContainer.getChildren()))
             reactionsContainer.setLayoutY(-1 * VboxMessage.getHeight() + 3);
         else if(VboxMessage.getHeight() > event.getY() + sumofChildsHeights(reactionsContainer.getChildren()))

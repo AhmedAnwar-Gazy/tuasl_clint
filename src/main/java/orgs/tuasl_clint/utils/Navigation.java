@@ -37,6 +37,7 @@ public class Navigation {
                 System.err.println("Cannot find FXML file: " + fxmlPath);
                 return;
             }
+            System.out.println("Loading the page from : "+fxmlUrl.toString().toLowerCase());
 
             Parent root = FXMLLoader.load(Objects.requireNonNull(fxmlUrl));
 
