@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<VBox fx:id="VboxMessage" alignment="TOP_LEFT" onMouseEntered="#handleMessageHoverEnter" onMouseExited="#handleMessageHoverExit" spacing="5" style="-fx-background-color: #DCF8C6; -fx-background-radius: 20; -fx-max-width: 50px;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.SendMessageItemController"> <padding>
+<VBox fx:id="VboxMessage" alignment="TOP_LEFT" onMouseEntered="#handleMessageHoverEnter" onMouseExited="#handleMessageHoverExit" spacing="5" style="-fx-background-color: #DCF8C6; -fx-background-radius: 20; -fx-max-width: 50px;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.SendMessageItemController"> <padding>
     <Insets bottom="8" left="12" right="12" top="8" />
 </padding>
 
           <Label fx:id="senderLabel" styleClass="message-sender" text="Sender Name" />
-    <VBox fx:id="mediaContainers" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" />
+    <VBox fx:id="mediaContainers" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" snapToPixel="false" />
 
           <Text fx:id="contentText" accessibleText="1" styleClass="message-text" wrappingWidth="300" />
 

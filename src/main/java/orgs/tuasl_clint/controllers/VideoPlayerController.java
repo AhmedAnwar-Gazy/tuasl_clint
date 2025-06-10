@@ -232,7 +232,7 @@ public class VideoPlayerController implements Initializable {
 
             mediaPlayer.setOnEndOfMedia(() -> {
                 mediaPlayer.stop();
-                isPlaying.set(false);
+//                isPlaying.set(false);
                 mediaPlayer.seek(Duration.ZERO); // Reset to beginning
                 updatePlayPauseIcons();
                 centerPlayButtonContainer.setVisible(true); // Show large play button

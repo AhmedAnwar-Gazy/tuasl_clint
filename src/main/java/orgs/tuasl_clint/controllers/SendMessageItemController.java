@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Enumeration;
+import java.util.ResourceBundle;
 
 public class SendMessageItemController {
     @FXML
@@ -140,11 +142,31 @@ public class SendMessageItemController {
             //messageScrollPane.setVvalue(1.0);
 
             mediaContainers.getChildren().add(mesiaCard);
+            Media m = MediaFactory.findById(message.getMediaId());
+            if(m != null){
+                URL url = getClass().getResource(m.getFileName());
+                if(url != null){
+                videoPlayerController.initialize(url, new ResourceBundle() {
+                    @Override
+                    protected Object handleGetObject(String key) {
+                        return null;
+                    }
 
+                    @Override
+                    public Enumeration<String> getKeys() {
+                        return null;
+                    }
+                });
+                    videoPlayerController.loadVideoMedia(url.getPath());
+                }
+            }else
+                System.out.println("Video Media Not found");
         } catch (IOException e) {
             e.printStackTrace();
             // Handle the error, e.g., show an alert
             System.err.println("Failed to load UserCard.fxml: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("cannot get the media from database");
         }
     }
 
