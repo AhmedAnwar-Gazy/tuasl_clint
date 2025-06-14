@@ -212,7 +212,7 @@ public class ChatController {
             // Create an FXMLLoader instance
             URL itemUrl = getClass().getResource("/orgs/tuasl_clint/fxml/sendMessageItem.fxml");
             System.out.println("Loading Message Item From : "+ (itemUrl == null?"null":itemUrl.toString()));
-            FXMLLoader loader = new FXMLLoader(itemUrl);
+            FXMLLoader loader = new FXMLLoader();
             Parent userCardNode = loader.load();
             SendMessageItemController sendMessageItemController = loader.getController();
             userCardCount++;

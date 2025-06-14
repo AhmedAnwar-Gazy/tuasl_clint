@@ -75,7 +75,7 @@ public class SendMessageItemController {
         //ENUM('text', 'image', 'video', 'voiceNote', 'file', 'system')
 
 
-        switch (FilesHelper.getFileType(message.getMessageType())){
+        switch (FilesHelper.toMediaType(message.getMessageType())){
             case TEXT:
                 break;
             case IMAGE:

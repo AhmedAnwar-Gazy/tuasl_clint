@@ -67,6 +67,16 @@ public class FilesHelper {
                 default -> fileType.FILE;
             };
     }
+    public static fileType toMediaType(String type){
+        return switch (type){
+            case "text","TEXT","TXT","txt" -> fileType.TEXT;
+            case "video","VIDEO","Video" -> fileType.VIDEO;
+            case "image","Image","IMAGE" -> fileType.IMAGE;
+            case "audio","Audio","AUDIO" -> fileType.AUDIO;
+            case null -> fileType.INVALID;
+            default -> fileType.FILE;
+        };
+    }
     public static fileType getFileType(Path path) {
         return getFileType(path.toFile());
     }
