@@ -371,6 +371,11 @@ public class ChatController {
                 public void OnActionCleared() {
                     audioFile = null;
                 }
+
+                @Override
+                public void OnClickItem() {
+
+                }
             });
             System.out.println("Recording stopped and saved.");
         }

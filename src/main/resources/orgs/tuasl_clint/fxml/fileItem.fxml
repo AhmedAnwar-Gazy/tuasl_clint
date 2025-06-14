@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
 
-<HBox alignment="CENTER" style="-fx-border-radius: 50%; -fx-border-color: black;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.FileItemController">
+<HBox alignment="CENTER" onMouseClicked="#FileItemClicked" style="-fx-border-radius: 50%; -fx-border-color: black;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.FileItemController">
    <children>
       <Button fx:id="deleteItem" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" onAction="#deleteItemHandler" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: red; -fx-border-radius: 100%;" text="X">
          <HBox.margin>
