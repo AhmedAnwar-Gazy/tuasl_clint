@@ -24,8 +24,7 @@ public class ImageMessageController implements Initializable {
 
     @FXML
     private ImageView imageView;
-    @FXML
-    private HBox imageItemContainer;
+
 
 
     // Default image path for demonstration
@@ -57,7 +56,7 @@ public class ImageMessageController implements Initializable {
                     imageView.setImage(image);
                     File imageFile = new File(imagePath);
                     if(imageFile.exists())
-                        imageItemContainer.setOnMouseClicked(mouseEvent -> {
+                        imageView.setOnMouseClicked(mouseEvent -> {
                             try {
                                 if(Desktop.isDesktopSupported())
                                     Desktop.getDesktop().open(imageFile);
