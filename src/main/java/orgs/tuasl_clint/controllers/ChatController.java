@@ -19,14 +19,12 @@ import javafx.event.ActionEvent;
 import javafx.animation.ScaleTransition;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -85,6 +83,9 @@ public class ChatController {
     private HBox chatListItem;
     @FXML
     private ScrollPane emojiScrollPane;
+
+
+    private static Stage mediaStageShower;
 
 
     private int userCardCount = 0;
@@ -157,12 +158,13 @@ public class ChatController {
                     mm.setChatId(currentChat.getChatId());
                     mm.setMessageType(FilesHelper.getFileType(mediaFileController.getFile()).name().toLowerCase());
                     if(mm.save()){
-                        //TODO: send the file and message to reciver user( Write the code Here and some is under this main if block)
+                        mediaFileController.action.OnActionCleared();
                         System.out.println("the message has been saved");
-                        loadMessages(mm);
                         messageInputField.clear();
                         this.mediaFileController.clear();
                         messageScrollPane.setVvalue(1.0);
+                        loadMessages(mm);
+                        //TODO: send the file and message to reciver user( Write the code Here and some is under this main if block)
                         return;
                     }
                     else {
@@ -363,6 +365,7 @@ public class ChatController {
                 public void OnActionDelete() {
                     try {
                         Files.delete(audioFile.toPath());
+                        System.out.println("Sharing the file Canceled and File is Deleted");
                     } catch (IOException e) {
                         System.out.println("cannot delete recorded voice file");
                     };
@@ -374,7 +377,12 @@ public class ChatController {
 
                 @Override
                 public void OnClickItem() {
-
+                    try {
+                        if(Desktop.isDesktopSupported())
+                            Desktop.getDesktop().open(audioFile);
+                    } catch (IOException e) {
+                        System.out.println("Cannot Open the Sound File");
+                    }
                 }
             });
             System.out.println("Recording stopped and saved.");
@@ -394,23 +402,44 @@ public class ChatController {
         Stage stage = (Stage) shareButton.getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(stage);
         if (selectedFile != null) {
-            try {
-                Path destinationDirectory = Paths.get(FilesHelper.getFilePath(selectedFile));
-                if (!Files.exists(destinationDirectory)) {
-                    Files.createDirectories(destinationDirectory);
-                    System.out.println("Created directory: " + destinationDirectory.toAbsolutePath());
+            this.setMediaFile(selectedFile, new FileItemController.Action() {
+                @Override
+                public void OnActionDelete() {
+                    System.out.println("Sharing The File Canceled");
                 }
-                Path destinationPath = destinationDirectory.resolve(selectedFile.getName());                    // Copy the selected file to the destination directory
-                Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
-                String FileItem = FilesHelper.getMediaViewerPath(selectedFile);
-                this.setMediaFile(selectedFile,null);
-                System.out.println("File copied successfully: " + selectedFile.getAbsolutePath() +
-                        " to " + destinationPath.toAbsolutePath());
-            } catch (Exception e) {
-                System.err.println("Error copying file: " + e.getMessage());
-                e.printStackTrace();
-                System.out.println(e.getMessage());
-            }
+                @Override
+                public void OnActionCleared() {
+                    try {
+                        String FileItem = FilesHelper.getMediaViewerPath(selectedFile);
+                        Path destinationDirectory = Paths.get(FilesHelper.getFilePath(selectedFile));
+                        if (!Files.exists(destinationDirectory)) {
+                            Files.createDirectories(destinationDirectory);
+                            System.out.println("Created directory: " + destinationDirectory.toAbsolutePath());
+                        }
+                        Path destinationPath = destinationDirectory.resolve(selectedFile.getName());                    // Copy the selected file to the destination directory
+                        try {
+                            Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                        } catch (FileSystemException e) {
+                            System.err.println("Cannot Copy The File Error : " + e.getMessage());
+                        }
+                        System.out.println("File copied successfully: " + selectedFile.getAbsolutePath() +
+                                " to " + destinationPath.toAbsolutePath());
+                    }catch (Exception e) {
+                        System.err.println("Error copying file: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void OnClickItem() {
+                        try {
+                            if(Desktop.isDesktopSupported())
+                                Desktop.getDesktop().open(selectedFile);
+                        } catch (IOException e) {
+                            System.err.println("Error : Cannot Open the File");
+                        }
+                }
+            });
         } else {
             System.out.println("File selection cancelled.");
         }
@@ -586,7 +615,12 @@ public class ChatController {
 
     }
 
-
+    public Stage getMediaStageShower(){
+        if(mediaStageShower != null){
+            mediaStageShower = new Stage();
+        }
+        return mediaStageShower;
+    }
 
     @FXML
     public void handleVideoCallButtonAction(ActionEvent event) {

@@ -9,6 +9,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -139,7 +141,7 @@ public class VideoPlayerController implements Initializable {
      * Initializes the SVGPath icons for play and pause.
      */
     private void initializeIcons() {
-        System.out.println("initializeIcons");
+//        System.out.println("initializeIcons");
         // Small play icon for control bar
         playIconSmall = new SVGPath();
         playIconSmall.setContent("M -5 -6 L 10 0 L -5 6 Z"); // Small triangle
@@ -167,7 +169,7 @@ public class VideoPlayerController implements Initializable {
         System.out.println("loadVideoMedia(String : "+filePath+")");
         // Clean up previous media player if exists
         if (mediaPlayer != null) {
-            System.out.println("if (mediaPlayer != null) {");
+//            System.out.println("if (mediaPlayer != null) {");
             mediaPlayer.stop();
             mediaPlayer.dispose();
             mediaPlayer = null;
@@ -175,8 +177,8 @@ public class VideoPlayerController implements Initializable {
 
         File videoFile = new File(filePath);
         if (!videoFile.exists() || !videoFile.isFile()) {
-            System.out.println("if (!videoFile.exists() || !videoFile.isFile()) {");
-            System.err.println("Video file not found or is not a file: " + filePath);
+//            System.out.println("if (!videoFile.exists() || !videoFile.isFile()) {");
+//            System.err.println("Video file not found or is not a file: " + filePath);
             playPauseButton.setDisable(true);
             centerPlayButton.setDisable(true);
             totalTimeLabel.setText("Error");
@@ -200,7 +202,7 @@ public class VideoPlayerController implements Initializable {
 
             // Set up MediaPlayer listeners
             mediaPlayer.setOnReady(() -> {
-                System.out.println("mediaPlayer.setOnReady(() -> {");
+//                System.out.println("mediaPlayer.setOnReady(() -> {");
                 progressBar.setMin(0);
                 progressBar.setMax(mediaPlayer.getMedia().getDuration().toSeconds());
                 totalTimeLabel.setText(formatDuration(mediaPlayer.getMedia().getDuration()));
@@ -215,7 +217,7 @@ public class VideoPlayerController implements Initializable {
             });
 
             mediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> {
-                System.out.println("mediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> {");
+//                System.out.println("mediaPlayer.currentTimeProperty().addListener((observable, oldTime, newTime) -> {");
                 if (!isSeeking) { // Only update slider if user isn't dragging it
                     progressBar.setValue(newTime.toSeconds());
                 }
@@ -223,7 +225,7 @@ public class VideoPlayerController implements Initializable {
             });
 
             progressBar.valueProperty().addListener((observable, oldValue, newValue) -> {
-                System.out.println("progressBar.valueProperty().addListener((observable, oldValue, newValue) -> {");
+//                System.out.println("progressBar.valueProperty().addListener((observable, oldValue, newValue) -> {");
                 if (progressBar.isValueChanging()) {
                     isSeeking = true;
                     mediaPlayer.seek(Duration.seconds(newValue.doubleValue()));
@@ -231,7 +233,7 @@ public class VideoPlayerController implements Initializable {
             });
 
             progressBar.setOnMouseReleased(event -> {
-                System.out.println("progressBar.setOnMouseReleased(event -> {");
+//                System.out.println("progressBar.setOnMouseReleased(event -> {");
                 isSeeking = false;
                 mediaPlayer.seek(Duration.seconds(progressBar.getValue()));
                 if (!isPlaying.get()) { // If paused, ensure frame updates
@@ -241,7 +243,7 @@ public class VideoPlayerController implements Initializable {
             });
 
             mediaPlayer.setOnEndOfMedia(() -> {
-                System.out.println("mediaPlayer.setOnEndOfMedia(() -> {");
+//                System.out.println("mediaPlayer.setOnEndOfMedia(() -> {");
                 mediaPlayer.stop();
 //                isPlaying.set(false);
                 mediaPlayer.seek(Duration.ZERO); // Reset to beginning
@@ -252,8 +254,8 @@ public class VideoPlayerController implements Initializable {
             });
 
             mediaPlayer.setOnError(() -> {
-                System.out.println("mediaPlayer.setOnError(() -> {");
-                System.err.println("MediaPlayer error: " + mediaPlayer.getError());
+//                System.out.println("mediaPlayer.setOnError(() -> {");
+//                System.err.println("MediaPlayer error: " + mediaPlayer.getError());
                 playPauseButton.setDisable(true);
                 centerPlayButton.setDisable(true);
 //                isPlaying.set(false);
@@ -266,7 +268,7 @@ public class VideoPlayerController implements Initializable {
             isPlaying.addListener((obs, oldVal, newVal) -> updatePlayPauseIcons());
 
         } catch (Exception e) {
-            System.err.println("Failed to load video media: " + e.getMessage());
+//            System.err.println("Failed to load video media: " + e.getMessage());
             e.printStackTrace();
             playPauseButton.setDisable(true);
             centerPlayButton.setDisable(true);
@@ -277,7 +279,7 @@ public class VideoPlayerController implements Initializable {
      * Toggles play/pause state of the video.
      */
     private void togglePlayPause() {
-        System.out.println("togglePlayPause");
+//        System.out.println("togglePlayPause");
         if (mediaPlayer == null || mediaPlayer.getStatus() == MediaPlayer.Status.UNKNOWN || mediaPlayer.getStatus() == MediaPlayer.Status.HALTED) {
             System.out.println("Media player not ready or in error state.");
             return;
@@ -295,7 +297,7 @@ public class VideoPlayerController implements Initializable {
      * Updates the play/pause icons based on the isPlaying state.
      */
     private void updatePlayPauseIcons() {
-        System.out.println("updatePlayPauseIcons");
+//        System.out.println("updatePlayPauseIcons");
         // Small button icon
         if (playPauseButtonContainer != null) {
             playPauseButtonContainer.getChildren().remove(playIconSmall);
@@ -318,7 +320,7 @@ public class VideoPlayerController implements Initializable {
      * Formats a Duration object into an "MM:SS" string.
      */
     private String formatDuration(Duration duration) {
-        System.out.println("formatDuration");
+//        System.out.println("formatDuration");
         if (duration == null || duration.isUnknown() || duration.isIndefinite()) {
             return "--:--";
         }
@@ -331,17 +333,17 @@ public class VideoPlayerController implements Initializable {
      * Sets up mouse hover effects for the controls overlay.
      */
     private void setupHoverEffects() {
-        System.out.println("setupHoverEffects");
+//        System.out.println("setupHoverEffects");
         // Show controls on mouse enter, hide on mouse exit
         videoPlayerContainer.setOnMouseEntered(event -> {
-            System.out.println("videoPlayerContainer.setOnMouseEntered(event -> {");
+//            System.out.println("videoPlayerContainer.setOnMouseEntered(event -> {");
             FadeTransition ft = new FadeTransition(Duration.millis(300), controlsOverlay);
             ft.setToValue(1.0);
             ft.play();
         });
 
         videoPlayerContainer.setOnMouseExited(event -> {
-            System.out.println("videoPlayerContainer.setOnMouseExited(event -> {");
+//            System.out.println("videoPlayerContainer.setOnMouseExited(event -> {");
             if (isPlaying.get()) { // Only hide if playing
                 FadeTransition ft = new FadeTransition(Duration.millis(300), controlsOverlay);
                 ft.setToValue(0.0);
@@ -353,11 +355,44 @@ public class VideoPlayerController implements Initializable {
     /**
      * Toggles fullscreen mode for the stage.
      */
+    private Stage fullStage = null;
+    private Stage rootStage = null;
+    VBox fullBox = null;
+    VBox MainVideoContainer = null;
+    private double[] originalSize = new double[2];
+
     private void toggleFullscreen() {
-        System.out.println("toggleFullscreen");
         Stage stage = (Stage) mediaView.getScene().getWindow();
-        if (stage != null) {
-            stage.setFullScreen(!stage.isFullScreen());
+        if (stage == null) return;
+
+        if (fullStage != null) {
+            fullBox.getChildren().remove(videoPlayerContainer);
+//            videoPlayerContainer.setPrefSize(originalSize[0], originalSize[1]);
+//            videoPlayerContainer.setMaxSize(originalSize[0], originalSize[1]);
+            videoPlayerContainer.setMinSize(originalSize[0], originalSize[1]);
+            MainVideoContainer.getChildren().add(videoPlayerContainer);
+            fullStage.setScene(null);
+            fullStage.close();
+            fullStage = null;
+        } else {
+            MainVideoContainer = ((VBox) videoPlayerContainer.getParent());
+            MainVideoContainer.getChildren().remove(videoPlayerContainer);
+            originalSize[0] = videoPlayerContainer.getWidth();
+            originalSize[1] = videoPlayerContainer.getHeight();
+            fullStage = new Stage();
+            fullBox = new VBox();
+            fullBox.getChildren().add(videoPlayerContainer);
+            Scene newscene = new Scene(fullBox);
+            fullStage.setScene(newscene);
+            fullStage.setFullScreen(true);
+            videoPlayerContainer.setMinHeight(Node.BASELINE_OFFSET_SAME_AS_HEIGHT);
+            fullStage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+                    toggleFullscreen();
+                }
+            });
+            fullStage.show();
         }
     }
 
@@ -366,7 +401,7 @@ public class VideoPlayerController implements Initializable {
      * @param filePath The path to the new video file.
      */
     public void setVideoFile(String filePath) {
-        System.out.println("setVideoFile");
+//        System.out.println("setVideoFile");
         defaultVideoFilePath = filePath; // Update the path
         loadVideoMedia(filePath); // Reload the media
     }
@@ -376,7 +411,7 @@ public class VideoPlayerController implements Initializable {
      * Call this when the stage/scene containing this controller is closed.
      */
     public void dispose() {
-        System.out.println("dispose");
+//        System.out.println("dispose");
         if (mediaPlayer != null) {
             mediaPlayer.dispose();
             mediaPlayer = null;

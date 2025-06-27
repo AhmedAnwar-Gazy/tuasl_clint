@@ -3,6 +3,7 @@ package orgs.tuasl_clint.controllers;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -38,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 public class SendMessageItemController {
+
     @FXML
     private VBox VboxMessage;
 
@@ -45,19 +47,40 @@ public class SendMessageItemController {
     private Text contentText;
 
     @FXML
+    private Label emojiLabel;
+
+    @FXML
+    private Label heartEmoji;
+
+    @FXML
     private VBox mediaContainers;
 
     @FXML
+    private Label noActionEmoji;
+
+    @FXML
+    private Label okEmoji;
+
+    @FXML
+    private Label optionsButton;
+
+    @FXML
+    private VBox reactionsContainer;
+
+    @FXML
+    private Label sadEmoji;
+
+    @FXML
     private Label senderLabel;
+
+    @FXML
+    private Label smileEmoji;
 
     @FXML
     private Label statusLabel;
 
     @FXML
     private Label timeLabel;
-
-    @FXML
-    private Label emojiLabel;
 
     private Message message;
 
@@ -73,7 +96,7 @@ public class SendMessageItemController {
                     message.setSenderName(u.getFirstName());
             } catch (SQLException e) {
                 message.setSenderName("UnKnown");
-                System.err.println("Error getting the user for this message");
+                System.err.println("Error : Error getting the user for this message");
                 e.printStackTrace();
             }
         }
@@ -118,7 +141,32 @@ public class SendMessageItemController {
             FileItemController fileItemController = loader.getController();
             Media m = MediaFactory.findById(message.getMediaId());
             if(m != null){
-                fileItemController.setFile(new File(m.getFilePathOrUrl()),null);
+                File f = new File(m.getFilePathOrUrl());
+                if(f.exists()){
+                    fileItemController.setFile(f, new FileItemController.Action() {
+                        @Override
+                        public void OnActionDelete() {
+
+                        }
+
+                        @Override
+                        public void OnActionCleared() {
+
+                        }
+
+                        @Override
+                        public void OnClickItem() {
+                            try {
+                                if(Desktop.isDesktopSupported())
+                                    Desktop.getDesktop().open(f);
+                            } catch (IOException e) {
+                                System.out.println("Cannot Open The File Error : "+ e.getMessage());
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                }
             }
             //messageScrollPane.setVvalue(1.0);
             fileItemController.desableCloseButton();
@@ -127,7 +175,7 @@ public class SendMessageItemController {
         } catch (IOException e) {
             e.printStackTrace();
             // Handle the error, e.g., show an alert
-            System.err.println("Failed to load UserCard.fxml: " + e.getMessage());
+            System.err.println("Error : Failed to load UserCard.fxml: " + e.getMessage());
         } catch (SQLException e) {
             System.out.println("Error in sendMessageController in method of files messages while getting the media from database");
             e.printStackTrace();
@@ -135,7 +183,6 @@ public class SendMessageItemController {
     }
 
 
-    @FXML
     private void loadAudioMessages(Message message) {
         this.message = message;
         try {
@@ -153,12 +200,12 @@ public class SendMessageItemController {
         } catch (IOException e) {
             e.printStackTrace();
             // Handle the error, e.g., show an alert
-            System.err.println("Failed to load UserCard.fxml: " + e.getMessage());
+            System.err.println("Error : Failed to load UserCard.fxml: " + e.getMessage());
         }
     }
 
 
-//    @FXML
+//
 //    private void loadVideoMessages(Message message) {
 //        this.message = message;
 //        try {
@@ -179,72 +226,73 @@ public class SendMessageItemController {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //            // Handle the error, e.g., show an alert
-//            System.err.println("Failed to load UserCard.fxml: " + e.getMessage());
+//            System.err.println("Error : Failed to load UserCard.fxml: " + e.getMessage());
 //        }
 //    }
 
-    @FXML
     private void loadVideoMessages(Message message) {
         System.out.println("Loading Message With Video Item");
         this.message = message;
         try {
             // Load FXML
-            URL fxmlUrl = getClass().getResource("/orgs/tuasl_clint/fxml/fileItem.fxml");
+            URL fxmlUrl = getClass().getResource("/orgs/tuasl_clint/fxml/videoItem.fxml");
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent videoItem = loader.load();
-
             // Get controller
-            FileItemController fileItemController = loader.getController();
-            fileItemController.desableCloseButton();
+//            FileItemController fileItemController = loader.getController();
+//            fileItemController.desableCloseButton();
             // Load media
+            VideoPlayerController controller = loader.getController();
             Media m = MediaFactory.findById(message.getMediaId());
             if (m != null) {
-                URL url = getClass().getResource("/orgs/tuasl_clint/videos/"+m.getFileName());
-                if(url != null){
-                    fileItemController.setFile(new File(m.getFilePathOrUrl()), new FileItemController.Action() {
-                        @Override
-                        public void OnActionDelete() {
-                            System.out.println("delete button of video item clicked");
-                        }
-                        @Override
-                        public void OnActionCleared() {
-                            System.out.println("file item of video is closed");
-                        }
-                        @Override
-                        public void OnClickItem() {
-                            System.out.println("Loading the video to new stage");
-                            try {
-                                URL fxmlUrl = getClass().getResource("/orgs/tuasl_clint/fxml/videoItem.fxml");
-                                String mediaUri = "src/main/resources/orgs/tuasl_clint/videos/" + m.getFileName();
-                                FXMLLoader loader1 = new FXMLLoader(Objects.requireNonNull(fxmlUrl));
-                                Parent root = loader1.load();
-                                Stage stage = new Stage();
-                                Scene scene = new Scene(root);
-                                String cssPath = "/orgs/tuasl_clint/css/styles.css";
-                                URL cssUrl = Navigation.class.getResource(cssPath);
-                                if(cssUrl != null) {
-                                    scene.getStylesheets().add(cssUrl.toExternalForm());
-                                } else {
-                                    System.err.println("Cannot find CSS file: " + cssPath);
-                                }
-                                VideoPlayerController controller = loader1.getController();
-                                controller.setVideoFile(mediaUri);
-                                stage.setScene(scene);
-                                stage.show();
-                            } catch (IOException e) {
-                                System.out.println("Error while trying to open new stage for video");
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    });
-                }else {
-                    System.err.println("Cannot get the resource File of video");
-                }
+                    String mediaUri = "src/main/resources/orgs/tuasl_clint/videos/" + m.getFileName();
+                    controller.setVideoFile(mediaUri);
+
+
+//                    fileItemController.setFile(new File(m.getFilePathOrUrl()), new FileItemController.Action() {
+//                        @Override
+//                        public void OnActionDelete() {
+//                            System.out.println("delete button of video item clicked");
+//                        }
+//                        @Override
+//                        public void OnActionCleared() {
+//                            System.out.println("file item of video is closed");
+//                        }
+//                        @Override
+//                        public void OnClickItem() {
+//                            System.out.println("Loading the video to new stage");
+//                            try {
+//                                URL fxmlUrl = getClass().getResource("/orgs/tuasl_clint/fxml/videoItem.fxml");
+//                                String mediaUri = "src/main/resources/orgs/tuasl_clint/videos/" + m.getFileName();
+//                                FXMLLoader loader1 = new FXMLLoader(Objects.requireNonNull(fxmlUrl));
+//                                Parent root = loader1.load();
+//                                Stage stage = new Stage();
+//                                Scene scene = new Scene(root);
+//                                String cssPath = "/orgs/tuasl_clint/css/styles.css";
+//                                URL cssUrl = Navigation.class.getResource(cssPath);
+//                                if(cssUrl != null) {
+//                                    scene.getStylesheets().add(cssUrl.toExternalForm());
+//                                } else {
+//                                    System.err.println("Error : Cannot find CSS file: " + cssPath);
+//                                }
+//                                VideoPlayerController controller = loader1.getController();
+//                                controller.setVideoFile(mediaUri);
+//                                stage.setScene(scene);
+//                                stage.show();
+//                            } catch (IOException e) {
+//                                System.out.println("Error while trying to open new stage for video");
+//                                throw new RuntimeException(e);
+//                            }
+//                        }
+//                    });
+//                }else {
+//                    System.err.println("Error : Cannot get the resource File of video");
+//                }
             }else {
-                System.err.println("Cannot get the media from database");;
+                System.err.println("Error : Cannot get the media from database");;
             }
             mediaContainers.getChildren().add(videoItem);
-            System.out.println("complete loading");
+            System.out.println("complete loading the Message ....");
 
         } catch (Exception e) {
             showErrorAlert("Video Error", "Failed to load video: " + e.getMessage());
@@ -252,8 +300,9 @@ public class SendMessageItemController {
         }
     }
 
-    @FXML
     private void loadImageMessages(Message message) {
+        ImageMessageController imageMessageController = null;
+        System.out.println("loadImageMessage method in messages Controller : Loading the Image Message.....");
         try {
             // Create an FXMLLoader instance
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/imageItem.fxml"));
@@ -262,30 +311,23 @@ public class SendMessageItemController {
             Parent mesiaCard = loader.load();
 
             // Get the controller for the loaded FXML (if you need to interact with it)
-            ImageMessageController imageMessageController = loader.getController();
+            imageMessageController = loader.getController();
             Media m = MediaFactory.findById(message.getMediaId());
             if(m != null) {
-                String imagePath = getClass().getResource("/orgs/tuasl_clint/images/") + m.getFileName();
-//                if(imagePath.contains("target/classes")) {
-//                    imagePath = imagePath.replaceAll("target/classes","src/main/resources");
-//                }
+                String imagePath = "file:src/main/resources/orgs/tuasl_clint/images/" + m.getFileName();
                 imageMessageController.loadImage(imagePath);
-                //imageMessageController.loadImage(m.getFilePathOrUrl() + m.getFileName() + '.' + m.getMimeType());
                 System.out.println("Message id : "+message.getMessageId()+" with image media : "+imagePath);
             }
             else
-                imageMessageController.loadImage(getClass().getResource("/orgs/tuasl_clint/images/R.png").toString());
-
-            //messageScrollPane.setVvalue(1.0);
-
+                imageMessageController.loadImage(null);
             mediaContainers.getChildren().add(mesiaCard);
 
         } catch (IOException e) {
             e.printStackTrace();
             // Handle the error, e.g., show an alert
-            System.err.println("Failed to load UserCard.fxml: " + e.getMessage());
+            System.err.println("Error : Failed to load UserCard.fxml: " + e.getMessage());
         } catch (SQLException e) {
-            System.err.println("Image not found for this message");
+            System.err.println("Error : Image not found for this message");
             e.printStackTrace();
         }
     }
@@ -304,21 +346,6 @@ public class SendMessageItemController {
         System.out.println("user clicked on emoji on a message : "+ reaction+ " with x : "+event.getX()+ " Y : "+ event.getY() + " ON MESSAGE ID : "+ this.getMessage().getMessageId());
     }
 
-    @FXML
-    private Label heartEmoji;
-    @FXML
-    private Label noActionEmoji;
-    @FXML
-    private Label okEmoji;
-    @FXML
-    private Label sadEmoji;
-    @FXML
-    private Label smileEmoji;
-
-
-    @FXML
-    private HBox reactionsContainer;
-
     public Message getMessage() {
         return message;
     }
@@ -326,36 +353,23 @@ public class SendMessageItemController {
     @FXML
     void handleMessageHoverEnter(MouseEvent event) {
 //        System.out.println("mouse enter message with x : "+ event.getX()+ " and y : "+ event.getY() + "messh : "+ VboxMessage.getHeight() + " sum... : " + + sumofChildsHeights(reactionsContainer.getChildren()) );
-        if(VboxMessage.getHeight() <= sumofChildsHeights(reactionsContainer.getChildren()))
-            reactionsContainer.setLayoutY(-1 * VboxMessage.getHeight() + 3);
-        else if(VboxMessage.getHeight() > event.getY() + sumofChildsHeights(reactionsContainer.getChildren()))
-            reactionsContainer.setLayoutY(( event.getY()-VboxMessage.getHeight()));
-        else
-            reactionsContainer.setLayoutY(1 - sumofChildsHeights(reactionsContainer.getChildren()));
-        reactionsContainer.setLayoutX(VboxMessage.getWidth());
+//        if(VboxMessage.getHeight() <= sumofChildsHeights(reactionsContainer.getChildren()))
+//            reactionsContainer.setLayoutY(-1 * VboxMessage.getHeight() + 3);
+//        else if(VboxMessage.getHeight() > event.getY() + sumofChildsHeights(reactionsContainer.getChildren()))
+//            reactionsContainer.setLayoutY(( event.getY()-VboxMessage.getHeight()));
+//        else
+//            reactionsContainer.setLayoutY(1 - sumofChildsHeights(reactionsContainer.getChildren()));
+//        reactionsContainer.setLayoutX(VboxMessage.getWidth());
         this.reactionsContainer.setVisible(true);
 
     }
-    double sumofChildsHeights(ObservableList<Node> n){
-        double sum = 0;
-        for(Node nn : n){
-            sum += ((Label) nn).getHeight();
-        }
-        return  sum;
-    }
+
 
     @FXML
     void handleMessageHoverExit(MouseEvent event) {
 //        System.out.println("mouse exit message");
 //        if(message.getViewCount() == 0)
         this.reactionsContainer.setVisible(false);
-    }
-
-    @FXML
-    void handleReactionMouseSwipLeft(SwipeEvent event) {
-        System.out.println("mouse swipe icons right message");
-        if(this.reactionsContainer.visibleProperty().get())
-            this.reactionsContainer.setVisible(false);
     }
 
 

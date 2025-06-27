@@ -20,6 +20,7 @@ module orgs.tuasl_clint {
 
     requires org.bytedeco.opencv;
     requires javafx.swing;
+    requires org.bytedeco.libfreenect;
 
 
 }
