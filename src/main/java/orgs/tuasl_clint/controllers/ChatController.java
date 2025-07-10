@@ -165,6 +165,7 @@ public class ChatController {
                         messageScrollPane.setVvalue(1.0);
                         loadMessages(mm);
                         //TODO: send the file and message to reciver user( Write the code Here and some is under this main if block)
+                        System.out.println("@@@@@@@@@ sending file message");
                         return;
                     }
                     else {
@@ -190,6 +191,7 @@ public class ChatController {
             try {
                 if(m.save()){
                     //TODO write the code of send text Message Here
+                    System.out.println("@@@@@@sending text message");
                     messageInputField.clear();
                     loadMessages(m);
                     messageScrollPane.setVvalue(1.0);

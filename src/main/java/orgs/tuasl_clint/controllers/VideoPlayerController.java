@@ -371,7 +371,7 @@ public class VideoPlayerController implements Initializable {
 //            videoPlayerContainer.setMaxSize(originalSize[0], originalSize[1]);
             videoPlayerContainer.setMinSize(originalSize[0], originalSize[1]);
             MainVideoContainer.getChildren().add(videoPlayerContainer);
-            fullStage.setScene(null);
+//            fullStage.setScene(null);
             fullStage.close();
             fullStage = null;
         } else {
