@@ -344,6 +344,13 @@ public class SendMessageItemController {
     void handleReaction(MouseEvent event) {
         String reaction = ((Label) event.getSource()).getText();
         System.out.println("user clicked on emoji on a message : "+ reaction+ " with x : "+event.getX()+ " Y : "+ event.getY() + " ON MESSAGE ID : "+ this.getMessage().getMessageId());
+        // عرض الإيموجي في الـ emojiLabel
+        emojiLabel.setText(reaction);
+        emojiLabel.setVisible(true);
+        emojiLabel.setManaged(true);
+
+        // يمكنك حفظ هذا التفاعل في كائن Message أو قاعدة البيانات لاحقًا
+        message.setMessageType(reaction);
     }
 
     public Message getMessage() {
