@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
@@ -11,67 +12,60 @@
 <VBox fx:id="VboxMessage" alignment="TOP_LEFT" onMouseEntered="#handleMessageHoverEnter" onMouseExited="#handleMessageHoverExit" spacing="5" style="-fx-background-color: #DCF8C6; -fx-background-radius: 20; -fx-max-width: 50px;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.SendMessageItemController"> <padding>
     <Insets bottom="8" left="12" right="12" top="8" />
 </padding>
-
-          <Label fx:id="senderLabel" styleClass="message-sender" text="Sender Name" />
-    <VBox fx:id="mediaContainers" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" snapToPixel="false" />
-
-          <Text fx:id="contentText" accessibleText="1" styleClass="message-text" wrappingWidth="300" />
-
-          <HBox alignment="CENTER_LEFT" spacing="5">
-        <Label fx:id="timeLabel" styleClass="message-time" text="12:34" />
-        <Label fx:id="statusLabel" style=" -fx-text-fill: #34B7F1" styleClass="message-status" text="✓✓" />
-        <Pane HBox.hgrow="ALWAYS" />
-        <Label fx:id="optionsButton" style="-fx-font-size: 24;" text="⋮" />
-        <Label fx:id="emojiLabel" text="" HBox.hgrow="ALWAYS" />
-
-          </HBox>
-   <VBox>
-      <children>
-            <HBox fx:id="reactionsContainer" layoutX="350.0" layoutY="-50.0" managed="false" onSwipeUp="#handleReactionMouseSwipLeft" rotate="90.0" spacing="5" visible="false">
-              <Label fx:id="heartEmoji" alignment="CENTER" contentDisplay="CENTER" ellipsisString="❤" onMouseClicked="#handleReaction" rotate="-90.0" style="-fx-cursor: hand; -fx-background-color: inherit;" text="❤" textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
-               <padding>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </padding>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Label>
-              <Label fx:id="smileEmoji" alignment="CENTER" contentDisplay="CENTER" ellipsisString="😂" onMouseClicked="#handleReaction" rotate="-90.0" style="-fx-cursor: hand; -fx-background-color: inherit;" text="😂" textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
-               <padding>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </padding>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Label>
-              <Label fx:id="okEmoji" alignment="CENTER" contentDisplay="CENTER" ellipsisString="👍" onMouseClicked="#handleReaction" rotate="-90.0" style="-fx-cursor: hand; -fx-background-color: inherit;" text="👍" textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
-               <padding>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </padding>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Label>
-              <Label fx:id="noActionEmoji" alignment="CENTER" contentDisplay="CENTER" ellipsisString="😮" onMouseClicked="#handleReaction" rotate="-90.0" style="-fx-cursor: hand; -fx-background-color: inherit;" text="😮" textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
-               <padding>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </padding>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Label>
-              <Label fx:id="sadEmoji" alignment="CENTER" contentDisplay="CENTER" ellipsisString="😢" onMouseClicked="#handleReaction" rotate="-90.0" style="-fx-cursor: hand; -fx-background-color: inherit;" text="😢" textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
-               <padding>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </padding>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Label>
-            <padding>
-               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-            </padding>
-          </HBox>
-      </children>
-   </VBox>
+   <BorderPane>
+      <center>
+         <VBox BorderPane.alignment="CENTER">
+            <children>
+            
+                <Label fx:id="senderLabel" styleClass="message-sender" text="Sender Name" />
+                <VBox fx:id="mediaContainers" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" />
+            
+                <Text fx:id="contentText" accessibleText="1" styleClass="message-text" wrappingWidth="300" />
+            
+                      <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Label fx:id="timeLabel" styleClass="message-time" text="12:34" />
+                    <Label fx:id="statusLabel" style=" -fx-text-fill: #34B7F1" styleClass="message-status" text="✓✓" />
+                    <Pane HBox.hgrow="ALWAYS" />
+                    <Label fx:id="optionsButton" style="-fx-font-size: 24;" text="⋮" />
+                    <Label fx:id="emojiLabel" text="" HBox.hgrow="ALWAYS" />
+            
+                      </HBox>
+            </children>
+         </VBox>
+      </center>
+      <right>
+          <VBox fx:id="reactionsContainer" alignment="CENTER" pickOnBounds="false" visible="false" BorderPane.alignment="TOP_LEFT">
+            <children>
+                   <Label fx:id="heartEmoji" alignment="CENTER" contentDisplay="CENTER" ellipsisString="❤" onMouseClicked="#handleReaction" style="-fx-cursor: hand; -fx-background-color: inherit;" text="❤" textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
+                       <cursor>
+                           <Cursor fx:constant="HAND" />
+                       </cursor>
+                   </Label>
+                   <Label fx:id="smileEmoji" alignment="CENTER" contentDisplay="CENTER" ellipsisString="😂" onMouseClicked="#handleReaction" style="-fx-cursor: hand; -fx-background-color: inherit;" text="😂" textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
+                       <cursor>
+                           <Cursor fx:constant="HAND" />
+                       </cursor>
+                   </Label>
+                   <Label fx:id="okEmoji" alignment="CENTER" contentDisplay="CENTER" ellipsisString="👍" onMouseClicked="#handleReaction" style="-fx-cursor: hand; -fx-background-color: inherit;" text="👍" textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
+                       <cursor>
+                           <Cursor fx:constant="HAND" />
+                       </cursor>
+                   </Label>
+                   <Label fx:id="noActionEmoji" alignment="CENTER" contentDisplay="CENTER" ellipsisString="😮" onMouseClicked="#handleReaction" style="-fx-cursor: hand; -fx-background-color: inherit;" text="😮" textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
+                       <cursor>
+                           <Cursor fx:constant="HAND" />
+                       </cursor>
+                   </Label>
+                   <Label fx:id="sadEmoji" alignment="CENTER" contentDisplay="CENTER" ellipsisString="😢" onMouseClicked="#handleReaction" style="-fx-cursor: hand; -fx-background-color: inherit;" text="😢" textAlignment="CENTER" textOverrun="CENTER_WORD_ELLIPSIS" wrapText="true">
+                       <cursor>
+                           <Cursor fx:constant="HAND" />
+                       </cursor>
+                   </Label>
+            </children>
+            <BorderPane.margin>
+               <Insets />
+            </BorderPane.margin>
+          </VBox>
+      </right>
+   </BorderPane>
 </VBox>

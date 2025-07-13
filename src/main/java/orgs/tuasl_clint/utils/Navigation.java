@@ -26,7 +26,7 @@ public class Navigation {
 
     public static void loadPage(String fxmlFile) {
         if (primaryStage == null) {
-            System.err.println("Primary stage is not set in Navigation!");
+            System.err.println("Error : Primary stage is not set in Navigation!");
             return;
         }
         try {
@@ -34,7 +34,7 @@ public class Navigation {
             String fxmlPath = "/orgs/tuasl_clint/fxml/" + fxmlFile;
             URL fxmlUrl = Navigation.class.getResource(fxmlPath);
             if (fxmlUrl == null) {
-                System.err.println("Cannot find FXML file: " + fxmlPath);
+                System.err.println("Error : Cannot find FXML file: " + fxmlPath);
                 return;
             }
             System.out.println("Loading the page from : "+fxmlUrl.toString().toLowerCase());
@@ -50,7 +50,7 @@ public class Navigation {
                 if(cssUrl != null) {
                     scene.getStylesheets().add(cssUrl.toExternalForm());
                 } else {
-                    System.err.println("Cannot find CSS file: " + cssPath);
+                    System.err.println("Error : Cannot find CSS file: " + cssPath);
                 }
                 primaryStage.setScene(scene);
             } else {
@@ -60,17 +60,17 @@ public class Navigation {
                 if(cssUrl != null && scene.getStylesheets().isEmpty()) {
                     scene.getStylesheets().add(cssUrl.toExternalForm());
                 } else if (cssUrl == null && scene.getStylesheets().isEmpty()) {
-                    System.err.println("Cannot find CSS file: " + cssPath);
+                    System.err.println("Error : Cannot find CSS file: " + cssPath);
                 }
                 scene.setRoot(root); // Change the content of the existing scene
             }
             primaryStage.sizeToScene(); // Adjust stage size if needed
 
         } catch (IOException e) {
-            System.err.println("Error loading FXML file: " + fxmlFile);
+            System.err.println("Error : Error loading FXML file: " + fxmlFile);
             e.printStackTrace(); // Print stack trace for debugging
         } catch (NullPointerException e) {
-            System.err.println("Null pointer exception likely due to missing FXML or CSS resource. Check paths.");
+            System.err.println("Error : Null pointer exception likely due to missing FXML or CSS resource. Check paths.");
             e.printStackTrace();
         }
     }

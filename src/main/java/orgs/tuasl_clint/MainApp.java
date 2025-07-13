@@ -1,8 +1,13 @@
 package orgs.tuasl_clint;
 
 
+import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+import orgs.tuasl_clint.models2.User;
+import orgs.tuasl_clint.protocol.Response;
+import orgs.tuasl_clint.utils.ChatClient2;
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import orgs.tuasl_clint.utils.Navigation;
 
@@ -30,7 +35,7 @@ public class MainApp extends Application {
         Navigation.setPrimaryStage(primaryStage); // Pass the stage
 
         // Load the initial login screen
-        Navigation.loadPage("chat.fxml");
+        Navigation.loadPage("loadItem.fxml");
 
         primaryStage.setMinWidth(800); // Minimum responsive width
         primaryStage.setMaxHeight(1200);

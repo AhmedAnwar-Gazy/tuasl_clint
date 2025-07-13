@@ -12,15 +12,17 @@ DROP TABLE IF EXISTS media;
 DROP TABLE IF EXISTS chat_participants;
 DROP TABLE IF EXISTS chats;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS userinfo;
 
 -- Create tables
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    phone_number TEXT UNIQUE NOT NULL,
+    phone_number TEXT NOT NULL,
     username TEXT UNIQUE,
     first_name TEXT NOT NULL,
     last_name TEXT,
     bio TEXT,
+    password TEXT,
     profile_picture_url TEXT,
     hashed_password TEXT,
     two_factor_secret TEXT,
@@ -41,6 +43,13 @@ CREATE TABLE chats (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (creator_user_id) REFERENCES users(user_id) ON DELETE SET NULL
+);
+
+CREATE TABLE userinfo (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    phone_number TEXT NOT NULL,
+    password TEXT NOT NULL,
+    is_enable INTEGER DEFAULT 0
 );
 
 CREATE TABLE chat_participants (
