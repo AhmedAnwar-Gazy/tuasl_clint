@@ -8,7 +8,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import orgs.tuasl_clint.utils.FilesHelper;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 
 public class FileItemController {
 
@@ -16,6 +18,8 @@ public class FileItemController {
 
     @FXML
     private Button deleteItem;
+    @FXML
+    private Button openButton;
 
     @FXML
     private Label fileNameLBL;
@@ -29,6 +33,18 @@ public class FileItemController {
     @FXML
     void deleteItemHandler(ActionEvent event) {
         this.deleteItem();
+    }
+
+    @FXML
+    void openFileButtonClicked(ActionEvent event) {
+        if(action != null){
+            action.OnClickItem();
+        }
+        try {
+            Desktop.getDesktop().open(file);
+        } catch (IOException e) {
+            System.out.println("---------------------------Cannot Open The File-----------------------------");
+        }
     }
     public interface Action{
         public void OnActionDelete();

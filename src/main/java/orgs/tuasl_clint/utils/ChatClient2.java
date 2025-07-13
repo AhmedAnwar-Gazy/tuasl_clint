@@ -4,14 +4,12 @@ package orgs.tuasl_clint.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import javafx.util.Pair;
 import orgs.tuasl_clint.models2.Chat;
 import orgs.tuasl_clint.models2.Message;
 import orgs.tuasl_clint.models2.User;
 import orgs.tuasl_clint.protocol.Command;
 import orgs.tuasl_clint.protocol.Request;
 import orgs.tuasl_clint.protocol.Response;
-import orgs.tuasl_clint.utils.LocalDateTimeAdapter;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -410,7 +408,7 @@ public class ChatClient2 implements AutoCloseable {
                         } else {
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                             for (Message msg : messages) {
-                                String senderInfo = (msg.getSenderUserId() == currentUser.getUserId()) ? "You" : "User " + msg.getSenderUserId();
+                                String senderInfo = (msg.getSenderUserId() == currentUser.getId()) ? "You" : "User " + msg.getSenderUserId();
                                 String content = msg.getContent() != null ? msg.getContent() : "[No content]";
                                 String mediaInfo = "";
                                 if (msg.getMessageType() != null && !msg.getMessageType().equals("text")) {
@@ -459,7 +457,7 @@ public class ChatClient2 implements AutoCloseable {
                         } else {
                             for (User user : users) {
                                 System.out.printf("ID: %d, Name: %s %s, Phone: %s, Online: %s\n",
-                                        user.getUserId(), user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.isOnline());
+                                        user.getId(), user.getFirstName(), user.getLastName(), user.getPhoneNumber(), user.isOnline());
                             }
                         }
                     } else if (allUsersResponse != null) {
@@ -640,7 +638,7 @@ public class ChatClient2 implements AutoCloseable {
         }
         // Always fetch the latest profile before displaying
         Map<String, Object> params = new HashMap<>();
-        params.put("userId", currentUser.getUserId());
+        params.put("userId", currentUser.getId());
         Request request = new Request(Command.GET_USER_PROFILE, params);
         Response response = sendRequestAndAwaitResponse(request);
 
@@ -648,7 +646,7 @@ public class ChatClient2 implements AutoCloseable {
             User profile = gson.fromJson(response.getData(), User.class);
             if (profile != null) {
                 currentUser = profile; // Update current user with latest profile data
-                System.out.println("ID: " + currentUser.getUserId());
+                System.out.println("ID: " + currentUser.getId());
                 System.out.println("Phone: " + currentUser.getPhoneNumber());
                 System.out.println("First Name: " + currentUser.getFirstName());
                 System.out.println("Last Name: " + (currentUser.getLastName() != null ? currentUser.getLastName() : "N/A"));
@@ -694,7 +692,7 @@ public class ChatClient2 implements AutoCloseable {
 
     private void updateUserProfile(Scanner scanner) {
         Map<String, Object> updates = new HashMap<>();
-        updates.put("userId", currentUser.getUserId()); // Always send user ID
+        updates.put("userId", currentUser.getId()); // Always send user ID
 
         System.out.print("Enter new first name (leave blank to keep current: " + currentUser.getFirstName() + "): ");
         String firstName = scanner.nextLine();
@@ -732,7 +730,7 @@ public class ChatClient2 implements AutoCloseable {
 
     private void deleteUser() {
         Map<String, Object> params = new HashMap<>();
-        params.put("userId", currentUser.getUserId());
+        params.put("userId", currentUser.getId());
         Request request = new Request(Command.DELETE_USER, params);
         Response response = sendRequestAndAwaitResponse(request);
 
@@ -956,7 +954,7 @@ public class ChatClient2 implements AutoCloseable {
             } else {
                 for (User contact : contacts) {
                     System.out.printf("ID: %d, Name: %s %s, Phone: %s, Online: %s\n",
-                            contact.getUserId(), contact.getFirstName(), contact.getLastName(), contact.getPhoneNumber(), contact.isOnline());
+                            contact.getId(), contact.getFirstName(), contact.getLastName(), contact.getPhoneNumber(), contact.isOnline());
                 }
             }
         } else if (response != null) {
@@ -1123,7 +1121,7 @@ public class ChatClient2 implements AutoCloseable {
     private void markMessageAsRead(int messageId) {
         Map<String, Object> data = new HashMap<>();
         data.put("message_id", messageId);
-        data.put("user_id", currentUser.getUserId()); // Server will need to know who marked it read
+        data.put("user_id", currentUser.getId()); // Server will need to know who marked it read
         Request request = new Request(Command.MARK_MESSAGE_AS_READ, data);
         Response response = sendRequestAndAwaitResponse(request);
         if (response != null && response.isSuccess()) {

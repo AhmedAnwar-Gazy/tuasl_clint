@@ -8,6 +8,17 @@ public class UserInfo {
     private int user_id;
     private String phone;
     private String password;
+    private int isEnabled;
+    public static UserInfo userInfo = new UserInfo();
+
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
 
     public UserInfo(String phone, String password) {
         this.phone = phone;
@@ -40,14 +51,20 @@ public class UserInfo {
             return false;
         }
         try(Connection conn = DatabaseConnectionSQLite.getInstance().getConnection()){
-            PreparedStatement psmt = conn.prepareStatement("INSERT INTO userinfo( phone_number,password) VALUES(?,?) ;", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement psmt = conn.prepareStatement("INSERT INTO userinfo( phone_number,password,is_enable) VALUES(?,?,?);", Statement.RETURN_GENERATED_KEYS);
             psmt.setString(1,this.phone);
             psmt.setString(2,this.password);
+            psmt.setInt(3,this.isEnabled);
+            System.out.print("----------From User Info: Trying to save User Login Info To databaase and The result Is : ");
             if (psmt.executeUpdate() > 0){
+                System.out.println(true);
                 ResultSet rs = psmt.getGeneratedKeys();
                 if(rs.next())
                     this.user_id = rs.getInt(0);
                 return true;
+            }else
+            {
+                System.out.println(false);
             }
             return false;
         }
@@ -55,24 +72,38 @@ public class UserInfo {
     public boolean update()throws  SQLException{
         if(this.isEmpty() || this.user_id <= 0)
             return false;
-        try(PreparedStatement psmt = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement("UPDATE user_info SET phone_number = ? , password = ? WHERE id = ?")){
+        System.out.print("--------From UserInfo Class : Trying to Update User Data And Result is : ");
+        try(PreparedStatement psmt = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement("UPDATE userinfo SET phone_number = ? , password = ? , is_enable = ? WHERE id = ?")){
             psmt.setString(1,this.phone);
             psmt.setString(2,this.password);
-            psmt.setInt(3,this.user_id);
-            return psmt.executeUpdate() > 0;
+            psmt.setInt(3,this.isEnabled);
+            psmt.setInt(4,this.user_id);
+            boolean success = psmt.executeUpdate() > 0;
+            System.out.println(success);
+            return success;
         }
     }
 
     public boolean getFirst() throws SQLException{
-        try(PreparedStatement psmt = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement("SELECT * FROM userinfo limit 1 ")) {
+        System.out.print("----------From UserInfo Class : Trying to get the First Row in the Table");
+        try(PreparedStatement psmt = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement("SELECT * FROM userinfo LIMIT 2;")) {
             ResultSet rs= psmt.executeQuery();
-            if(rs.next()){
-                this.user_id = rs.getInt(1);
-                this.phone = rs.getString(2);
-                this.password = rs.getString(3);
+            boolean result = rs.next();
+            System.out.println(" And Result Is :"+result);
+            if(result){
+                this.user_id = rs.getInt("id");
+                this.phone = rs.getString("phone_number");
+                this.password = rs.getString("password");
+                this.isEnabled = rs.getInt("is_enable");
+                System.out.println("______________ Current User from Database Is : "+ this.toString());
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo{user_id : "+this.user_id+" , Phone : "+this.phone+" , Password : "+password+", enabled : "+(this.isEnabled > 0)+"}";
     }
 }

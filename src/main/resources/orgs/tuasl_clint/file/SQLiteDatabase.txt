@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS userinfo;
 -- Create tables
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    phone_number TEXT UNIQUE NOT NULL,
+    phone_number TEXT NOT NULL,
     username TEXT UNIQUE,
     first_name TEXT NOT NULL,
     last_name TEXT,
@@ -45,10 +45,11 @@ CREATE TABLE chats (
     FOREIGN KEY (creator_user_id) REFERENCES users(user_id) ON DELETE SET NULL
 );
 
-CTEATE TABLE userinfo (
+CREATE TABLE userinfo (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     phone_number TEXT NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    is_enable INTEGER DEFAULT 0
 );
 
 CREATE TABLE chat_participants (

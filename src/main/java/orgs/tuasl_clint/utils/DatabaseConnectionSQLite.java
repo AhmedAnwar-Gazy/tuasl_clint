@@ -63,7 +63,7 @@ public class DatabaseConnectionSQLite {
             System.out.println("Error cannot test database last creation...!!!");
             e.printStackTrace();
         }
-        try (var stmt = DatabaseConnectionSQLite.getInstance().getConnection().createStatement()) {
+        try (var stmt = connection.createStatement()) {
             CreateDatabase(stmt);
             insertDataToDatabase(stmt);
         } catch (SQLException | IOException e) {
