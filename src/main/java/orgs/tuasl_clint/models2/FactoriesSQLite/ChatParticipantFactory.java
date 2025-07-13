@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatParticipantFactory {
-    public ChatParticipant create() {
+    public static ChatParticipant create() {
         return new ChatParticipant();
     }
 
-    public ChatParticipant createFromResultSet(ResultSet rs) throws SQLException {
+    public static ChatParticipant createFromResultSet(ResultSet rs) throws SQLException {
         return new ChatParticipant(
                 (rs.getLong("chat_participant_id")),
                 (rs.getLong("chat_id")),
@@ -23,11 +23,11 @@ public class ChatParticipantFactory {
                 rs.getTimestamp("muted_until"),
                 rs.getInt("is_pinned") == 1,
                 rs.getInt("unread_count"),
-                rs.getLong("last_read_message_id") != 0 ? (rs.getLong("last_read_message_id")) : null
+                rs.getLong("last_read_message_id") != 0 ? (rs.getLong("last_read_message_id")) : 0
         );
     }
 
-    public ChatParticipant findById(long chatParticipantId) throws SQLException {
+    public static ChatParticipant findById(long chatParticipantId) throws SQLException {
         String sql = "SELECT * FROM chat_participants WHERE chat_participant_id = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
             statement.setLong(1, chatParticipantId);
@@ -40,7 +40,7 @@ public class ChatParticipantFactory {
         return null;
     }
 
-    public List<ChatParticipant> findByChatId(long chatId) throws SQLException {
+    public static List<ChatParticipant> findByChatId(long chatId) throws SQLException {
         String sql = "SELECT * FROM chat_participants WHERE chat_id = ?";
         List<ChatParticipant> participants = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
@@ -53,8 +53,18 @@ public class ChatParticipantFactory {
         }
         return participants;
     }
+    public static int getChatParticipantCount(long chatId)throws SQLException{
+        String query = "SELECT count(*) as Count FROM chat_participants WHERE chat_id = ?";
+        try(PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(query)){
+            statement.setLong(1,chatId);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next())
+                return rs.getInt("Count");
+        }
+        return -1;
+    }
 
-    public List<ChatParticipant> findByUserId(long userId) throws SQLException {
+    public static List<ChatParticipant> findByUserId(long userId) throws SQLException {
         String sql = "SELECT * FROM chat_participants WHERE user_id = ?";
         List<ChatParticipant> participants = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
@@ -68,7 +78,7 @@ public class ChatParticipantFactory {
         return participants;
     }
 
-    public ChatParticipant findByChatAndUser(long chatId, long userId) throws SQLException {
+    public static ChatParticipant findByChatAndUser(long chatId, long userId) throws SQLException {
         String sql = "SELECT * FROM chat_participants WHERE chat_id = ? AND user_id = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
             statement.setLong(1, chatId);
@@ -82,7 +92,7 @@ public class ChatParticipantFactory {
         return null;
     }
 
-    public List<ChatParticipant> findByRole(ChatParticipant.ChatParticipantRole role) throws SQLException {
+    public static List<ChatParticipant> findByRole(ChatParticipant.ChatParticipantRole role) throws SQLException {
         String sql = "SELECT * FROM chat_participants WHERE role = ?";
         List<ChatParticipant> participants = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {

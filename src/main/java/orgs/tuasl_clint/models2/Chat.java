@@ -15,6 +15,10 @@ public class Chat {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
+    public long getCreatorId() {
+        return 0;
+    }
+
     public enum ChatType {
         PRIVATE, GROUP, CHANNEL, UNKNOWN;
 

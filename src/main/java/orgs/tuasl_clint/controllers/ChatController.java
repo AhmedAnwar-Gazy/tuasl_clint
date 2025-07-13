@@ -9,7 +9,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import orgs.tuasl_clint.models2.*;
 import orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory;
+import orgs.tuasl_clint.models2.FactoriesSQLite.ChatParticipantFactory;
 import orgs.tuasl_clint.models2.FactoriesSQLite.MediaFactory;
+import orgs.tuasl_clint.protocol.Command;
+import orgs.tuasl_clint.protocol.Request;
+import orgs.tuasl_clint.protocol.Response;
+import orgs.tuasl_clint.utils.ChatClient2;
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
 import orgs.tuasl_clint.utils.FilesHelper;
 import orgs.tuasl_clint.utils.Navigation;
@@ -30,7 +35,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Map;
 import javax.sound.sampled.*;
+import javax.swing.*;
 
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
@@ -119,6 +126,20 @@ public class ChatController {
                 messageDisplayArea.getChildren().clear();
                 messageDisplayArea.getChildren().add(new Label("Messages for " + newSelection + " are encrypted between all participles."));
                 currentChat = chatsMap.get(newSelection);
+//                try {
+//                    //TODO: UNCOMMIT THE FOLLOWING COMMIT to hide the video/voice call buttons becouse the users of this chat are more than 2 so we cannot open a video/voice call.....!!
+//                    int count = ChatParticipantFactory.getChatParticipantCount(currentChat.getChatId());
+//                    System.out.println("--------------------------------------------Participants count is : "+ count);
+//                    if(count > 2){
+//                        this.audioCallButton.setVisible(false);
+//                        this.videoCallButton.setVisible(false);
+//                    }else{
+//                        this.audioCallButton.setVisible(true);
+//                        this.videoCallButton.setVisible(true);
+//                    }
+//                } catch (SQLException e) {
+//                    System.err.println("-------cannot get this chat participles...!!!\n------Error Message is : "+ e.getMessage());
+//                }
                 loadChatsMessages(newSelection);                // --- NEW CODE: Populate messageDisplayArea directly after loading messages ---
                 for (Message message : messageItemsMessage) {
                     loadMessages(message);
@@ -192,9 +213,14 @@ public class ChatController {
                 if(m.save()){
                     //TODO write the code of send text Message Here
                     System.out.println("@@@@@@sending text message");
-                    messageInputField.clear();
-                    loadMessages(m);
-                    messageScrollPane.setVvalue(1.0);
+                    Response res = ChatClient2.getChatClient2().sendTextMessage((int)currentChat.getChatId(),m.getContent());
+                    if(res.isSuccess()){
+                        messageInputField.clear();
+                        loadMessages(m);
+                        messageScrollPane.setVvalue(1.0);
+                    }else {
+                        JOptionPane.showMessageDialog(null,JOptionPane.ERROR_MESSAGE,"Error: Cannot send The message",0);
+                    }
                 }
                 else{
                     System.out.println("cannot save the message");
@@ -339,11 +365,12 @@ public class ChatController {
         } catch (SQLException e) {
             System.out.println("Cannot recive this message becouse no Chat in database has this message chat");
             e.printStackTrace();
+            return;
         }
         if(c != null){
             if(c == currentChat){
                 loadMessages(message);
-                //TODO play the message recived sound
+                //TODO play the message received sound
             }else if(chatsMessagesMap.containsKey(c)) {
                 chatsMessagesMap.get(c).add(message);
                 //TODO: play the notifications sound
@@ -393,6 +420,7 @@ public class ChatController {
 
     @FXML
     private void handleMenuButtonAction(ActionEvent event) {
+        System.out.println("menu button clicked");
     }
 
     private final String SHARE_FOLDER = "src/main/resources/orgs/tuasl_clint/file/";
@@ -587,7 +615,7 @@ public class ChatController {
             }
         }
         else{
-            System.out.println("this chat has been opend before and now is loaded successfully");
+            System.out.println("this chat has been opened before and now is loaded successfully");
             messageItemsMessage = chatsMessagesMap.get(chatsMap.get(chatname));
         }
     }

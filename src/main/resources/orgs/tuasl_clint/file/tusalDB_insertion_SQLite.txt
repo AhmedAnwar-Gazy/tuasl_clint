@@ -14,7 +14,8 @@ INSERT INTO users (phone_number, username, first_name, last_name, bio, profile_p
 ("+10000000012", "mu_innovator", "Mu", "Idea", "Innovating for a better future.", "http://example.com/p/mu.jpg", 0, datetime('now', '-4 hours'), 'hashedpass12', 'secret12'),
 ("+10000000013", "nu_learner", "Nu", "Knowledge", "Lifelong learner.", "http://example.com/p/nu.jpg", 1, datetime('now', '-45 minutes'), 'hashedpass13', 'secret13'),
 ("+10000000014", "xi_mentor", "Xi", "Guide", "Helping others grow.", "http://example.com/p/xi.jpg", 1, datetime('now', '-50 minutes'), 'hashedpass14', 'secret14'),
-("+10000000015", "omicron_explorer", "Omicron", "Quest", "Exploring new horizons.", "http://example.com/p/omicron.jpg", 0, datetime('now', '-5 hours'), 'hashedpass15', 'secret15');
+("+10000000015", "omicron_explorer", "Omicron", "Quest", "Exploring new horizons.", "http://example.com/p/omicron.jpg", 0, datetime('now', '-5 hours'), 'hashedpass15', 'secret15'),
+("730673145", "Gazy", "Omicron", "Quest", "Exploring new horizons.", "http://example.com/p/omicron.jpg", 0, datetime('now', '-5 hours'), '730673145', 'secret15');
 
 -- --- SECTION 2: Insert into USER_SETTINGS (15 records) and SESSIONS (35 records) ---
 INSERT INTO user_settings (user_id, privacy_phone_number, privacy_last_seen, privacy_profile_photo, privacy_groups_and_channels, notifications_private_chats, notifications_group_chats, notifications_channels) VALUES
@@ -115,6 +116,7 @@ INSERT INTO chat_participants (chat_id, user_id, role, unread_count) VALUES
 (2, 3, "member", 0),
 (3, 3, "member", 0),
 (3, 4, "member", 0),
+(4,16,"member",0),
 (10, 4, "member", 0),
 (10, 5, "member", 0),
 (11, 5, "member", 0),

@@ -289,7 +289,7 @@ public class SendMessageItemController {
 //                    System.err.println("Error : Cannot get the resource File of video");
 //                }
             }else {
-                System.err.println("Error : Cannot get the media from database");;
+                System.err.println("Error : Cannot get the media from database");
             }
             mediaContainers.getChildren().add(videoItem);
             System.out.println("complete loading the Message ....");

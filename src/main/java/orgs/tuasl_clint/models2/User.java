@@ -7,6 +7,7 @@ import java.util.Date;
 
 public class User {
     private long userId;
+    private int id;
     private String phoneNumber;
     private String username;
     private String firstName;
@@ -57,7 +58,10 @@ public class User {
         this.bio = username;
     }
 
-    public long getUserId() { return userId; }
+    public long getUserId() {
+        if (id > userId)
+            userId = id;
+        return userId; }
     public void setUserId(long userId) { this.userId = userId; }
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }

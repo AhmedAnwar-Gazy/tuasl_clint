@@ -21,6 +21,7 @@ CREATE TABLE users (
     first_name TEXT NOT NULL,
     last_name TEXT,
     bio TEXT,
+    password TEXT,
     profile_picture_url TEXT,
     hashed_password TEXT,
     two_factor_secret TEXT,

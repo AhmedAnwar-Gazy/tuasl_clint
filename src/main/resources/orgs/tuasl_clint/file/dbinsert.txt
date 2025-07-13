@@ -6,24 +6,22 @@ SET FOREIGN_KEY_CHECKS = 0;
 USE tuasil_messaging;
 
 -- --- SECTION 1: Insert into USERS (15 records) ---
-INSERT INTO users (phone_number, username, first_name, last_name, bio, profile_picture_url, is_online, last_seen_at,password) VALUES
-("+10000000002", "beta_dev", "Beta", "Dev", "Loves coding and debugging.", "http://example.com/p/beta.jpg", TRUE, NOW() - INTERVAL 10 MINUTE,""),
-("+10000000003", "gamma_gamer", "Gamma", "Gamer", "Pro gamer, casual streamer.", "http://example.com/p/gamma.jpg", FALSE, NOW() - INTERVAL 1 HOUR,""),
-("+10000000004", "delta_artist", "Delta", "Artist", "Creating digital art.", "http://example.com/p/delta.jpg", TRUE, NOW() - INTERVAL 15 MINUTE,""),
-("+10000000005", "epsilon_foodie", "Epsilon", "Chef", "Food blogger and chef.", "http://example.com/p/epsilon.jpg", TRUE, NOW() - INTERVAL 20 MINUTE,""),
-("+10000000006", "zeta_reader", "Zeta", "Book", "Lost in books.", "http://example.com/p/zeta.jpg", FALSE, NOW() - INTERVAL 2 HOUR,""),
-("+10000000007", "eta_hiker", "Eta", "Wanderer", "Hiking mountains, exploring trails.", "http://example.com/p/eta.jpg", TRUE, NOW() - INTERVAL 25 MINUTE,""),
-("+10000000008", "theta_music", "Theta", "Melody", "Music producer and DJ.", "http://example.com/p/theta.jpg", TRUE, NOW() - INTERVAL 30 MINUTE,""),
-("+10000000009", "iota_traveler", "Iota", "Journey", "Always on the move.", "http://example.com/p/iota.jpg", FALSE, NOW() - INTERVAL 3 HOUR,""),
-("+10000000010", "kappa_writer", "Kappa", "Story", "Writing compelling stories.", "http://example.com/p/kappa.jpg", TRUE, NOW() - INTERVAL 35 MINUTE,""),
-("+10000000011", "lambda_builder", "Lambda", "Craft", "Building things, physical and digital.", "http://example.com/p/lambda.jpg", TRUE, NOW() - INTERVAL 40 MINUTE,""),
-("+10000000012", "mu_innovator", "Mu", "Idea", "Innovating for a better future.", "http://example.com/p/mu.jpg", FALSE, NOW() - INTERVAL 4 HOUR,""),
-("+10000000013", "nu_learner", "Nu", "Knowledge", "Lifelong learner.", "http://example.com/p/nu.jpg", TRUE, NOW() - INTERVAL 45 MINUTE,""),
-("+10000000014", "xi_mentor", "Xi", "Guide", "Helping others grow.", "http://example.com/p/xi.jpg", TRUE, NOW() - INTERVAL 50 MINUTE,""),
-("+10000000015", "omicron_explorer", "Omicron", "Quest", "Exploring new horizons.", "http://example.com/p/omicron.jpg", FALSE, NOW() - INTERVAL 5 HOUR,"");
-("+10000000015", "omicron_explorer", "Omicron", "Quest", "Exploring new horizons.", "http://example.com/p/omicron.jpg", FALSE, NOW() - INTERVAL 5 HOUR,"");
-("730673145", "gazy", "Alpha", "One", "The first user. Explorer.", "http://example.com/p/alpha.jpg", TRUE, NOW() - INTERVAL 5 MINUTE,"730673145"),
-
+INSERT INTO users (phone_number, username, first_name, last_name, password, bio, profile_picture_url, is_online, last_seen_at) VALUES
+('+10000000001', 'alpha_user', 'Alpha', 'One', 'password123', 'The first user. Explorer.', 'http://example.com/p/alpha.jpg', TRUE, NOW() - INTERVAL 5 MINUTE),
+('+10000000002', 'beta_dev', 'Beta', 'Dev', 'password123', 'Loves coding and debugging.', 'http://example.com/p/beta.jpg', TRUE, NOW() - INTERVAL 10 MINUTE),
+('+10000000003', 'gamma_gamer', 'Gamma', 'Gamer', 'password123', 'Pro gamer, casual streamer.', 'http://example.com/p/gamma.jpg', FALSE, NOW() - INTERVAL 1 HOUR),
+('+10000000004', 'delta_artist', 'Delta', 'Artist', 'password123', 'Creating digital art.', 'http://example.com/p/delta.jpg', TRUE, NOW() - INTERVAL 15 MINUTE),
+('+10000000005', 'epsilon_foodie', 'Epsilon', 'Chef', 'password123', 'Food blogger and chef.', 'http://example.com/p/epsilon.jpg', TRUE, NOW() - INTERVAL 20 MINUTE),
+('+10000000006', 'zeta_reader', 'Zeta', 'Book', 'password123', 'Lost in books.', 'http://example.com/p/zeta.jpg', FALSE, NOW() - INTERVAL 2 HOUR),
+('+10000000007', 'eta_hiker', 'Eta', 'Wanderer', 'password123', 'Hiking mountains, exploring trails.', 'http://example.com/p/eta.jpg', TRUE, NOW() - INTERVAL 25 MINUTE),
+('+10000000008', 'theta_music', 'Theta', 'Melody', 'password123', 'Music producer and DJ.', 'http://example.com/p/theta.jpg', TRUE, NOW() - INTERVAL 30 MINUTE),
+('+10000000009', 'iota_traveler', 'Iota', 'Journey', 'password123', 'Always on the move.', 'http://example.com/p/iota.jpg', FALSE, NOW() - INTERVAL 3 HOUR),
+('+10000000010', 'kappa_writer', 'Kappa', 'Story', 'password123', 'Writing compelling stories.', 'http://example.com/p/kappa.jpg', TRUE, NOW() - INTERVAL 35 MINUTE),
+('+10000000011', 'lambda_builder', 'Lambda', 'Craft', 'password123', 'Building things, physical and digital.', 'http://example.com/p/lambda.jpg', TRUE, NOW() - INTERVAL 40 MINUTE),
+('+10000000012', 'mu_innovator', 'Mu', 'Idea', 'password123', 'Innovating for a better future.', 'http://example.com/p/mu.jpg', FALSE, NOW() - INTERVAL 4 HOUR),
+('+10000000013', 'nu_learner', 'Nu', 'Knowledge', 'password123', 'Lifelong learner.', 'http://example.com/p/nu.jpg', TRUE, NOW() - INTERVAL 45 MINUTE),
+('+10000000014', 'xi_mentor', 'Xi', 'Guide', 'password123', 'Helping others grow.', 'http://example.com/p/xi.jpg', TRUE, NOW() - INTERVAL 50 MINUTE),
+('+10000000015', 'omicron_explorer', 'Omicron', 'Quest', 'password123', 'Exploring new horizons.', 'http://example.com/p/omicron.jpg', FALSE, NOW() - INTERVAL 5 HOUR);
 
 -- --- SECTION 2: Insert into USER_SETTINGS (15 records) and SESSIONS (35 records) ---
 INSERT INTO user_settings (user_id, privacy_phone_number, privacy_last_seen, privacy_profile_photo, privacy_groups_and_channels, notifications_private_chats, notifications_group_chats, notifications_channels) VALUES
@@ -86,7 +84,7 @@ INSERT INTO chats (chat_type, chat_name, chat_picture_url, chat_description, pub
 ("private", "احمد", NULL, NULL, NULL, 1),
 ("private", "زياد", NULL, NULL, NULL, 2),
 ("private", "حفيظ", NULL, NULL, NULL, 3),
-("group", "Test Program", "http://example.com/c/project_alpha.jpg", "Team working on Project Alpha.", NULL, 1),
+("group", "Project Alpha", "http://example.com/c/project_alpha.jpg", "Team working on Project Alpha.", NULL, 1),
 ("group", "Gaming Squad", "http://example.com/c/gaming_squad.jpg", "For all things gaming.", NULL, 3),
 ("group", "Foodie Friends", "http://example.com/c/foodie_friends.jpg", "Sharing delicious recipes and restaurant finds.", NULL, 5),
 ("channel", "Daily Tech News", "http://example.com/c/tech_news.jpg", "Latest updates in technology.", "daily_tech_news_channel", 2),
@@ -123,7 +121,6 @@ INSERT INTO media (file_path_or_url, thumbnail_url, file_size, media_type, uploa
 INSERT INTO chat_participants (chat_id, user_id, role, unread_count) VALUES
 (1, 1, "member", 0), (1, 2, "member", 0),
 (2, 2, "member", 0), (2, 3, "member", 0),
-(16,4,"member",0),
 (3, 3, "member", 0), (3, 4, "member", 0),
 (10, 4, "member", 0), (10, 5, "member", 0),
 (11, 5, "member", 0), (11, 6, "member", 0),
