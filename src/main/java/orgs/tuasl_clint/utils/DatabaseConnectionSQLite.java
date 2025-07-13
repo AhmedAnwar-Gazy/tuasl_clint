@@ -1,11 +1,10 @@
 package orgs.tuasl_clint.utils;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
+
+import static java.lang.System.exit;
 
 public class DatabaseConnectionSQLite {
     private Connection connection;
@@ -19,6 +18,16 @@ public class DatabaseConnectionSQLite {
         } catch (SQLException e) {
             System.out.println("Error Cannot Create Connection In DatabaseConnectionSqlite file......!!!");
             System.out.println(e.getMessage());
+        }
+    }
+
+    public static void DeleteData() {
+        try (var stmt = DatabaseConnectionSQLite.getInstance().getConnection().createStatement()) {
+            CreateDatabase(stmt);
+        } catch (SQLException | IOException e) {
+            System.out.println("Error While Droping data from Database Error msg: "+ e.getMessage());
+            e.printStackTrace();
+            exit(0);
         }
     }
 
@@ -54,25 +63,34 @@ public class DatabaseConnectionSQLite {
             System.out.println("Error cannot test database last creation...!!!");
             e.printStackTrace();
         }
-        try (var stmt = connection.createStatement()) {
-            List<String> queries = FilesHelperReader.readUntilChar("src\\main\\resources\\orgs\\tuasl_clint\\file\\SQLiteDatabase.txt",';');
-            for(String query : queries){
-                stmt.executeUpdate(query);
-                System.out.println("   QUERY: \n"+ query + "\n   IS EXECUTED SUCCESSFULLY ...!!!");
-            }
-            List<String> inserts = FilesHelperReader.readUntilChar("src\\main\\resources\\orgs\\tuasl_clint\\file\\tusalDB_insertion_SQLite.txt",';');
-            for(String query : inserts){
-                System.out.print("   QUERY: \n\""+ query + "\"\n   IS EXECUTING ... STATE IS : ");
-                if(stmt.executeUpdate(query + ";") > 0)
-                    System.out.println("SUCCESS ...!!!");
-                else
-                    System.out.println("FAILURE ...!!!");
-            }
+        try (var stmt = DatabaseConnectionSQLite.getInstance().getConnection().createStatement()) {
+            CreateDatabase(stmt);
+            insertDataToDatabase(stmt);
         } catch (SQLException | IOException e) {
             System.out.println("an Error occurred while trying create database tables or insert values error is : ");
             System.out.println(e.getMessage());
         }
     }
+
+    private static void insertDataToDatabase(Statement stmt) throws IOException, SQLException {
+        List<String> inserts = FilesHelperReader.readUntilChar("src\\main\\resources\\orgs\\tuasl_clint\\file\\tusalDB_insertion_SQLite.txt",';');
+        for(String query : inserts){
+            System.out.print("   QUERY: \n\""+ query + "\"\n   IS EXECUTING ... STATE IS : ");
+            if(stmt.executeUpdate(query + ";") > 0)
+                System.out.println("SUCCESS ...!!!");
+            else
+                System.out.println("FAILURE ...!!!");
+        }
+    }
+
+    private static void CreateDatabase(Statement stmt) throws IOException, SQLException {
+        List<String> queries = FilesHelperReader.readUntilChar("src\\main\\resources\\orgs\\tuasl_clint\\file\\SQLiteDatabase.txt",';');
+        for(String query : queries){
+            stmt.executeUpdate(query);
+            System.out.println("   QUERY: \n"+ query + "\n   IS EXECUTED SUCCESSFULLY ...!!!");
+        }
+    }
+
     private boolean tableExists(String tableName) throws SQLException {
         try (ResultSet rs = connection.getMetaData().getTables(null, null, tableName, null)) {
             return rs.next();

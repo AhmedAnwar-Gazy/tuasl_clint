@@ -13,6 +13,7 @@ import orgs.tuasl_clint.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
+import javax.swing.*;
 import java.net.URL;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -44,6 +45,9 @@ public class LoginController implements Initializable {
                     userFromServer.setUserId(u.getUserId());
                     User.user = userFromServer;
                     sucessLogin();
+                }
+                else{
+                    DatabaseConnectionSQLite.DeleteData();
                 }
             }else{
                 this.loginMessage.setText(serverLoginResponse.getMessage());
@@ -98,12 +102,17 @@ public class LoginController implements Initializable {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Cannot Sign in Automatically Error : "+ e.getMessage());
+            e.printStackTrace();
         }
     }
-    private void sucessLogin() throws SQLException {
+    private void sucessLogin(){
         User.user.setOnline(true);
-        User.user.update();
+        try {
+            User.user.update();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Error occored While updating data in database ! Error Message : "+e.getMessage());
+        }
         Navigation.loadPage("chat.fxml");
         System.out.println("Auto Sign in BY Username : " + User.user.getUsername() + ", Phone : " + User.user.getPhoneNumber() + ", password : " + User.user.getPassword());
     }
