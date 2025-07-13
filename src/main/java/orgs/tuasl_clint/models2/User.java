@@ -6,8 +6,7 @@ import java.util.Date;
 
 
 public class User {
-    private long userId;
-    private int id;
+    private long id;
     private String phoneNumber;
     private String username;
     private String firstName;
@@ -31,7 +30,7 @@ public class User {
     }
 
     public User(long userId, String phoneNumber, String username, String firstName, String lastName, String bio, String profilePictureUrl, String hashedPassword, String twoFactorSecret, Timestamp lastSeenAt, boolean isOnline, Timestamp createdAt, Timestamp updatedAt) {
-        this.userId = userId;
+        this.id = userId;
         this.phoneNumber = phoneNumber;
         this.username = username;
         this.firstName = firstName;
@@ -58,11 +57,8 @@ public class User {
         this.bio = username;
     }
 
-    public long getUserId() {
-        if (id > userId)
-            userId = id;
-        return userId; }
-    public void setUserId(long userId) { this.userId = userId; }
+    public long getId() {return id; }
+    public void setId(long id) { this.id = id; }
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public String getUsername() { return username; }
@@ -108,7 +104,7 @@ public class User {
             if (isInserted) {
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        this.userId = (generatedKeys.getLong(1));
+                        this.id = (generatedKeys.getLong(1));
                     }
                 }
             }
@@ -130,7 +126,7 @@ public class User {
             statement.setTimestamp(9, lastSeenAt);
             statement.setInt(10, isOnline ? 1 : 0);
             statement.setTimestamp(11, updatedAt);
-            statement.setLong(12, userId);
+            statement.setLong(12, id);
 
             return statement.executeUpdate() > 0;
         }
@@ -139,8 +135,26 @@ public class User {
     public boolean delete() throws SQLException {
         String sql = "DELETE FROM users WHERE user_id = ?";
         try (PreparedStatement statement = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement(sql)) {
-            statement.setLong(1, userId);
+            statement.setLong(1, id);
             return statement.executeUpdate() > 0;
         }
+    }
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + id +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", bio='" + bio + '\'' +
+                ", profilePictureUrl='" + profilePictureUrl + '\'' +
+                ", password=" + this.password +// Masked for security
+                ", twoFactorSecret=" + this.twoFactorSecret +  // Masked for security
+                ", lastSeenAt=" + lastSeenAt +
+                ", isOnline=" + isOnline +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+        '}';
     }
 }

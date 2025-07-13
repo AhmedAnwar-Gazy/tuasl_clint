@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS userinfo;
 -- Create tables
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    phone_number TEXT UNIQUE NOT NULL,
+    phone_number TEXT NOT NULL,
     username TEXT UNIQUE,
     first_name TEXT NOT NULL,
     last_name TEXT,

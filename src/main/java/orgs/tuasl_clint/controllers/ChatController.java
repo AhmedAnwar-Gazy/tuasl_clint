@@ -9,10 +9,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import orgs.tuasl_clint.models2.*;
 import orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory;
-import orgs.tuasl_clint.models2.FactoriesSQLite.ChatParticipantFactory;
 import orgs.tuasl_clint.models2.FactoriesSQLite.MediaFactory;
-import orgs.tuasl_clint.protocol.Command;
-import orgs.tuasl_clint.protocol.Request;
 import orgs.tuasl_clint.protocol.Response;
 import orgs.tuasl_clint.utils.ChatClient2;
 import orgs.tuasl_clint.utils.DatabaseConnectionSQLite;
@@ -28,14 +25,11 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.URL;
 import java.nio.file.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.Map;
 import javax.sound.sampled.*;
 import javax.swing.*;
 
@@ -169,13 +163,13 @@ public class ChatController {
         if(!this.message_media_selected_container.getChildren().isEmpty()){
             this.message_media_selected_container.getChildren().clear();
             Media m = new Media(mediaFileController.getFile().getName(), mediaFileController.getFile().getAbsolutePath(),FilesHelper.getFileExtension(mediaFileController.getFile()),FilesHelper.getFileSize(mediaFileController.getFile()),new Timestamp(new Date().getTime()));
-            m.setUploaderUserId(User.user.getUserId());
+            m.setUploaderUserId(User.user.getId());
             try {
                 if(m.save()){
                     Message mm = new Message(messageText);
                     mm.setMediaId(m.getMediaId());
                     mm.setSenderName(User.user.getFirstName());
-                    mm.setSenderUserId(User.user.getUserId());
+                    mm.setSenderUserId(User.user.getId());
                     mm.setChatId(currentChat.getChatId());
                     mm.setMessageType(FilesHelper.getFileType(mediaFileController.getFile()).name().toLowerCase());
                     if(mm.save()){
@@ -206,7 +200,7 @@ public class ChatController {
             Message m = new Message(messageText);
             m.setMediaId(m.getMediaId());
             m.setSenderName(User.user.getFirstName());
-            m.setSenderUserId(User.user.getUserId());
+            m.setSenderUserId(User.user.getId());
             m.setChatId(currentChat.getChatId());
             m.setMessageType(FilesHelper.fileType.TEXT.name().toLowerCase());
             try {
@@ -550,7 +544,7 @@ public class ChatController {
             String sql = "SELECT c.* FROM users LEFT JOIN chat_participants on users.user_id = chat_participants.user_id LEFT JOIN chats c on chat_participants.chat_id = c.chat_id WHERE users.user_id = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
             //TODO: replace with current user id : Done
-            stmt.setLong(1,User.user.getUserId());
+            stmt.setLong(1,User.user.getId());
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
