@@ -7,6 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import orgs.tuasl_clint.livecall.*;
 import orgs.tuasl_clint.models2.*;
 import orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory;
 import orgs.tuasl_clint.models2.FactoriesSQLite.MediaFactory;
@@ -30,7 +31,6 @@ import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Deque;
 import java.util.HashMap;
 import javax.sound.sampled.*;
 
@@ -540,7 +540,7 @@ public class ChatController {
         }
     }
 
-
+/*
     @FXML
     public void handleAudioCallButtonAction(ActionEvent event) {
         String selectedUser = chatListView.getSelectionModel().getSelectedItem();
@@ -566,6 +566,36 @@ public class ChatController {
     }
 
 
+*/
+@FXML
+public void handleAudioCallButtonAction(ActionEvent event) {
+    String selectedUser = chatListView.getSelectionModel().getSelectedItem();
+    if (selectedUser == null) {
+        System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
+        return;
+    }
+
+    try {
+        String remoteIP = "localhost";
+        int remotePort = 7711;    // منفذ السيرفر
+        int localPort = 7712;     // منفذ جديد غير مستخدم للاستقبال
+
+        AudioCallWindow audioCallWindow = new AudioCallWindow("📞 مع " + selectedUser);
+        AudioSendUDP sender = new AudioSendUDP();
+        sender.start(remoteIP, remotePort);     // إرسال إلى السيرفر
+
+        AudioReceiverUDP receiver = new AudioReceiverUDP();
+        receiver.start(localPort);              // استقبال من السيرفر على منفذ جديد
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.out.println("❌ فشل الاتصال بمكالمة الصوت");
+    }
+}
+
+
+
+/*
 
     @FXML
     public void handleVideoCallButtonAction(ActionEvent event) {
@@ -594,4 +624,30 @@ public class ChatController {
             System.out.println("❌ فشل الاتصال بمكالمة الفيديو والصوت");
         }
     }
+    */
+
+
+    @FXML
+    public void handleVideoCallButtonAction(ActionEvent event) {
+        String selectedUser = chatListView.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
+            return;
+        }
+
+        try {
+            String remoteIP = "localhost";          // أو IP الجهاز الآخر
+            int remoteVideoPort = 8811;             // هذا بورت السيرفر الثابت
+
+            VideoCallWindowUDP callWindow = new VideoCallWindowUDP("📹 مكالمة فيديو مع " + selectedUser);
+            callWindow.startSending(remoteIP, remoteVideoPort);  // إرسال للفيديو
+            callWindow.startReceiving();                         // استقبال على بورت عشوائي
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("❌ فشل الاتصال بالفيديو");
+        }
+    }
+
+
 }
