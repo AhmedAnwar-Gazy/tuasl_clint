@@ -14,6 +14,8 @@ module orgs.tuasl_clint {
     opens orgs.tuasl_clint.models2 to javafx.fxml, com.google.gson;
     exports orgs.tuasl_clint.utils;
     opens orgs.tuasl_clint.utils to javafx.fxml;
+    exports orgs.tuasl_clint.livecall;
+    opens orgs.tuasl_clint.livecall to javafx.fxml;
     requires org.bytedeco.javacv;
 
     requires org.bytedeco.opencv;

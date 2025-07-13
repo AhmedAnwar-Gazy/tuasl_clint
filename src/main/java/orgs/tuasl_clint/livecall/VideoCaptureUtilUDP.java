@@ -1,16 +1,15 @@
-package orgs.tuasl_clint.controllers;
-
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.OpenCVFrameConverter;
+package orgs.tuasl_clint.livecall;
+import org.bytedeco.javacv.*;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
 
-public class VideoCaptureUtil {
+public class VideoCaptureUtilUDP {
     private VideoCapture camera;
     private OpenCVFrameConverter.ToMat converter;
 
-    public VideoCaptureUtil() {
-        camera = new VideoCapture(0); // الكاميرا رقم 0 (الافتراضية)
+    public VideoCaptureUtilUDP() {
+        camera = new VideoCapture(0);; // الكاميرا الأولى
         converter = new OpenCVFrameConverter.ToMat();
     }
 
@@ -26,3 +25,4 @@ public class VideoCaptureUtil {
         camera.release();
     }
 }
+

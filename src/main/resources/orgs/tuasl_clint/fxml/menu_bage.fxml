@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox fx:id="sideMenuRoot" prefWidth="280.0" styleClass="sidebar"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="orgs.tuasl_clint.controllers.menu_bageControler">
+
+    <children>
+        <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" styleClass="sidebar-header">
+            <children>
+                <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButtonAction" styleClass="icon-button" text="←">
+                    <HBox.margin>
+                        <Insets top="0" right="10" bottom="0" left="0" />
+                    </HBox.margin>
+                </Button>
+                <Circle fill="#007bb6" radius="20.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                <Label fx:id="userNameLabel" styleClass="user-name-label" text="اسم المستخدم">
+                    <HBox.margin>
+                        <Insets top="0" right="0" bottom="0" left="10" />
+
+                    </HBox.margin>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+            </children>
+            <padding>
+                <Insets left="15.0" right="15.0" />
+            </padding>
+        </HBox>
+
+        <!-- قائمة المحادثات -->
+        <ListView fx:id="chatListView" VBox.vgrow="ALWAYS" />
+
+        <!-- واجهة إنشاء المجموعة مخفية بشكل افتراضي -->
+        <VBox fx:id="createGroupPane" spacing="10" visible="false" managed="false" style="-fx-background-color: #f0f0f0;">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10" />
+            </padding>
+            <Label text="إنشاء مجموعة جديدة" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+            <TextField fx:id="groupNameField" promptText="اسم المجموعة" />
+            <TextField fx:id="personNumberField" promptText="رقم الشخص" />
+            <HBox spacing="10">
+                <Button text="إنشاء" onAction="#handleCreateGroup" />
+                <Button text="إلغاء" onAction="#handleCancelCreateGroup" />
+            </HBox>
+        </VBox>
+
+        <!-- قائمة الأزرار الأساسية -->
+        <VBox styleClass="sidebar-footer" visible="true" managed="true">
+            <children>
+                <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleNewGroupAction" styleClass="sidebar-button" text="➕ إنشاء مجموعة جديدة" />
+                <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleNewContactAction" styleClass="sidebar-button" text="👤 جهات اتصال" />
+                <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleSettingsAction" styleClass="sidebar-button" text="⚙️ الإعدادات" />
+                <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleMyAccountAction" styleClass="sidebar-button" text="🧑 حسابي" />
+                <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogoutAction" styleClass="sidebar-button" text="↩️ تسجيل الخروج" />
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </VBox>
+
+    </children>
+</VBox>
