@@ -34,7 +34,7 @@ public class LoginController implements Initializable {
             .create();
 
     @FXML
-    private void handleLoginButtonAction(ActionEvent event) {
+    private void handleLoginButtonAction(ActionEvent event) throws SQLException {
         User u;
         if((u = this.login(usernameField.getText(),passwordField.getText())) != null) {
             Response serverLoginResponse = ChatClient2.getChatClient2().Login(usernameField.getText(), passwordField.getText());
