@@ -11,6 +11,13 @@ public class UserInfo {
     private int isEnabled;
     public static UserInfo userInfo = new UserInfo();
 
+    public int getIsEnabled() {
+        return isEnabled;
+    }
+
+    public void setIsEnabled(int isEnabled) {
+        this.isEnabled = isEnabled;
+    }
 
     public int getUser_id() {
         return user_id;
