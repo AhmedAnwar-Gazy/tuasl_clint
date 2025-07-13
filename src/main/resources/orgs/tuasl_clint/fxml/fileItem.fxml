@@ -4,34 +4,45 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<HBox alignment="CENTER" onMouseClicked="#FileItemClicked" style="-fx-border-radius: 50%; -fx-border-color: black;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.FileItemController">
+<HBox alignment="CENTER_LEFT" onMouseClicked="#FileItemClicked" prefHeight="42.0" prefWidth="177.0" style="-fx-border-radius: 50%; -fx-border-color: black;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.FileItemController">
    <children>
-      <Button fx:id="deleteItem" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" onAction="#deleteItemHandler" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: red; -fx-border-radius: 100%;" text="X">
+      <HBox alignment="CENTER">
          <HBox.margin>
             <Insets left="8.0" />
          </HBox.margin>
-         <padding>
-            <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-         </padding>
-      </Button>
-      <Label fx:id="fileNameLBL" maxWidth="100.0" text="File name">
-         <HBox.margin>
-            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-         </HBox.margin>
-         <padding>
-            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-         </padding>
-      </Label>
-      <Label fx:id="fileTypeLBL" maxWidth="80.0" text="type">
-         <HBox.margin>
-            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-         </HBox.margin>
-      </Label>
-      <Label fx:id="fileSizeLBL" maxWidth="80.0" text="size">
-         <HBox.margin>
-            <Insets bottom="3.0" left="3.0" right="8.0" top="3.0" />
-         </HBox.margin>
-      </Label>
+         <children>
+            <Button fx:id="deleteItem" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" onAction="#deleteItemHandler" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: red; -fx-border-radius: 100%;" text="X">
+               <padding>
+                  <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+               </padding>
+            </Button>
+            <Button fx:id="openButton" mnemonicParsing="false" onAction="#openFileButtonClicked" />
+         </children>
+      </HBox>
+      <VBox>
+         <children>
+            <Label fx:id="fileNameLBL" maxWidth="100.0" text="File name">
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </Label>
+            <HBox>
+               <children>
+                  <Label fx:id="fileSizeLBL" maxWidth="80.0" text="size">
+                     <HBox.margin>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="fileTypeLBL" maxWidth="80.0" text="type">
+                     <HBox.margin>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
    </children>
 </HBox>

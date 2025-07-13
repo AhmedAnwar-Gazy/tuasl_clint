@@ -131,27 +131,26 @@ public class LoginController implements Initializable {
             if(!User.user.update())
                 User.user.save();
             if(saveData.isSelected()){
-                UserInfo us = new UserInfo();
-                if(us.getFirst()){
-                    us.setPhone(User.user.getPhoneNumber());
-                    us.setPassword(User.user.getPassword());
+                if(UserInfo.userInfo.getFirst()){
+                    UserInfo.userInfo.setPhone(User.user.getPhoneNumber());
+                    UserInfo.userInfo.setPassword(User.user.getPassword());
                 }else{
-                    us.setPassword(User.user.getPassword());
-                    us.setPhone(User.user.getPhoneNumber());
-                    us.setUser_id(1);
-                    if(us.save()){
+                    UserInfo.userInfo.setPassword(User.user.getPassword());
+                    UserInfo.userInfo.setPhone(User.user.getPhoneNumber());
+                    UserInfo.userInfo.setUser_id(1);
+                    if(UserInfo.userInfo.save()){
                         System.out.println("Login Data Saved Successfully in Database");
                         counter = 5;
                     }else {
                         System.err.println("-------Login Data Wasn't Be Saved in Database-----");
                     }
                 }
-                us.setUser_id(1);
+                UserInfo.userInfo.setUser_id(1);
                 while (counter < 4){
-                    if(!us.update()){
-                        if(us.save()){
-                            if(us.getUser_id() != 1) {
-                                us.setUser_id(1);
+                    if(!UserInfo.userInfo.update()){
+                        if(UserInfo.userInfo.save()){
+                            if(UserInfo.userInfo.getUser_id() != 1) {
+                                UserInfo.userInfo.setUser_id(1);
                                 if(counter == 4)
                                     System.err.println("-------Login Data Wasn't Be Saved in Database-----");
                                 continue;
@@ -171,7 +170,7 @@ public class LoginController implements Initializable {
         }
 //        User.user.setUsername("Mubarak");
         Navigation.loadPage("chat.fxml");
-        System.out.println("Auto Sign in BY Username : " + User.user.getUsername() + ", Phone : " + User.user.getPhoneNumber() + ", password : " + User.user.getPassword());
+        System.out.println("Auto Sign in BY Username : " + UserInfo.userInfo.toString());
     }
     private boolean areEqalsUsers(User userFromDatabase, User userFromServer) {
         return  userFromDatabase.getPhoneNumber().equals(userFromServer.getPhoneNumber()) && userFromDatabase.getPassword().equals(userFromServer.getPassword());

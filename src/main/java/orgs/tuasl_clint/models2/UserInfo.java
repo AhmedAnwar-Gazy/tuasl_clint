@@ -8,6 +8,9 @@ public class UserInfo {
     private int user_id;
     private String phone;
     private String password;
+    private int isEnabled;
+    public static UserInfo userInfo = new UserInfo();
+
 
     public int getUser_id() {
         return user_id;
@@ -48,9 +51,10 @@ public class UserInfo {
             return false;
         }
         try(Connection conn = DatabaseConnectionSQLite.getInstance().getConnection()){
-            PreparedStatement psmt = conn.prepareStatement("INSERT INTO userinfo( phone_number,password) VALUES(?,?) ;", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement psmt = conn.prepareStatement("INSERT INTO userinfo( phone_number,password,is_enable) VALUES(?,?,?);", Statement.RETURN_GENERATED_KEYS);
             psmt.setString(1,this.phone);
             psmt.setString(2,this.password);
+            psmt.setInt(3,this.isEnabled);
             System.out.print("----------From User Info: Trying to save User Login Info To databaase and The result Is : ");
             if (psmt.executeUpdate() > 0){
                 System.out.println(true);
@@ -69,10 +73,11 @@ public class UserInfo {
         if(this.isEmpty() || this.user_id <= 0)
             return false;
         System.out.print("--------From UserInfo Class : Trying to Update User Data And Result is : ");
-        try(PreparedStatement psmt = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement("UPDATE userinfo SET phone_number = ? , password = ? WHERE id = ?")){
+        try(PreparedStatement psmt = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement("UPDATE userinfo SET phone_number = ? , password = ? , is_enable = ? WHERE id = ?")){
             psmt.setString(1,this.phone);
             psmt.setString(2,this.password);
-            psmt.setInt(3,this.user_id);
+            psmt.setInt(3,this.isEnabled);
+            psmt.setInt(4,this.user_id);
             boolean success = psmt.executeUpdate() > 0;
             System.out.println(success);
             return success;
@@ -89,6 +94,7 @@ public class UserInfo {
                 this.user_id = rs.getInt("id");
                 this.phone = rs.getString("phone_number");
                 this.password = rs.getString("password");
+                this.isEnabled = rs.getInt("is_enable");
                 System.out.println("______________ Current User from Database Is : "+ this.toString());
                 return true;
             }
@@ -98,6 +104,6 @@ public class UserInfo {
 
     @Override
     public String toString() {
-        return "UserInfo{user_id : "+this.user_id+" , Phone : "+this.phone+" , Password : "+password+"}";
+        return "UserInfo{user_id : "+this.user_id+" , Phone : "+this.phone+" , Password : "+password+", enabled : "+(this.isEnabled > 0)+"}";
     }
 }

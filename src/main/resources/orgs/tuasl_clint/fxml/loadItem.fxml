@@ -1,31 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" prefHeight="50.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.LoadItemController">
    <children>
-      <BorderPane prefHeight="200.0" prefWidth="200.0">
-         <center>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <center>
-                  <Button mnemonicParsing="false" prefHeight="89.0" prefWidth="121.0" BorderPane.alignment="CENTER">
+      <HBox prefHeight="43.0" prefWidth="221.0">
+         <children>
+            <HBox fx:id="buttonsContainer">
+               <children>
+                  <Button fx:id="downloadButton" mnemonicParsing="false" onAction="#handleDownloadItemClicked">
                      <graphic>
-                        <VBox>
-                           <children>
-                              <ProgressIndicator maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" progress="0.0" />
-                           </children>
-                        </VBox>
+                        <ImageView fx:id="downloadImg" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/download.jpeg" />
+                           </image>
+                        </ImageView>
                      </graphic>
+                     <HBox.margin>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </HBox.margin>
                   </Button>
-               </center>
-            </BorderPane>
-         </center>
-      </BorderPane>
-      <VBox prefHeight="200.0" prefWidth="100.0" />
-      <VBox prefHeight="200.0" prefWidth="100.0" />
+                  <Button fx:id="cancelDownloadButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleCancelDownloadItemClicked">
+                     <graphic>
+                        <ProgressIndicator fx:id="downloadProgressPar" cache="true" cacheHint="SCALE_AND_ROTATE" onMouseClicked="#handleCancelDownloadItemClickedI" progress="0.0" />
+                     </graphic>
+                     <HBox.margin>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <VBox>
+               <children>
+                  <Label fx:id="fileNameLabel" text="FileName">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="fileInfoLabel" text="FileINfo">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </VBox.margin>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox fx:id="readyFileContainer" />
    </children>
 </VBox>
