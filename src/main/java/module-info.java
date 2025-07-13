@@ -22,6 +22,7 @@ module orgs.tuasl_clint {
     requires com.google.gson;
     requires java.sql;
     requires com.gluonhq.richtextarea;
+    requires javafx.controls;
 
     opens orgs.tuasl_clint.protocol to com.google.gson; // Add this line
 

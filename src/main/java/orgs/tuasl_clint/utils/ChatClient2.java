@@ -4,6 +4,7 @@ package orgs.tuasl_clint.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import javafx.util.Pair;
 import orgs.tuasl_clint.models2.Chat;
 import orgs.tuasl_clint.models2.Message;
 import orgs.tuasl_clint.models2.User;
@@ -276,7 +277,7 @@ public class ChatClient2 implements AutoCloseable {
             handleUserInput(commandInput);
         }
     }
-    public User Login(String phoneNumber, String Password){
+    public Response Login(String phoneNumber, String Password){
         Map<String,Object> authData = new HashMap<>();
         authData.put("phone_number", phoneNumber);
         authData.put("password", Password);
@@ -285,15 +286,12 @@ public class ChatClient2 implements AutoCloseable {
         Response loginResponse = sendRequestAndAwaitResponse(loginRequest);
 
         if (loginResponse != null && loginResponse.isSuccess()) {
-            User u = gson.fromJson(loginResponse.getData(), User.class);
-            currentUser = u;
-            System.out.println("Logged in as: " + u.getPhoneNumber() + " (" + u.getFirstName() + " " + u.getLastName() + ")");
-            return u;
+            currentUser = gson.fromJson(loginResponse.getData(), User.class);
+//            System.out.println("Logged in as: " + u.getPhoneNumber() + " (" + u.getFirstName() + " " + u.getLastName() + ")");
         } else if (loginResponse != null) {
             System.out.println("Login failed: " + loginResponse.getMessage());
-            return null;
         }
-        return null;
+        return loginResponse;
     }
     private void displayCommands() {
         System.out.println("\n--- Commands ---");

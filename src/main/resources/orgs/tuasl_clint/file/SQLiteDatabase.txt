@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS media;
 DROP TABLE IF EXISTS chat_participants;
 DROP TABLE IF EXISTS chats;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS userinfo;
 
 -- Create tables
 CREATE TABLE users (
@@ -42,6 +43,12 @@ CREATE TABLE chats (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (creator_user_id) REFERENCES users(user_id) ON DELETE SET NULL
+);
+
+CTEATE TABLE userinfo (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    phone_number TEXT NOT NULL,
+    password TEXT NOT NULL
 );
 
 CREATE TABLE chat_participants (

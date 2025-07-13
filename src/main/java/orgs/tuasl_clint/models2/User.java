@@ -14,7 +14,7 @@ public class User {
     private String lastName;
     private String bio;
     private String profilePictureUrl;
-    private String hashedPassword;
+    private String password;
     private String twoFactorSecret;
     private Timestamp lastSeenAt;
     private boolean isOnline;
@@ -38,7 +38,7 @@ public class User {
         this.lastName = lastName;
         this.bio = bio;
         this.profilePictureUrl = profilePictureUrl;
-        this.hashedPassword = hashedPassword;
+        this.password = hashedPassword;
         this.twoFactorSecret = twoFactorSecret;
         this.lastSeenAt = lastSeenAt;
         this.isOnline = isOnline;
@@ -49,7 +49,7 @@ public class User {
     public User(String username, String phone, String password) {
         this.username = username;
         this.phoneNumber = phone;
-        this.hashedPassword = password;
+        this.password = password;
         this.createdAt = new Timestamp(new Date().getTime());
         this.lastSeenAt = createdAt;
         this.updatedAt = createdAt;
@@ -75,8 +75,8 @@ public class User {
     public void setBio(String bio) { this.bio = bio; }
     public String getProfilePictureUrl() { return profilePictureUrl; }
     public void setProfilePictureUrl(String profilePictureUrl) { this.profilePictureUrl = profilePictureUrl; }
-    public String getHashedPassword() { return hashedPassword; }
-    public void setHashedPassword(String hashedPassword) { this.hashedPassword = hashedPassword; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
     public String getTwoFactorSecret() { return twoFactorSecret; }
     public void setTwoFactorSecret(String twoFactorSecret) { this.twoFactorSecret = twoFactorSecret; }
     public Timestamp getLastSeenAt() { return lastSeenAt; }
@@ -97,7 +97,7 @@ public class User {
             statement.setString(4, lastName);
             statement.setString(5, bio);
             statement.setString(6, profilePictureUrl);
-            statement.setString(7, hashedPassword);
+            statement.setString(7, password);
             statement.setString(8, twoFactorSecret);
             statement.setTimestamp(9, lastSeenAt);
             statement.setInt(10, isOnline ? 1 : 0);
@@ -125,7 +125,7 @@ public class User {
             statement.setString(4, lastName);
             statement.setString(5, bio);
             statement.setString(6, profilePictureUrl);
-            statement.setString(7, hashedPassword);
+            statement.setString(7, password);
             statement.setString(8, twoFactorSecret);
             statement.setTimestamp(9, lastSeenAt);
             statement.setInt(10, isOnline ? 1 : 0);

@@ -1,11 +1,8 @@
 package orgs.tuasl_clint.protocol;
 
-import com.gluonhq.richtextarea.model.TextBuffer;
-import com.mysql.cj.x.protobuf.MysqlxCrud;
-
 import java.io.File;
 
-public class tcpStringsProtocol {
+public class TCPFilesProtocolSender {
     public  interface OnSentListiner {
         public void onSent(File file);
     }
