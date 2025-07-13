@@ -7,6 +7,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import orgs.tuasl_clint.livecall.AudioCallWindow;
+import orgs.tuasl_clint.livecall.AudioReceiverUDP;
+import orgs.tuasl_clint.livecall.AudioSendUDP;
+import orgs.tuasl_clint.livecall.VideoCallWindowUDP;
 import orgs.tuasl_clint.models2.*;
 import orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory;
 import orgs.tuasl_clint.models2.FactoriesSQLite.MediaFactory;
@@ -614,7 +618,7 @@ public class ChatController {
         }
     }
 
-
+/*
     @FXML
     public void handleAudioCallButtonAction(ActionEvent event) {
         String selectedUser = chatListView.getSelectionModel().getSelectedItem();
@@ -645,6 +649,34 @@ public class ChatController {
         }
         return mediaStageShower;
     }
+    */
+@FXML
+public void handleAudioCallButtonAction(ActionEvent event) {
+    String selectedUser = chatListView.getSelectionModel().getSelectedItem();
+    if (selectedUser == null) {
+        System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
+        return;
+    }
+
+    try {
+        // مثال: IP الطرف الآخر هو 192.168.1.100 و البورت 5001
+        String remoteIP = "192.168.1.100";
+        int remotePort = 5001;
+
+        AudioCallWindow audioCallWindow = new AudioCallWindow("📞 مع " + selectedUser);
+        AudioSendUDP sender = new AudioSendUDP();
+        sender.start(remoteIP, remotePort);
+
+        AudioReceiverUDP receiver = new AudioReceiverUDP();
+        receiver.start(5001); // استقبل على نفس البورت
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.out.println("❌ فشل الاتصال بمكالمة الصوت");
+    }
+}
+
+    /*
 
     @FXML
     public void handleVideoCallButtonAction(ActionEvent event) {
@@ -655,22 +687,40 @@ public class ChatController {
         }
 
         try {
-            Socket videoSocket = new Socket("localhost", 6000);
-            Socket audioSocket = new Socket("localhost", 6001); // منفذ الصوت
+            String remoteIP = "localhost";          // أو IP الجهاز الآخر
+            int remoteVideoPort = 8811;             // هذا بورت السيرفر الثابت
 
-            VideoCallWindow callWindow = new VideoCallWindow("📹 مكالمة فيديو مع " + selectedUser);
-            callWindow.startSending(videoSocket);
-            callWindow.startReceiving(videoSocket);
-
-            AudioSender audioSender = new AudioSender();
-            audioSender.start(audioSocket);
-
-            AudioReceiver audioReceiver = new AudioReceiver();
-            audioReceiver.start(audioSocket);
+            VideoCallWindowUDP callWindow = new VideoCallWindowUDP("📹 مكالمة فيديو مع " + selectedUser);
+            callWindow.startSending(remoteIP, remoteVideoPort);  // إرسال للفيديو
+            callWindow.startReceiving();                         // استقبال على بورت عشوائي
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("❌ فشل الاتصال بمكالمة الفيديو والصوت");
+            System.out.println("❌ فشل الاتصال بالفيديو");
         }
     }
+    */
+    @FXML
+    public void handleVideoCallButtonAction(ActionEvent event) {
+        String selectedUser = chatListView.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
+            return;
+        }
+
+        try {
+            String remoteIP = "localhost";          // أو IP الجهاز الآخر
+            int remoteVideoPort = 8811;             // هذا بورت السيرفر الثابت
+
+            VideoCallWindowUDP callWindow = new VideoCallWindowUDP("📹 مكالمة فيديو مع " + selectedUser);
+            callWindow.startSending(remoteIP, remoteVideoPort);  // إرسال للفيديو
+            callWindow.startReceiving();                         // استقبال على بورت عشوائي
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("❌ فشل الاتصال بالفيديو");
+        }
+    }
+
+
 }
