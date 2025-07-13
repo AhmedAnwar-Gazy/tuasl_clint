@@ -9,6 +9,14 @@ public class UserInfo {
     private String phone;
     private String password;
 
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
     public UserInfo(String phone, String password) {
         this.phone = phone;
         this.password = password;
@@ -64,7 +72,7 @@ public class UserInfo {
     }
 
     public boolean getFirst() throws SQLException{
-        try(PreparedStatement psmt = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement("SELECT * FROM userinfo limit 1 ")) {
+        try(PreparedStatement psmt = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement("SELECT * FROM userinfo LIMIT 1;")) {
             ResultSet rs= psmt.executeQuery();
             if(rs.next()){
                 this.user_id = rs.getInt(1);

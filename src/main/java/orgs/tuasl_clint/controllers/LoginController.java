@@ -48,6 +48,7 @@ public class LoginController implements Initializable {
                 }
                 else{
                     DatabaseConnectionSQLite.DeleteData();
+                    sucessLogin();
                 }
             }else{
                 this.loginMessage.setText(serverLoginResponse.getMessage());
@@ -110,6 +111,27 @@ public class LoginController implements Initializable {
         User.user.setOnline(true);
         try {
             User.user.update();
+            if(saveData.isSelected()){
+                UserInfo us = new UserInfo(User.user.getPhoneNumber(),User.user.getPassword());
+                int counter = 0;
+                while (counter < 4){
+                    if(!us.update()){
+                        if(us.save()){
+                            if(us.getUser_id() != 1) {
+                                us.setUser_id(1);
+                                if(counter == 4)
+                                    System.err.println("-------Login Data Wasn't Be Saved in Database-----");
+                                continue;
+                            }else {
+                                break;
+                            }
+                        }
+                    }else {
+                        System.out.println("Login Data Saved Successfully in Database");
+                    }
+                    counter++;
+                }
+            }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null,"Error occored While updating data in database ! Error Message : "+e.getMessage());
         }
