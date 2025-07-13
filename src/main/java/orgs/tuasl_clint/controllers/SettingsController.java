@@ -41,7 +41,7 @@ public class SettingsController {
     @FXML
     private void handleBackButtonAction(ActionEvent event) {
         // Optionally check if settings were changed and prompt to save
-        Navigation.loadPage("chat.fxml");
+        Navigation.loadPage("menu_bage.fxml");
     }
 
     @FXML
