@@ -95,13 +95,14 @@ public class LoginController implements Initializable {
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         Platform.runLater(this::checkIfExist);
     }
     void checkIfExist(){
         UserInfo current_user = new UserInfo();
 //        System.out.println("_____________ current User is : "+current_user.toString()+"___________________");
         try {
-            if(current_user.getFirst()) {
+            if(current_user.getFirst() && current_user.getIsEnabled() >0) {
                 System.out.println("_____________ current User is : "+current_user.toString()+"___________________");
                 Response serverLoginResponse = ChatClient2.getChatClient2().Login(current_user.getPhone(), current_user.getPassword());
                 System.out.println("Trying to Auto Login. Response is : "+ serverLoginResponse.toString());
