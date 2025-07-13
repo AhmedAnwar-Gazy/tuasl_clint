@@ -418,7 +418,7 @@ public class ChatController {
 
     @FXML
     private void handleMenuButtonAction(ActionEvent event) {
-        System.out.println("menu button clicked");
+        Navigation.loadPage("menu_bage.fxml");
     }
 
     private final String SHARE_FOLDER = "src/main/resources/orgs/tuasl_clint/file/";
