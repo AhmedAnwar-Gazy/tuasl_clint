@@ -108,6 +108,14 @@ public class UserInfo {
         }
         return false;
     }
+    public static boolean DeleteAll()throws SQLException{
+        System.out.print("----------From UserInfo Class : static method delete all is working...");
+        try(PreparedStatement psmt = DatabaseConnectionSQLite.getInstance().getConnection().prepareStatement("Delete FROM userinfo where id > 0;")) {
+            boolean result = psmt.executeUpdate() > 0;
+            System.out.println(" And Result Is :"+result);
+            return result;
+        }
+    }
 
     @Override
     public String toString() {

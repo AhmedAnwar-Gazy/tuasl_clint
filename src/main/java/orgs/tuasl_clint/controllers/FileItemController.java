@@ -2,6 +2,7 @@ package orgs.tuasl_clint.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -11,8 +12,10 @@ import orgs.tuasl_clint.utils.FilesHelper;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class FileItemController {
+public class FileItemController implements Initializable {
 
     File file;
 
@@ -20,7 +23,10 @@ public class FileItemController {
     private Button deleteItem;
     @FXML
     private Button openButton;
-
+    @FXML
+    private HBox buttonsContainer;
+    @FXML
+    private HBox mainAllContainer;
     @FXML
     private Label fileNameLBL;
 
@@ -46,6 +52,14 @@ public class FileItemController {
             System.out.println("---------------------------Cannot Open The File-----------------------------");
         }
     }
+    public HBox getMainContainer(){
+        return this.mainAllContainer;
+    }
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        buttonsContainer.getChildren().remove(openButton);
+    }
+
     public interface Action{
         public void OnActionDelete();
         public void OnActionCleared();
@@ -85,10 +99,9 @@ public class FileItemController {
     public void deleteItem(){
         try {
             this.state = State.DELETED;
-            Button deleteButton = this.deleteItem;
-            HBox itemContainer = (HBox) deleteButton.getParent();
-            HBox itemsParentContainer = (HBox) itemContainer.getParent();
+            HBox itemsParentContainer = (HBox) mainAllContainer.getParent();
             itemsParentContainer.getChildren().clear();
+
         } catch (ClassCastException | NullPointerException e) {
             System.err.println("Error deleting item: " + e.getMessage());
         }

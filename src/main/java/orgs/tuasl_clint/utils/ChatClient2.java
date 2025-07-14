@@ -64,7 +64,6 @@ public class ChatClient2 implements AutoCloseable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Connected to chat server on main port.");
             new Thread(this::listenForServerMessages, "ServerListener").start();
-
         } catch (IOException e) {
             System.err.println("Error connecting to server: " + e.getMessage());
             System.exit(1);
@@ -241,28 +240,28 @@ public class ChatClient2 implements AutoCloseable {
                     System.out.println("Login failed: " + loginResponse.getMessage());
                 }
             } else if ("2".equals(authChoice)) {
-                System.out.print("Enter phone number: ");
-                phoneNumber = scanner.nextLine();
-                System.out.print("Enter password: ");
-                password = scanner.nextLine();
-                System.out.print("Enter first name: ");
-                firstName = scanner.nextLine();
-                System.out.print("Enter last name: ");
-                lastName = scanner.nextLine();
-
-                authData.put("phone_number", phoneNumber);
-                authData.put("password", password);
-                authData.put("first_name", firstName);
-                authData.put("last_name", lastName);
-
-                Request registerRequest = new Request(Command.REGISTER, authData);
-                Response registerResponse = sendRequestAndAwaitResponse(registerRequest);
-
-                if (registerResponse != null && registerResponse.isSuccess()) {
-                    System.out.println("Registration successful! You can now log in.");
-                } else if (registerResponse != null) {
-                    System.out.println("Registration failed: " + registerResponse.getMessage());
-                }
+//                System.out.print("Enter phone number: ");
+//                phoneNumber = scanner.nextLine();
+//                System.out.print("Enter password: ");
+//                password = scanner.nextLine();
+//                System.out.print("Enter first name: ");
+//                firstName = scanner.nextLine();
+//                System.out.print("Enter last name: ");
+//                lastName = scanner.nextLine();
+//
+//                authData.put("phone_number", phoneNumber);
+//                authData.put("password", password);
+//                authData.put("first_name", firstName);
+//                authData.put("last_name", lastName);
+//
+//                Request registerRequest = new Request(Command.REGISTER, authData);
+//                Response registerResponse = sendRequestAndAwaitResponse(registerRequest);
+//
+//                if (registerResponse != null && registerResponse.isSuccess()) {
+//                    System.out.println("Registration successful! You can now log in.");
+//                } else if (registerResponse != null) {
+//                    System.out.println("Registration failed: " + registerResponse.getMessage());
+//                }
             } else {
                 System.out.println("Invalid option.");
             }
@@ -291,26 +290,6 @@ public class ChatClient2 implements AutoCloseable {
         }
         return loginResponse;
     }
-    private void displayCommands() {
-        System.out.println("\n--- Commands ---");
-        System.out.println("1. Send Text Message");
-        System.out.println("2. Send Image");
-        System.out.println("3. Send Video");
-        System.out.println("4. Send Voice Note");
-        System.out.println("5. Send File (General)");
-        System.out.println("6. Get Chat Messages");
-        System.out.println("7. Create Chat");
-        System.out.println("8. Manage Profile (View/Update/Delete)");
-        System.out.println("9. Get All Users");
-        System.out.println("10. My Chats");
-        System.out.println("11. Manage Chat Participants");
-        System.out.println("12. My Contacts (View/Manage)");
-        System.out.println("13. Block/Unblock User");
-        System.out.println("14. My Notifications");
-        System.out.println("15. Update/Delete Message");
-        System.out.println("16. Delete Chat");
-        System.out.println("17. Logout");
-    }
     public Response sendTextMessage(int chatId,String content){
         Map<String , Object> data = new HashMap<>();
 
@@ -329,6 +308,36 @@ public class ChatClient2 implements AutoCloseable {
         }
         return response;
     }
+    public Response Register(String phoneNumber, String password, String firstName, String lastName){
+        Map<String, Object> authData = new HashMap<>();
+        authData.put("phone_number", phoneNumber);
+        authData.put("password", password);
+        authData.put("first_name", firstName);
+        authData.put("last_name", lastName);
+        Request registerRequest = new Request(Command.REGISTER, authData);
+        return sendRequestAndAwaitResponse(registerRequest);
+    }
+
+    private void displayCommands() {
+        System.out.println("\n--- Commands ---");
+        System.out.println("1. Send Text Message");
+        System.out.println("2. Send Image");
+        System.out.println("3. Send Video");
+        System.out.println("4. Send Voice Note");
+        System.out.println("5. Send File (General)");
+        System.out.println("6. Get Chat Messages");// checked
+        System.out.println("7. Create Chat");
+        System.out.println("8. Manage Profile (View/Update/Delete)");
+        System.out.println("9. Get All Users");
+        System.out.println("10. My Chats");
+        System.out.println("11. Manage Chat Participants");
+        System.out.println("12. My Contacts (View/Manage)");
+        System.out.println("13. Block/Unblock User");
+        System.out.println("14. My Notifications");
+        System.out.println("15. Update/Delete Message");
+        System.out.println("16. Delete Chat");
+        System.out.println("17. Logout");
+    }
     private void handleUserInput(String commandInput) {
         Request request = null;
         Map<String, Object> data = new HashMap<>();
@@ -336,13 +345,13 @@ public class ChatClient2 implements AutoCloseable {
         try {
             switch (commandInput) {
                 case "1": // Send Text Message
-                    System.out.print("Enter Chat ID: ");
-                    int textChatId = Integer.parseInt(scanner.nextLine()); // Use nextLine() then parse
-                    System.out.print("Enter message content: ");
-                    String textContent = scanner.nextLine();
-                    data.put("chat_id", textChatId);
-                    data.put("content", textContent);
-                    request = new Request(Command.SEND_TEXT_MESSAGE, data);
+//                    System.out.print("Enter Chat ID: ");
+//                    int textChatId = Integer.parseInt(scanner.nextLine()); // Use nextLine() then parse
+//                    System.out.print("Enter message content: ");
+//                    String textContent = scanner.nextLine();
+//                    data.put("chat_id", textChatId);
+//                    data.put("content", textContent);
+//                    request = new Request(Command.SEND_TEXT_MESSAGE, data);
                     break;
 
                 case "2": // Send Image
@@ -401,7 +410,7 @@ public class ChatClient2 implements AutoCloseable {
                     Response messagesResponse = sendRequestAndAwaitResponse(request);
                     if (messagesResponse != null && messagesResponse.isSuccess() && "Messages retrieved.".equals(messagesResponse.getMessage())) {
                         Type messageListType = new TypeToken<List<Message>>() {}.getType();
-                        List<Message> messages = gson.fromJson(messagesResponse.getData(), messageListType);
+                        List<Message> messages = gson.fromJson(messagesResponse.getData(), messageListType);//ممكن يتغير
                         System.out.println("\n--- Messages in Chat ID: " + getChatId + " ---");
                         if (messages == null || messages.isEmpty()) {
                             System.out.println("No messages found in this chat.");
@@ -552,7 +561,7 @@ public class ChatClient2 implements AutoCloseable {
         }
     }
 
-    private Response sendRequestAndAwaitResponse(Request request) {
+    public Response sendRequestAndAwaitResponse(Request request) {
         try {
             responseQueue.clear(); // Clear any stale responses
 

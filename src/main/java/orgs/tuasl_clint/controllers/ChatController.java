@@ -28,6 +28,7 @@ import javafx.util.Duration;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.Socket;
 import java.nio.file.*;
 import java.sql.*;
@@ -154,6 +155,10 @@ public class ChatController {
         }
         messageInputField.setFont(Font.font("Segoe UI Emoji"));
         messageDisplayArea.heightProperty().addListener(observable -> messageScrollPane.setVvalue(1D));
+        if(currentChat == null){
+            this.main_message_input_container.setDisable(true);
+            this.chatTitleLabel.setText("Select Chat To Start Chatting");
+        }
     }
 
     @FXML
@@ -386,7 +391,7 @@ public class ChatController {
             line.stop();
             line.close();
             isRecording = false;
-            //TODO: send the audio file to current chat
+            //TODO: send the audio file to current chat !!!!!!!!!! Finished
             this.setMediaFile(audioFile,new FileItemController.Action() {
                 @Override
                 public void OnActionDelete() {
@@ -659,16 +664,21 @@ public void handleAudioCallButtonAction(ActionEvent event) {
     }
 
     try {
-        // مثال: IP الطرف الآخر هو 192.168.1.100 و البورت 5001
-        String remoteIP = "192.168.1.100";
-        int remotePort = 5001;
+        // مثال: IP الطرف الآخر هو 192.168.1.100 و البورت 7711
+        String remoteIP = "localhost";
+        int remotePort = 7711;
+
+        // توليد بورت عشوائي للاستقبال
+        DatagramSocket tempSocket = new DatagramSocket(0);
+        int localPort = tempSocket.getLocalPort();
+        tempSocket.close();
 
         AudioCallWindow audioCallWindow = new AudioCallWindow("📞 مع " + selectedUser);
         AudioSendUDP sender = new AudioSendUDP();
         sender.start(remoteIP, remotePort);
 
         AudioReceiverUDP receiver = new AudioReceiverUDP();
-        receiver.start(5001); // استقبل على نفس البورت
+        receiver.start(localPort); // استقبل على نفس البورت
 
     } catch (Exception e) {
         e.printStackTrace();

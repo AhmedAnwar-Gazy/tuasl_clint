@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox alignment="CENTER_LEFT" onMouseClicked="#FileItemClicked" prefHeight="42.0" prefWidth="177.0" style="-fx-border-radius: 50%; -fx-border-color: black;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.FileItemController">
+<HBox fx:id="mainAllContainer" alignment="CENTER_LEFT" onMouseClicked="#FileItemClicked" prefHeight="42.0" prefWidth="177.0" style="-fx-border-radius: 50%; -fx-border-color: black;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.FileItemController">
    <children>
-      <HBox alignment="CENTER">
+      <HBox fx:id="buttonsContainer" alignment="CENTER">
          <HBox.margin>
             <Insets left="8.0" />
          </HBox.margin>

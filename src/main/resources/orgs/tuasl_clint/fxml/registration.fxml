@@ -17,9 +17,12 @@
     </Label>
 
     <TextField fx:id="usernameField" maxWidth="300" prefHeight="43.0" prefWidth="300.0" promptText="Username" />
+   <TextField fx:id="firstNameTF" maxWidth="300.0" prefHeight="43.0" prefWidth="300.0" promptText="First Name" />
+   <TextField fx:id="lastNameTF" maxWidth="300.0" prefHeight="43.0" prefWidth="300.0" promptText="Last Name" />
     <TextField fx:id="emailField" maxWidth="300.0" prefHeight="43.0" promptText="Phone Number" />
     <PasswordField fx:id="passwordField" maxWidth="300" prefHeight="43.0" promptText="Password" />
     <PasswordField fx:id="confirmPasswordField" maxWidth="300" prefHeight="43.0" promptText="Confirm Password" />
+   <CheckBox fx:id="saveData" mnemonicParsing="false" text="Save My Data" />
 
     <Button fx:id="registerButton" maxWidth="300" mnemonicParsing="false" onAction="#handleRegisterButtonAction" styleClass="action-button" text="Register" />
     <Button fx:id="backButton" maxWidth="300" mnemonicParsing="false" onAction="#handleBackButtonAction" styleClass="secondary-button" text="Back to Login" />
