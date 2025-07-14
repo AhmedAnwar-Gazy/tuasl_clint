@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox fx:id="sideMenuRoot" prefWidth="280.0" styleClass="sidebar"
-      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="orgs.tuasl_clint.controllers.menu_bageControler">
+<VBox fx:id="sideMenuRoot" styleClass="sidebar" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.menu_bageControler">
 
     <children>
         <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" styleClass="sidebar-header">
             <children>
                 <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButtonAction" styleClass="icon-button" text="←">
                     <HBox.margin>
-                        <Insets top="0" right="10" bottom="0" left="0" />
+                        <Insets bottom="0" left="0" right="10" top="0" />
                     </HBox.margin>
                 </Button>
-                <Circle fill="#007bb6" radius="20.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <StackPane>
+               <children>
+                  <ImageView fx:id="profileImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);">
+                     <image>
+                        <Image url="@../../../../../../../../../../الصور/67f958d43a91c9.23223583.jpg" />
+                     </image>
+                  </ImageView>
+               </children>
+            </StackPane>
                 <Label fx:id="userNameLabel" styleClass="user-name-label" text="اسم المستخدم">
                     <HBox.margin>
-                        <Insets top="0" right="0" bottom="0" left="10" />
+                        <Insets bottom="0" left="10" right="0" top="0" />
 
                     </HBox.margin>
                 </Label>
@@ -40,21 +41,23 @@
         <ListView fx:id="chatListView" VBox.vgrow="ALWAYS" />
 
         <!-- واجهة إنشاء المجموعة مخفية بشكل افتراضي -->
-        <VBox fx:id="createGroupPane" spacing="10" visible="false" managed="false" style="-fx-background-color: #f0f0f0;">
+        <VBox fx:id="createGroupPane" managed="false" spacing="10" style="-fx-background-color: #f0f0f0;">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10" />
+                <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
-            <Label text="إنشاء مجموعة جديدة" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+            <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="إنشاء مجموعة جديدة" />
             <TextField fx:id="groupNameField" promptText="اسم المجموعة" />
-            <TextField fx:id="personNumberField" promptText="رقم الشخص" />
+            <TextField fx:id="groupDicription" promptText="وصف المجموعة" />
+         <TextField fx:id="publicLinkTF" promptText="public Link for Your Group" />
+         <ComboBox fx:id="groupType" promptText="group Type" />
             <HBox spacing="10">
-                <Button text="إنشاء" onAction="#handleCreateGroup" />
-                <Button text="إلغاء" onAction="#handleCancelCreateGroup" />
+                <Button onAction="#handleCreateGroup" text="إنشاء" />
+                <Button onAction="#handleCancelCreateGroup" text="إلغاء" />
             </HBox>
         </VBox>
 
         <!-- قائمة الأزرار الأساسية -->
-        <VBox styleClass="sidebar-footer" visible="true" managed="true">
+        <VBox managed="true" styleClass="sidebar-footer" visible="true">
             <children>
                 <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleNewGroupAction" styleClass="sidebar-button" text="➕ إنشاء مجموعة جديدة" />
                 <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#handleNewContactAction" styleClass="sidebar-button" text="👤 جهات اتصال" />

@@ -73,7 +73,7 @@
                     <content>
                         <VBox fx:id="messageDisplayArea" spacing="10.0" style="-fx-background-image: url('images/img.png'); -fx-background-size: cover;">
                             <padding><Insets bottom="10.0" left="15.0" right="15.0" top="10.0" /></padding>
-                            <Label text="Welcome to the chat!" wrapText="true" />
+                            <Label fx:id="chatTitleLabel" text="Welcome to the chat!" wrapText="true" />
                         </VBox>
                     </content>
                 </ScrollPane>

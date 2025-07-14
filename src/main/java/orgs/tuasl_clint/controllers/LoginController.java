@@ -135,9 +135,11 @@ public class LoginController implements Initializable {
                 if(UserInfo.userInfo.getFirst()){
                     UserInfo.userInfo.setPhone(User.user.getPhoneNumber());
                     UserInfo.userInfo.setPassword(User.user.getPassword());
+                    UserInfo.userInfo.setIsEnabled(1);
                 }else{
                     UserInfo.userInfo.setPassword(User.user.getPassword());
                     UserInfo.userInfo.setPhone(User.user.getPhoneNumber());
+                    UserInfo.userInfo.setIsEnabled(1);
                     UserInfo.userInfo.setUser_id(1);
                     if(UserInfo.userInfo.save()){
                         System.out.println("Login Data Saved Successfully in Database");
@@ -154,6 +156,7 @@ public class LoginController implements Initializable {
                                 UserInfo.userInfo.setUser_id(1);
                                 if(counter == 4)
                                     System.err.println("-------Login Data Wasn't Be Saved in Database-----");
+                                counter++;
                                 continue;
                             }else {
                                 break;

@@ -154,6 +154,10 @@ public class ChatController {
         }
         messageInputField.setFont(Font.font("Segoe UI Emoji"));
         messageDisplayArea.heightProperty().addListener(observable -> messageScrollPane.setVvalue(1D));
+        if(currentChat == null){
+            this.main_message_input_container.setDisable(true);
+            this.chatTitleLabel.setText("Select Chat To Start Chatting");
+        }
     }
 
     @FXML
@@ -386,7 +390,7 @@ public class ChatController {
             line.stop();
             line.close();
             isRecording = false;
-            //TODO: send the audio file to current chat
+            //TODO: send the audio file to current chat !!!!!!!!!! Finished
             this.setMediaFile(audioFile,new FileItemController.Action() {
                 @Override
                 public void OnActionDelete() {
