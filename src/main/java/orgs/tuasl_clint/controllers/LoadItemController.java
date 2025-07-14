@@ -1,10 +1,9 @@
+
 package orgs.tuasl_clint.controllers;
 
-import javafx.css.Size;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
@@ -12,11 +11,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import orgs.tuasl_clint.models2.Media;
+import orgs.tuasl_clint.utils.FilesHelper;
 
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class LoadItemController implements Initializable {
 
@@ -46,162 +48,177 @@ public class LoadItemController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        HBox p = (HBox) this.cancelDownloadButton.getParent();
-        p.getChildren().remove(this.cancelDownloadButton);
+        buttonsContainer.getChildren().remove(cancelDownloadButton);
     }
 
-    public static enum FileState{
+    public static enum FileState {
         READY,
         IS_ON_DOWNLOADING,
         NOT_DOWNLOADED,
         FINISHED_NOW,
-        TERMENATED
-
+        TERMINATED
     }
 
     File file;
     Media media;
 
-    private interface OnReadyItemListiner{
-        public void onReadyItem(HBox fileItemContainer);
+    private interface OnReadyItemListener {
+        void onReadyItem(HBox fileItemContainer);
     }
-    private interface OnDownloadingItemListiner{
-        public void onDownloadingItem(long currentSize,long fileSize ,ProgressIndicator progressIndicator);
-    }
-    private interface OnDownloadButtonClickedListiner{
-        public void onDownloadButtonClicked(Media media , File file);
-    }
-    private interface OnCancelDownloadButtonClickedListiner{
-        public void onCancelDownloadButtonClicked(Media media , File file);
-    }
-    private OnDownloadingItemListiner onDownloadingItemListiner;
-    private OnReadyItemListiner onReadyItemListiner;
-    private OnDownloadButtonClickedListiner onDownloadButtonClickedListiner;
-    private OnCancelDownloadButtonClickedListiner onCancelDownloadButtonClickedListiner;
-    Thread updateDownloadingStatusThread;
 
-    private FileState state;
+    private interface OnDownloadingItemListener {
+        void onDownloadingItem(long currentSize, long fileSize, ProgressIndicator progressIndicator);
+    }
+
+    private interface OnDownloadButtonClickedListener {
+        void onDownloadButtonClicked(Media media, File file);
+    }
+
+    private interface OnCancelDownloadButtonClickedListener {
+        void onCancelDownloadButtonClicked(Media media, File file);
+    }
+
+    private OnDownloadingItemListener onDownloadingItemListener;
+    private OnReadyItemListener onReadyItemListener;
+    private OnDownloadButtonClickedListener onDownloadButtonClickedListener;
+    private OnCancelDownloadButtonClickedListener onCancelDownloadButtonClickedListener;
+
+    private final Lock threadLock = new ReentrantLock();
+    private volatile FileState state = FileState.NOT_DOWNLOADED;
+    private Thread updateDownloadingStatusThread;
 
     @FXML
     void handleCancelDownloadItemClicked(ActionEvent event) {
-
-        if(this.onCancelDownloadButtonClickedListiner != null)
-            this.onCancelDownloadButtonClickedListiner.onCancelDownloadButtonClicked(this.media,this.file);
-        this.state = FileState.NOT_DOWNLOADED;
-        HBox p = (HBox) this.cancelDownloadButton.getParent();
-        p.getChildren().remove(this.cancelDownloadButton);
-        p.getChildren().add(this.downloadButton);
-        if(this.updateDownloadingStatusThread != null && !(this.updateDownloadingStatusThread.getState() == Thread.State.TIMED_WAITING || this.updateDownloadingStatusThread.getState() == Thread.State.WAITING)){
-            try {
-                this.updateDownloadingStatusThread.wait();
-            } catch (InterruptedException e) {
-                System.out.println("from LoadItemController: Cannot make thread Wait Error: "+e.getMessage());
-                e.printStackTrace();
+        threadLock.lock();
+        try {
+            if (this.onCancelDownloadButtonClickedListener != null) {
+                this.onCancelDownloadButtonClickedListener.onCancelDownloadButtonClicked(this.media, this.file);
             }
+            this.state = FileState.NOT_DOWNLOADED;
+
+            buttonsContainer.getChildren().remove(this.cancelDownloadButton);
+            buttonsContainer.getChildren().add(this.downloadButton);
+
+            if (this.updateDownloadingStatusThread != null) {
+                this.updateDownloadingStatusThread.interrupt();
+            }
+        } finally {
+            threadLock.unlock();
         }
     }
+
     @FXML
     void handleCancelDownloadItemClickedI(MouseEvent event) {
-
-        if(this.onCancelDownloadButtonClickedListiner != null)
-            this.onCancelDownloadButtonClickedListiner.onCancelDownloadButtonClicked(this.media,this.file);
-        this.state = FileState.NOT_DOWNLOADED;
-        HBox p = (HBox) this.cancelDownloadButton.getParent();
-        p.getChildren().remove(this.cancelDownloadButton);
-        p.getChildren().add(this.downloadButton);
-        if(this.updateDownloadingStatusThread != null && !(this.updateDownloadingStatusThread.getState() == Thread.State.TIMED_WAITING || this.updateDownloadingStatusThread.getState() == Thread.State.WAITING)){
-            try {
-                this.updateDownloadingStatusThread.wait();
-            } catch (InterruptedException e) {
-                System.out.println("from LoadItemController: Cannot make thread Wait Error: "+e.getMessage());
-                e.printStackTrace();
+        threadLock.lock();
+        try {
+            if (this.onCancelDownloadButtonClickedListener != null) {
+                this.onCancelDownloadButtonClickedListener.onCancelDownloadButtonClicked(this.media, this.file);
             }
+            this.state = FileState.NOT_DOWNLOADED;
+
+            buttonsContainer.getChildren().remove(this.cancelDownloadButton);
+            buttonsContainer.getChildren().add(this.downloadButton);
+
+            if (this.file != null) {
+                this.fileNameLabel.setText(file.getName());
+                this.fileInfoLabel.setText(String.valueOf(this.media.getFileSizeBytes()) + "    " +
+                        FilesHelper.getFileExtension(file));
+            }
+
+            if (this.updateDownloadingStatusThread != null) {
+                this.updateDownloadingStatusThread.interrupt();
+            }
+        } finally {
+            threadLock.unlock();
         }
     }
+
     @FXML
     void handleDownloadItemClicked(ActionEvent event) {
-        if(this.onCancelDownloadButtonClickedListiner != null)
-            this.onCancelDownloadButtonClickedListiner.onCancelDownloadButtonClicked(this.media,this.file);
-        this.state = FileState.IS_ON_DOWNLOADING;
-        if(this.updateDownloadingStatusThread != null){
-            if(this.updateDownloadingStatusThread.getState() == Thread.State.WAITING || this.updateDownloadingStatusThread.getState() == Thread.State.TIMED_WAITING)
-                this.updateDownloadingStatusThread.notify();
-            else if(this.updateDownloadingStatusThread.getState() == Thread.State.NEW)
-                this.updateDownloadingStatusThread.start();
-            else if (this.updateDownloadingStatusThread.getState() == Thread.State.TERMINATED) {
-                this.state = FileState.TERMENATED;
+        threadLock.lock();
+        try {
+            this.state = FileState.IS_ON_DOWNLOADING;
+
+            buttonsContainer.getChildren().remove(this.downloadButton);
+            buttonsContainer.getChildren().add(this.cancelDownloadButton);
+
+            if (this.onDownloadButtonClickedListener != null) {
+                this.onDownloadButtonClickedListener.onDownloadButtonClicked(this.media, this.file);
             }
+
+            if (this.updateDownloadingStatusThread == null ||
+                    this.updateDownloadingStatusThread.getState() == Thread.State.TERMINATED) {
+                initializeUpdateThread();
+            } else if (this.updateDownloadingStatusThread.isAlive()) {
+                this.updateDownloadingStatusThread.interrupt();
+            }
+        } finally {
+            threadLock.unlock();
         }
-
-        HBox p = (HBox) this.downloadButton.getParent();
-        p.getChildren().remove(this.downloadButton);
-        p.getChildren().add(this.cancelDownloadButton);
     }
 
-    public void setOnDownloadingItemListiner(OnDownloadingItemListiner onDownloadingItemListiner) {
-        this.onDownloadingItemListiner = onDownloadingItemListiner;
-    }
-
-    public void setOnReadyItemListiner(OnReadyItemListiner onReadyItemListiner) {
-        this.onReadyItemListiner = onReadyItemListiner;
-    }
-
-    public void setOnDownloadButtonClickedListiner(OnDownloadButtonClickedListiner onDownloadButtonClickedListiner) {
-        this.onDownloadButtonClickedListiner = onDownloadButtonClickedListiner;
+    private void initializeUpdateThread() {
         this.updateDownloadingStatusThread = new Thread(() -> {
             try {
                 while (!Thread.currentThread().isInterrupted() &&
                         state == FileState.IS_ON_DOWNLOADING) {
 
-                    // Safe null check
                     long currentSize = (file != null && file.exists()) ? file.length() : 0;
 
-                    // Call listener
-                    if (onDownloadingItemListiner != null) {
-                        onDownloadingItemListiner.onDownloadingItem(
-                                currentSize,
-                                media.getFileSizeBytes(),
-                                downloadProgressPar
-                        );
-                    }
+                    javafx.application.Platform.runLater(() -> {
+                        if (onDownloadingItemListener != null) {
+                            onDownloadingItemListener.onDownloadingItem(
+                                    currentSize,
+                                    media.getFileSizeBytes(),
+                                    downloadProgressPar
+                            );
+                        }
+                    });
 
-                    // Controlled sleep with interrupt handling
                     TimeUnit.SECONDS.sleep(1);
                 }
-                if(this.state == FileState.READY)
-                    Thread.currentThread().interrupt();
-                else if( this.state == FileState.NOT_DOWNLOADED)
-                    Thread.currentThread().wait();
+
+                if (this.state == FileState.READY && this.onReadyItemListener != null) {
+                    javafx.application.Platform.runLater(() ->
+                            onReadyItemListener.onReadyItem(readyFileContainer)
+                    );
+                }
             } catch (InterruptedException e) {
-                System.out.println("----------From LoadItemController: Download status thread interrupted gracefully Error: "+e.getMessage());
-                e.printStackTrace();
-                Thread.currentThread().interrupt(); // Restore interrupt flag
+                Thread.currentThread().interrupt();
             } catch (Exception e) {
-                System.err.println("Error in download status thread: " + e.getMessage());
                 e.printStackTrace();
-            } finally {
-                // Cleanup resources if needed
             }
         });
-        updateDownloadingStatusThread.setDaemon(true);
-        updateDownloadingStatusThread.start();
-
-//        if(updateDownloadingStatusThread.getState() == Thread.State.WAITING)
-//            this.updateDownloadingStatusThread.notify();
-//        else {
-//
-//        }
-            this.updateDownloadingStatusThread.start();
+        this.updateDownloadingStatusThread.setDaemon(true);
+        this.updateDownloadingStatusThread.start();
     }
 
-    public void setOnCancelDownloadButtonClickedListiner(OnCancelDownloadButtonClickedListiner onCancelDownloadButtonClickedListiner) {
-        this.onCancelDownloadButtonClickedListiner = onCancelDownloadButtonClickedListiner;
-        try {
-            this.updateDownloadingStatusThread.wait();
-        } catch (InterruptedException e) {
-            System.out.println("------------From LoadItemController : Cannot Do Wait For Update Item Status Thread Error: "+ e.getMessage());
-            e.printStackTrace();
-        }
+    public void setOnDownloadingItemListener(OnDownloadingItemListener listener) {
+        this.onDownloadingItemListener = listener;
     }
 
+    public void setOnReadyItemListener(OnReadyItemListener listener) {
+        this.onReadyItemListener = listener;
+    }
+
+    public void setOnDownloadButtonClickedListener(OnDownloadButtonClickedListener listener) {
+        this.onDownloadButtonClickedListener = listener;
+        initializeUpdateThread();
+    }
+
+    public void setOnCancelDownloadButtonClickedListener(OnCancelDownloadButtonClickedListener listener) {
+        this.onCancelDownloadButtonClickedListener = listener;
+    }
+
+    public void setMedia(Media media) {
+        this.media = media;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public void setState(FileState state) {
+        this.state = state;
+    }
 }
