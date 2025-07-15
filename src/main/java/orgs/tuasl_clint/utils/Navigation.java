@@ -24,10 +24,10 @@ public class Navigation {
     }
 
 
-    public static void loadPage(String fxmlFile) {
+    public static <T> T loadPage(String fxmlFile) {
         if (primaryStage == null) {
             System.err.println("Error : Primary stage is not set in Navigation!");
-            return;
+            return null;
         }
         try {
             // Construct the full path relative to the resources folder
@@ -35,11 +35,12 @@ public class Navigation {
             URL fxmlUrl = Navigation.class.getResource(fxmlPath);
             if (fxmlUrl == null) {
                 System.err.println("Error : Cannot find FXML file: " + fxmlPath);
-                return;
+                return null;
             }
             System.out.println("Loading the page from : "+fxmlUrl.toString().toLowerCase());
-
-            Parent root = FXMLLoader.load(Objects.requireNonNull(fxmlUrl));
+            FXMLLoader loader = new FXMLLoader();
+            Parent root = loader.load(Objects.requireNonNull(fxmlUrl));
+            T controller = loader.getController();
 
             Scene scene = primaryStage.getScene();
             if (scene == null) {
@@ -65,7 +66,7 @@ public class Navigation {
                 scene.setRoot(root); // Change the content of the existing scene
             }
             primaryStage.sizeToScene(); // Adjust stage size if needed
-
+            return controller;
         } catch (IOException e) {
             System.err.println("Error : Error loading FXML file: " + fxmlFile);
             e.printStackTrace(); // Print stack trace for debugging
@@ -73,5 +74,6 @@ public class Navigation {
             System.err.println("Error : Null pointer exception likely due to missing FXML or CSS resource. Check paths.");
             e.printStackTrace();
         }
+        return null;
     }
 }

@@ -54,12 +54,22 @@ public class ChatListItemController implements Initializable {
 
     public void setChat(Chat chat) {
         this.chatObjectProperty.set(chat);
+        if (chat != null) {
+            updateChatItemName(chat.getChatName());
+            if(chat.getChatPictureUrl() != null && !(chat.getChatPictureUrl().isEmpty() || chat.getChatPictureUrl().isEmpty()))
+                try {
+                    updateProfilePicture(new Image(chat.getChatPictureUrl()));
+                } catch (Exception e) {
+                    System.out.println("an Error occured while trying to updata the chat Image");
+                }
+        }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.chatObjectProperty = new SimpleObjectProperty<>();
-        this.updateProfilePicture(null);
+//        this.statusLabel.setText("");
+//        this.nameLabel.setText("Chat Name Label");
     }
 
     private interface OnImageItemClickedListener{
@@ -86,17 +96,20 @@ public class ChatListItemController implements Initializable {
     public void updateLastMessageContent(String content ){
         this.lastMessageLabel.setText(content);
     }
-    public void  updateLastMessageDate(Timestamp date){
-        this.timestampLabel.setText(TimeStampHelperClass.formatTimeLeft(date));
+    // Make timestamp updates thread-safe
+    public void updateLastMessageDate(Timestamp date) {
+        javafx.application.Platform.runLater(() ->
+                timestampLabel.setText(TimeStampHelperClass.formatTimeLeft(date))
+        );
     }
     public void updateProfilePicture(Image image) {
         this.profilePictureImageView.setImage(image != null ? image : null);//getDefaultImage()); //TODO replace this code after fixing resources shared paths..
         makeCircularImage(profilePictureImageView);
     }
 
-    private Image getDefaultImage() {
-        return new Image(this.getClass().getResourceAsStream("src/main/resources/orgs/tuasl_clint/images/default-group-profile.jpg"));
-    }
+//    private Image getDefaultImage() {
+//        return new Image(this.getClass().getResourceAsStream("src/main/resources/orgs/tuasl_clint/images/default-group-profile.jpg"));
+//    }
 
     public void updateLastMessage(Message message) {
         if (message != null) {
@@ -129,7 +142,16 @@ public class ChatListItemController implements Initializable {
         );
         imageView.setClip(clip);
     }
-
+    public ChatListItemController get_Controller(){
+        return this;
+    }
+    public void cleanup() {
+        this.onImageItemClickedListener = null;
+        this.onItemClickedListener = null;
+        if (profilePictureImageView != null) {
+            profilePictureImageView.setImage(null);
+        }
+    }
     @FXML
     void handleGoToChat(MouseEvent event) {
         System.out.println("Item Clicked With Chat_ID: "+((chatObjectProperty.get() != null)?this.chatObjectProperty.get().getChatId(): "null"));

@@ -38,6 +38,7 @@ public class Chat {
     public Chat(ChatType chatType, Timestamp createdAt) {
         this.chatType = chatType;
         this.createdAt = createdAt;
+        this.updatedAt = createdAt;
     }
 
     public Chat(long chatId, ChatType chatType, String chatName, String chatDescription, String chatPictureUrl, long creatorUserId, String publicLink, Timestamp createdAt, Timestamp updatedAt) {
@@ -117,5 +118,19 @@ public class Chat {
             statement.setLong(1, chatId);
             return statement.executeUpdate() > 0;
         }
+    }
+    @Override
+    public String toString() {
+        return "Chat{" +
+                "chatId=" + chatId +
+                ", chatType=" + chatType +
+                ", chatName='" + chatName + '\'' +
+                ", chatDescription='" + (chatDescription != null ? chatDescription : "null") + '\'' +
+                ", chatPictureUrl='" + (chatPictureUrl != null ? chatPictureUrl : "null") + '\'' +
+                ", creatorUserId=" + creatorUserId +
+                ", publicLink='" + (publicLink != null ? publicLink : "null") + '\'' +
+                ", createdAt=" + (createdAt != null ? createdAt.toString() : "null") +
+                ", updatedAt=" + (updatedAt != null ? updatedAt.toString() : "null") +
+                '}';
     }
 }

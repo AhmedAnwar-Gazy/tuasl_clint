@@ -5,24 +5,32 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="rootBorderPane" style="-fx-max-height: 800px;" styleClass="root-pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.ChatController">
+<BorderPane fx:id="rootBorderPane" prefHeight="458.0" prefWidth="1028.0" style="-fx-max-height: 800px;" styleClass="root-pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.ChatController">
     <left>
-        <VBox maxWidth="300" minWidth="200" spacing="5.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+        <VBox fx:id="leftMainAllContainer" spacing="5.0" styleClass="sidebar" BorderPane.alignment="CENTER">
             <padding>
                 <Insets top="5.0" />
             </padding>
-            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="sidebar-header">
-                <padding><Insets bottom="5" left="10" right="10" top="5" /></padding>
-                <Button fx:id="menuButton" onAction="#handleMenuButtonAction" style="-fx-background-color: #FF000000;" styleClass="menu-button">
-                    <graphic>
-                        <ImageView fitHeight="38.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../icons/menuButton.png" />
-                            </image>
-                        </ImageView>
-                    </graphic></Button> <TextField promptText="Search" style="-fx-background-radius: 20;-fx-border-radius: 15;" HBox.hgrow="ALWAYS" />
-            </HBox>
-            <ListView fx:id="chatListView" styleClass="chat-list" VBox.vgrow="ALWAYS" />
+         <VBox fx:id="chatsMainContainer">
+            <children>
+                  <HBox alignment="CENTER_LEFT" spacing="10" styleClass="sidebar-header">
+                      <padding>
+                     <Insets bottom="5" left="10" right="10" top="5" />
+                  </padding>
+                      <Button fx:id="menuButton" onAction="#handleMenuButtonAction" style="-fx-background-color: #FF000000;" styleClass="menu-button">
+                          <graphic>
+                              <ImageView fitHeight="38.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                  <image>
+                                      <Image url="@../icons/menuButton.png" />
+                                  </image>
+                              </ImageView>
+                          </graphic>
+                  </Button> <TextField promptText="Search" style="-fx-background-radius: 20;-fx-border-radius: 15;" HBox.hgrow="ALWAYS" />
+                  </HBox>
+                  <ListView fx:id="chatListView" maxHeight="1.7976931348623157E308" styleClass="chat-list" />
+            </children>
+         </VBox>
+         <HBox fx:id="menuItemContainer" />
         </VBox>
     </left>
     <center>

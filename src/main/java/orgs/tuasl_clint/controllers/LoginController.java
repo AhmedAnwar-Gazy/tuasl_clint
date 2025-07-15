@@ -4,8 +4,11 @@ package orgs.tuasl_clint.controllers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import orgs.tuasl_clint.models2.FactoriesSQLite.UserFactory;
 import orgs.tuasl_clint.models2.User;
 import orgs.tuasl_clint.models2.UserInfo;
@@ -22,6 +25,8 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
 
+    public Button login_using_data_last_btn;
+    public VBox mainContainer;
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private Button loginButton;
@@ -95,35 +100,49 @@ public class LoginController implements Initializable {
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try{
+            if(UserInfo.userInfo == null)
+                UserInfo.userInfo = new UserInfo();
+            if(UserInfo.userInfo.getFirst()){
+                login_using_data_last_btn.setText("Login Using "+UserInfo.userInfo.getPhone()+" account");
 
-        Platform.runLater(this::checkIfExist);
-    }
-    void checkIfExist(){
-        UserInfo current_user = new UserInfo();
-//        System.out.println("_____________ current User is : "+current_user.toString()+"___________________");
-        try {
-            if(current_user.getFirst() && current_user.getIsEnabled() >0) {
-                System.out.println("_____________ current User is : "+current_user.toString()+"___________________");
-                Response serverLoginResponse = ChatClient2.getChatClient2().Login(current_user.getPhone(), current_user.getPassword());
-                System.out.println("Trying to Auto Login. Response is : "+ serverLoginResponse.toString());
-                if (serverLoginResponse.isSuccess()) {
-                    User userFromServer = gson.fromJson(serverLoginResponse.getData(), User.class);
-                    User userFromDatabase = login(current_user.getPhone(), current_user.getPassword());
-                    if (userFromDatabase != null) {
-                        if (areEqalsUsers(userFromDatabase,userFromServer)) {
-                            User.user = userFromServer;
-                        }
+                login_using_data_last_btn.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        checkIfExist();
                     }
-                    else {
-                        User.user = userFromServer;
-                    }
-                    sucessLogin();
-                }
+                });
+            }else {
+                mainContainer.getChildren().remove(login_using_data_last_btn);
             }
         } catch (SQLException e) {
-            System.out.println("Cannot Sign in Automatically Error : "+ e.getMessage());
-            e.printStackTrace();
+        System.out.println("Cannot Sign in Automatically Error : "+ e.getMessage());
+        e.printStackTrace();
+    }
+
+//        Platform.runLater(this::checkIfExist);
+    }
+    void checkIfExist(){
+//        System.out.println("_____________ current User is : "+current_user.toString()+"___________________");
+        if(UserInfo.userInfo != null && UserInfo.userInfo.getIsEnabled() >0) {
+            System.out.println("_____________ current User is : "+UserInfo.userInfo.toString()+"___________________");
+            Response serverLoginResponse = ChatClient2.getChatClient2().Login(UserInfo.userInfo.getPhone(), UserInfo.userInfo.getPassword());
+            System.out.println("Trying to Auto Login. Response is : "+ serverLoginResponse.toString());
+            if (serverLoginResponse.isSuccess()) {
+                User userFromServer = gson.fromJson(serverLoginResponse.getData(), User.class);
+                User userFromDatabase = login(UserInfo.userInfo.getPhone(), UserInfo.userInfo.getPassword());
+                if (userFromDatabase != null) {
+                    if (areEqalsUsers(userFromDatabase,userFromServer)) {
+                        User.user = userFromServer;
+                    }
+                }
+                else {
+                    User.user = userFromServer;
+                }
+                sucessLogin();
+            }
         }
+
     }
     private void sucessLogin(){
         int counter = 0;
@@ -149,14 +168,13 @@ public class LoginController implements Initializable {
                     }
                 }
                 UserInfo.userInfo.setUser_id(1);
-                while (counter < 4){
+                for (counter = 0; counter < 4; counter++){
                     if(!UserInfo.userInfo.update()){
                         if(UserInfo.userInfo.save()){
                             if(UserInfo.userInfo.getUser_id() != 1) {
                                 UserInfo.userInfo.setUser_id(1);
                                 if(counter == 4)
                                     System.err.println("-------Login Data Wasn't Be Saved in Database-----");
-                                counter++;
                                 continue;
                             }else {
                                 break;
@@ -166,13 +184,11 @@ public class LoginController implements Initializable {
                         System.out.println("Login Data Saved Successfully in Database");
                         break;
                     }
-                    counter++;
                 }
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null,"Error occored While updating User data in database ! Error Message : "+e.getMessage());
         }
-//        User.user.setUsername("Mubarak");
         Navigation.loadPage("chat.fxml");
         System.out.println("Auto Sign in BY Username : " + UserInfo.userInfo.toString());
     }

@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import orgs.tuasl_clint.models2.Chat;
+import orgs.tuasl_clint.models2.ChatParticipant;
 import orgs.tuasl_clint.models2.User;
 import orgs.tuasl_clint.protocol.Command;
 import orgs.tuasl_clint.protocol.Request;
@@ -84,18 +85,30 @@ public class menu_bageControler implements Initializable {
 
     @FXML
     void handleSettingsAction(ActionEvent event) {
-        Navigation.loadPage("settings.fxml");
+        if(this.onGoBackButtonClickListener != null){
+            this.onGoBackButtonClickListener.onGoBackButtonClickListener();
+        }
     }
     @FXML
     private TextField groupNameField ;
     private Chat.ChatType chatType1;
-    private interface CreateGroupListiner{
+    public interface CreateGroupListiner{
         public void onCreateGroup(Chat chat , boolean isSaved);
     }
     private CreateGroupListiner createGroupListiner;
     public void setOnCreateGroupLisiner(CreateGroupListiner createGroupListiner){
         this.createGroupListiner = createGroupListiner;
     }
+    public interface OnGoBackButtonClickListener{
+        public void onGoBackButtonClickListener();
+    }
+    private OnGoBackButtonClickListener onGoBackButtonClickListener;
+
+    public void setOnGoBackButtonClickListener(OnGoBackButtonClickListener onGoBackButtonClickListener) {
+        this.onGoBackButtonClickListener = onGoBackButtonClickListener;
+    }
+
+
     public void handleCreateGroup(ActionEvent event) {
         Map<String, Object> data = new HashMap<>();
         System.out.print("Enter chat type (private, group, channel): ");
@@ -125,6 +138,8 @@ public class menu_bageControler implements Initializable {
         boolean saved = false;
         try {
             saved = chat.save();
+            ChatParticipant p = new ChatParticipant(chat.getChatId(),User.user.getId(),chat.getCreatedAt());
+            System.out.println("Chat Participant is add to this chat and State of process is : "+ p.save());
         } catch (SQLException e) {
             System.out.println("-------from the menu bage : Cannot Save th Chat !! Error: "+e.getMessage());
         }
@@ -156,6 +171,7 @@ public class menu_bageControler implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setImage(new Image("C:\\Users\\alraw\\OneDrive\\الصور\\67f958d43a91c9.23223583.jpg"));
         groupTypeSelected = "private";
+        chatType1 = Chat.ChatType.PRIVATE;
         groupType.getItems().addAll("private","group","channel");
         groupType.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {

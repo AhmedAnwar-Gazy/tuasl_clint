@@ -27,8 +27,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class ChatClient2 implements AutoCloseable {
-    private static final String SERVER_IP = "192.168.1.99"; // Localhost
-    private static final int SERVER_PORT = 7373;
+    private static final String SERVER_IP = "127.0.0.1";//"192.168.1.99"; // Localhost
+    private static final int SERVER_PORT = 6373;
     private static final int FILE_TRANSFER_PORT = 7374;
     public static final ChatClient2 chatClient2 =  new ChatClient2();
 

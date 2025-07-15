@@ -2,6 +2,11 @@ package orgs.tuasl_clint.controllers;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -13,6 +18,7 @@ import orgs.tuasl_clint.livecall.AudioSendUDP;
 import orgs.tuasl_clint.livecall.VideoCallWindowUDP;
 import orgs.tuasl_clint.models2.*;
 import orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory;
+import orgs.tuasl_clint.models2.FactoriesSQLite.ChatParticipantFactory;
 import orgs.tuasl_clint.models2.FactoriesSQLite.MediaFactory;
 import orgs.tuasl_clint.protocol.Response;
 import orgs.tuasl_clint.utils.ChatClient2;
@@ -39,19 +45,17 @@ import javax.swing.*;
 
 import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Button; // Import Button
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.BorderPane;
 
 public class ChatController {
+    public VBox chatsMainContainer;
+    public HBox menuItemContainer;
+    public VBox leftMainAllContainer;
     @FXML
     private BorderPane rootBorderPane;
     @FXML
-    private ListView<String> chatListView;
+    private ListView<Chat> chatListView;
     @FXML
     private Label chatTitleLabel;
     @FXML
@@ -97,47 +101,69 @@ public class ChatController {
     private boolean isRecording = false;
     private TargetDataLine line;    // Define the folder where recordings should be saved
     private final String RECORDING_FOLDER = "src/main/resources/orgs/tuasl_clint/voiceNote/";
-    private ObservableList<String> chatItems = FXCollections.observableArrayList();
-    private ObservableList<Chat> chatItemsChats = FXCollections.observableArrayList();
-    //    private ObservableList<String> messageItems = FXCollections.observableArrayList();
+    private ObservableList<Chat> chatItems = FXCollections.observableArrayList();
     private ObservableList<Message> messageItemsMessage;// = FXCollections.observableArrayList();
 
-    private HashMap<String,Chat> chatsMap;
     private HashMap<Chat,ObservableList<Message>> chatsMessagesMap;
+
     private File audioFile;
     private FileItemController mediaFileController;
     private Chat currentChat;
 
 
+    public void addChatItem(Chat chat) {
+        chatListView.getItems().add(chat);
+        chatListView.scrollTo(chat);
+    }
+
 
     @FXML
     public void initialize() {
-        chatsMap = new HashMap<>();
         chatsMessagesMap = new HashMap<>();
-//        this.emojiScrollPane.setVisible(false);
         loadMyChats();
-        chatListView.setItems(chatItems);
+        chatListView.setCellFactory(listView -> new ListCell<Chat>() {
+            @Override
+            protected void updateItem(Chat chat, boolean empty) {
+                super.updateItem(chat, empty);
+
+                if (empty || chat == null) {
+                    setGraphic(null);
+                } else {
+                    try {
+                        // Load the HBox for each item
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/chatListItem.fxml"));
+                        HBox hbox = loader.load();
+                        ChatListItemController controller = loader.getController();
+                        controller.setChat(chat);
+                        setGraphic(hbox);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        setGraphic(new Label("Error loading chat item"));
+                    }
+                }
+            }
+        });
         chatListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             System.out.println("selected chat is changed");
             if (newSelection != null) {
-                chatTitleLabel.setText(newSelection);
+
                 messageDisplayArea.getChildren().clear();
-                messageDisplayArea.getChildren().add(new Label("Messages for " + newSelection + " are encrypted between all participles."));
-                currentChat = chatsMap.get(newSelection);
-//                try {
-//                    //TODO: UNCOMMIT THE FOLLOWING COMMIT to hide the video/voice call buttons becouse the users of this chat are more than 2 so we cannot open a video/voice call.....!!
-//                    int count = ChatParticipantFactory.getChatParticipantCount(currentChat.getChatId());
-//                    System.out.println("--------------------------------------------Participants count is : "+ count);
-//                    if(count > 2){
-//                        this.audioCallButton.setVisible(false);
-//                        this.videoCallButton.setVisible(false);
-//                    }else{
-//                        this.audioCallButton.setVisible(true);
-//                        this.videoCallButton.setVisible(true);
-//                    }
-//                } catch (SQLException e) {
-//                    System.err.println("-------cannot get this chat participles...!!!\n------Error Message is : "+ e.getMessage());
-//                }
+                messageDisplayArea.getChildren().add(new Label("Messages for " + newSelection.getChatName() + " are encrypted between all participles."));
+                currentChat = newSelection;
+                try {
+                    //TODO: UNCOMMIT THE FOLLOWING COMMIT to hide the video/voice call buttons becouse the users of this chat are more than 2 so we cannot open a video/voice call.....!!
+                    int count = ChatParticipantFactory.getChatParticipantCount(currentChat.getChatId());
+                    System.out.println("--------------------------------------------Participants count is : "+ count);
+                    if(count > 2){
+                        this.audioCallButton.setVisible(false);
+                        this.videoCallButton.setVisible(false);
+                    }else{
+                        this.audioCallButton.setVisible(true);
+                        this.videoCallButton.setVisible(true);
+                    }
+                } catch (SQLException e) {
+                    System.err.println("-------cannot get this chat participles...!!!\n------Error Message is : "+ e.getMessage());
+                }
                 loadChatsMessages(newSelection);                // --- NEW CODE: Populate messageDisplayArea directly after loading messages ---
                 for (Message message : messageItemsMessage) {
                     loadMessages(message);
@@ -145,7 +171,8 @@ public class ChatController {
                 System.out.println("Selected chat: " + newSelection);
             }
         });        // Select the first chat by default
-        if (!chatItems.isEmpty() && !chatsMap.isEmpty()) {
+        if (!chatItems.isEmpty()) {
+            chatListView.setItems(chatItems);
             chatListView.getSelectionModel().selectFirst();
         }
         else {
@@ -214,14 +241,14 @@ public class ChatController {
             try {
                 if(m.save()){
                     //TODO write the code of send text Message Here
-                    System.out.println("@@@@@@sending text message");
+                    System.out.println("@@@@@@=-------------sending text message");
                     Response res = ChatClient2.getChatClient2().sendTextMessage((int)currentChat.getChatId(),m.getContent());
                     if(res.isSuccess()){
                         messageInputField.clear();
                         loadMessages(m);
                         messageScrollPane.setVvalue(1.0);
                     }else {
-                        JOptionPane.showMessageDialog(null,JOptionPane.ERROR_MESSAGE,"Error: Cannot send The message",0);
+                        JOptionPane.showMessageDialog(null,"Cannot send the  Message Error : "+res.getMessage());
                     }
                 }
                 else{
@@ -244,8 +271,9 @@ public class ChatController {
             sendMessageItemController.setUserData(messageText);
             //messageScrollPane.setVvalue(1.0);
             messageDisplayArea.getChildren().add(userCardNode);
-            if(!chatsMessagesMap.get(chatsMap.get(currentChat.getChatName())).contains(messageText))
+            if(!chatsMessagesMap.get(currentChat).contains(messageText)){
                 chatsMessagesMap.get(currentChat).add(messageText);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Failed to load UserCard.fxml: " + e.getMessage());
@@ -377,10 +405,10 @@ public class ChatController {
                 chatsMessagesMap.get(c).add(message);
                 //TODO: play the notifications sound
             }else{
-                chatsMap.put(c.getChatName(),c);
+//                chatsMap.put(c.getChatName(),c);
                 chatsMessagesMap.put(c,FXCollections.observableArrayList());
                 chatsMessagesMap.get(c).add(message);
-                chatListView.getItems().add(c.getChatName());
+                this.addChatItem(c);
                 //TODO: add the unread messages count to this item and play the notifications sound
             }
         }
@@ -419,10 +447,42 @@ public class ChatController {
             System.out.println("Recording stopped and saved.");
         }
     }
-
+    private menu_bageControler menu_bageControler;
+    private VBox menu_bageRootVbox;
     @FXML
     private void handleMenuButtonAction(ActionEvent event) {
-        Navigation.loadPage("menu_bage.fxml");
+        if(menuItemContainer.getChildren().isEmpty()){
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/orgs/tuasl_clint/fxml/menu_bage.fxml"));
+                menu_bageRootVbox = loader.load();
+                menu_bageControler =  loader.getController();
+                menu_bageControler.setOnCreateGroupLisiner(new menu_bageControler.CreateGroupListiner() {
+                    @Override
+                    public void onCreateGroup(Chat chat, boolean isSaved) {
+                        if(isSaved){
+                            chatItems.add(chat);
+                            loadChatsMessages(chat);
+                            addChatItem(chat);
+                        }
+                        loadMyChats();
+                    }
+                });
+                menu_bageControler.setOnGoBackButtonClickListener(new menu_bageControler.OnGoBackButtonClickListener() {
+                    @Override
+                    public void onGoBackButtonClickListener() {
+                        leftMainAllContainer.getChildren().remove(menuItemContainer);
+                        leftMainAllContainer.getChildren().add(chatsMainContainer);
+                    }
+                });
+                this.menuItemContainer.getChildren().add(menu_bageRootVbox);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        this.leftMainAllContainer.getChildren().remove(chatsMainContainer);
+        if(!this.leftMainAllContainer.getChildren().contains(this.menuItemContainer)){
+            this.leftMainAllContainer.getChildren().add(this.menuItemContainer);
+        }
     }
 
     private final String SHARE_FOLDER = "src/main/resources/orgs/tuasl_clint/file/";
@@ -528,21 +588,26 @@ public class ChatController {
                         "\u25FC", "\u25FB", "\u25FD", "\u25FE"
                 };
                 for (String emoji : emojis) {
-                    Label emojiLabel = new Label(emoji);
-                    emojiLabel.setStyle("-fx-font-size: 30px; -fx-padding: 5px;");
-                    emojiLabel.setOnMouseClicked((MouseEvent e) -> {
-                        messageInputField.appendText(emojiLabel.getText());
-                        // عند اختيار إيموجي، قم بإخفاء الـ ScrollPane وإعادة منطقة المنتصف إلى التوسع
-                        //emojiScrollPane.setVisible(false);
-                        //emojiScrollPane.setManaged(false);
-                        messageInputField.requestFocus();
-                        e.consume();
-                    });
+                    Label emojiLabel = getEmojiLabel(emoji);
                     areaOfEmojis.getChildren().add(emojiLabel);
                 }
 
             }
         }
+    }
+
+    private Label getEmojiLabel(String emoji) {
+        Label emojiLabel = new Label(emoji);
+        emojiLabel.setStyle("-fx-font-size: 30px; -fx-padding: 5px;");
+        emojiLabel.setOnMouseClicked((MouseEvent e) -> {
+            messageInputField.appendText(emojiLabel.getText());
+            // عند اختيار إيموجي، قم بإخفاء الـ ScrollPane وإعادة منطقة المنتصف إلى التوسع
+            //emojiScrollPane.setVisible(false);
+            //emojiScrollPane.setManaged(false);
+            messageInputField.requestFocus();
+            e.consume();
+        });
+        return emojiLabel;
     }
 
     public void loadMyChats() {
@@ -582,9 +647,10 @@ public class ChatController {
 //                }
                 Chat chat = orgs.tuasl_clint.models2.FactoriesSQLite.ChatFactory.createFromResultSet(rs);
                 if(chat != null){
-                    chatItems.add(chat.getChatName());
-                    chatsMap.put(chat.getChatName(),chat);
-                    chatItemsChats.add(chat);
+                    chatItems.add(chat);
+                    this.addChatItem(chat);
+//                    chatsMap.put(chat.getChatName(),chat);
+//                    chatItemsChats.add(chat);
                 }
                 System.out.println(chat.getChatName());
             }
@@ -595,16 +661,16 @@ public class ChatController {
         }
     }
 
-    public void loadChatsMessages(String chatname) {
-        System.out.println("Loading Messages for chat :" + chatname);
-        if(!chatsMessagesMap.containsKey(chatsMap.get(chatname))){
+    public void loadChatsMessages(Chat chat) {
+        System.out.println("Loading Messages for chat :" + chat);
+        if(!chatsMessagesMap.containsKey(chat)){
             System.out.println("This chat is first open now from last opening the application");
-            chatsMessagesMap.put(chatsMap.get(chatname),FXCollections.observableArrayList());
-            messageItemsMessage = chatsMessagesMap.get(chatsMap.get(chatname));
+            chatsMessagesMap.put(chat,FXCollections.observableArrayList());
+            messageItemsMessage = chatsMessagesMap.get(chat);
             try(Connection con = DatabaseConnectionSQLite.getInstance().getConnection()) {
                 String sql = "SELECT messages.* ,media.* , chats.chat_id FROM chats left join messages on chats.chat_id = messages.chat_id LEFT JOIN media on messages.media_id =   media.media_id  WHERE chats.chat_name = ? ORDER BY messages.message_id  ASC; ";
                 PreparedStatement stmt = con.prepareStatement(sql);
-                stmt.setString(1,chatname);
+                stmt.setString(1,chat.getChatName());
                 ResultSet rs = stmt.executeQuery();
 
                 while (rs.next()) {
@@ -618,7 +684,7 @@ public class ChatController {
         }
         else{
             System.out.println("this chat has been opened before and now is loaded successfully");
-            messageItemsMessage = chatsMessagesMap.get(chatsMap.get(chatname));
+            messageItemsMessage = chatsMessagesMap.get(chat);
         }
     }
 
@@ -656,7 +722,7 @@ public class ChatController {
     */
 @FXML
 public void handleAudioCallButtonAction(ActionEvent event) {
-    String selectedUser = chatListView.getSelectionModel().getSelectedItem();
+    Chat selectedUser = chatListView.getSelectionModel().getSelectedItem();
     if (selectedUser == null) {
         System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
         return;
@@ -706,7 +772,7 @@ public void handleAudioCallButtonAction(ActionEvent event) {
     */
     @FXML
     public void handleVideoCallButtonAction(ActionEvent event) {
-        String selectedUser = chatListView.getSelectionModel().getSelectedItem();
+        Chat selectedUser = chatListView.getSelectionModel().getSelectedItem();
         if (selectedUser == null) {
             System.out.println("❌ لم يتم اختيار مستخدم لإجراء المكالمة");
             return;

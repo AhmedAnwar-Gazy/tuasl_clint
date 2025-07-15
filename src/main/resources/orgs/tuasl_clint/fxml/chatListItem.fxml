@@ -8,13 +8,13 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<HBox fx:id="HboxAllProfile" alignment="CENTER_LEFT" prefHeight="68.0" prefWidth="298.0" spacing="15.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.ChatListItemController">
+<HBox fx:id="HboxAllProfile" alignment="CENTER_LEFT" maxHeight="65.0" prefHeight="12.0" prefWidth="192.0" spacing="15.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.ChatListItemController">
     <padding>
         <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
     </padding>
-   <StackPane onMouseClicked="#handelGroupImageClicked">
+   <StackPane onMouseClicked="#handelGroupImageClicked" prefHeight="29.0" prefWidth="25.0">
       <children>
-         <Circle fill="#294b94" radius="25.0" strokeType="INSIDE">
+         <Circle fill="#294b94" radius="17.0" strokeType="INSIDE">
             <stroke>
                <LinearGradient endX="0.5071090047393365" endY="0.4549763033175356" startX="0.48815165876777245" startY="0.4644549763033175">
                   <stops>
@@ -32,7 +32,7 @@
                </LinearGradient>
             </stroke>
          </Circle>
-          <ImageView fx:id="profilePictureImageView" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+          <ImageView fx:id="profilePictureImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
               <clip>
                   <Circle centerX="25.0" centerY="25.0" radius="25.0" />
               </clip>
@@ -43,18 +43,24 @@
       </children>
    </StackPane>
     <VBox onMouseClicked="#handleGoToChat" spacing="3.0" HBox.hgrow="ALWAYS">
-        <Label fx:id="nameLabel" text="Contact/Group Name">
-            <font>
-                <Font name="System Bold" size="14.0" />
-            </font>
-        </Label>
+      <Label fx:id="statusLabel" alignment="CENTER_RIGHT" text="online" textFill="#4b04ff">
+         <graphic>
+              <Label fx:id="nameLabel" text="Contact/Group Name">
+                  <font>
+                      <Font name="System Bold" size="12.0" />
+                  </font>
+              </Label>
+         </graphic>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </Label>
         <Label fx:id="lastMessageLabel" text="Last message snippet..." textFill="#616161">
             <font>
-                <Font size="12.0" />
+                <Font size="10.0" />
             </font>
             <wrapText>false</wrapText>
         </Label>
-        <Label fx:id="statusLabel" managed="false" prefHeight="4.0" prefWidth="17.0" text="online" textFill="#008000" visible="false" />
     </VBox>
     <VBox alignment="TOP_RIGHT" onMouseClicked="#handleGoToChat" spacing="5.0">
         <Label fx:id="timestampLabel" text="12:34 PM" textFill="#616161">
@@ -64,7 +70,7 @@
         </Label>
       <StackPane fx:id="unreadCountPane" visible="false">
          <children>
-            <Circle fill="DODGERBLUE" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fill="DODGERBLUE" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
                <Label fx:id="unreadCountLabel" text="99" textFill="#72ff00">
                    <font>
                        <Font name="System Bold" size="14.0" />

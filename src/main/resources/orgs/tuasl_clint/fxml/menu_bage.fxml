@@ -5,7 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="sideMenuRoot" styleClass="sidebar" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.menu_bageControler">
+<VBox fx:id="sideMenuRoot" prefHeight="605.0" prefWidth="350.0" styleClass="sidebar" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orgs.tuasl_clint.controllers.menu_bageControler">
 
     <children>
         <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" styleClass="sidebar-header">
@@ -41,7 +41,7 @@
         <ListView fx:id="chatListView" VBox.vgrow="ALWAYS" />
 
         <!-- واجهة إنشاء المجموعة مخفية بشكل افتراضي -->
-        <VBox fx:id="createGroupPane" managed="false" spacing="10" style="-fx-background-color: #f0f0f0;">
+        <VBox fx:id="createGroupPane" managed="false" spacing="10" style="-fx-background-color: #f0f0f0;" visible="false">
             <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
             </padding>

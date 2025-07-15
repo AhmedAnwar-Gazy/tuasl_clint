@@ -86,6 +86,7 @@ public class DatabaseConnectionSQLite {
     private static void CreateDatabase(Statement stmt) throws IOException, SQLException {
         List<String> queries = FilesHelperReader.readUntilChar("src\\main\\resources\\orgs\\tuasl_clint\\file\\SQLiteDatabase.txt",';');
         for(String query : queries){
+            System.out.println("Executing query in database : "+query);
             stmt.executeUpdate(query);
             System.out.println("   QUERY: \n"+ query + "\n   IS EXECUTED SUCCESSFULLY ...!!!");
         }

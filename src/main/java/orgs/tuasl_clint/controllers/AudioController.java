@@ -41,20 +41,14 @@ public class AudioController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // 1. Initialize Play/Pause Icons
         initializeIcons();
-
-        // Add the play icon initially to the StackPane
         if (playButtonContainer != null) {
             playButtonContainer.getChildren().add(playIcon);
         }
-
-        // 2. Set up Button Action
         audioButon.setOnAction(event -> togglePlayPause());
-
-        // 3. Load Audio Media
         loadAudioMedia(defaultAudioFilePath);
     }
+
 
     /**
      * Initializes the SVGPath icons for play and pause.

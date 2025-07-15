@@ -62,19 +62,19 @@ public class LoadItemController implements Initializable {
     File file;
     Media media;
 
-    private interface OnReadyItemListener {
+    public interface OnReadyItemListener {
         void onReadyItem(HBox fileItemContainer);
     }
 
-    private interface OnDownloadingItemListener {
+    public interface OnDownloadingItemListener {
         void onDownloadingItem(long currentSize, long fileSize, ProgressIndicator progressIndicator);
     }
 
-    private interface OnDownloadButtonClickedListener {
+    public interface OnDownloadButtonClickedListener {
         void onDownloadButtonClicked(Media media, File file);
     }
 
-    private interface OnCancelDownloadButtonClickedListener {
+    public interface OnCancelDownloadButtonClickedListener {
         void onCancelDownloadButtonClicked(Media media, File file);
     }
 
@@ -179,9 +179,22 @@ public class LoadItemController implements Initializable {
                 }
 
                 if (this.state == FileState.READY && this.onReadyItemListener != null) {
-                    javafx.application.Platform.runLater(() ->
-                            onReadyItemListener.onReadyItem(readyFileContainer)
-                    );
+                    javafx.application.Platform.runLater(() -> {
+                        if(this.file.isFile() && this.file.exists() && file.getName().endsWith(".temp")){
+                            File newFile = new File(file.getPath(),file.getName().substring(0,file.getName().length() - 5));
+                            if(newFile.exists()){
+                                if(newFile.delete() && file.renameTo(newFile)){
+                                    System.out.println("From LoadItemController : File Is Ready And Is Not Temp Now..!!");
+                                }else {
+                                    System.out.println("From LoadItemController : Cannot Rename The File This Will Addume That The File Is Not Downloaded..And Wont Be Obenable...!!");
+                                }
+                            }else if(file.renameTo(newFile)){
+                                System.out.println("From LoadItemController : File Is Ready And Is Not Temp Now..!!");
+                            }
+                        }
+                            onReadyItemListener.onReadyItem(readyFileContainer);
+
+                    });
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -212,6 +225,11 @@ public class LoadItemController implements Initializable {
 
     public void setMedia(Media media) {
         this.media = media;
+        this.fileNameLabel.setText(media.getFileName());
+        this.fileInfoLabel.setText(String.valueOf(media.getFileSizeBytes())+"B  "+media.getMimeType());
+        if(this.file == null || !this.file.exists()){
+            this.file = new File(media.getFilePathOrUrl()+".temp");
+        }
     }
 
     public void setFile(File file) {
